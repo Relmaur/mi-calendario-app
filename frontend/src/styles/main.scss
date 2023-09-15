@@ -1,0 +1,18 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+
+// Abstaracts
+@import 'abstracts/variables';
+@import 'abstracts/utils';
+
+// Base
+@import 'base/reset';
+
+// Components
+@import 'components/add-item';
+@import 'components/schedule-view';
+
+// Layout
+@import 'layouts/main_layout';

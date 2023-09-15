@@ -1,0 +1,169 @@
+.add-item-overlay.opened {
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    position: absolute;
+    z-index: 99;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(255 255 255 / 85%);
+
+
+    .add-item-container {
+        position: absolute;
+        width: 100%;
+        max-width: 473px;
+        height: auto;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 10px;
+
+        & .tabs-panel .tabs>div,
+        & .main-panel {
+            background-color: $general_gray_3;
+        }
+
+        & .tabs-panel {
+            height: 100%;
+            width: 10%;
+            display: flex;
+
+            & .tabs {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            & .tabs>div {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                min-width: 45px;
+                aspect-ratio: 1;
+                border: 1px solid rgb(0, 0, 0);
+                border-radius: 10px;
+                border-top-right-radius: unset;
+            }
+
+            & .tabs>div:hover {
+                cursor: pointer;
+            }
+
+            & .tabs>div .icon {
+                width: 22px;
+                height: 24px;
+            }
+        }
+
+        & .main-panel {
+            width: 90%;
+            height: auto;
+            padding: 30px;
+            border: 1px solid #000000;
+            border-radius: 20px;
+            border-top-left-radius: unset;
+            font-size: 12px;
+
+            & .main-panel-container {
+                height: 100%;
+            }
+
+            & .main-panel-container form {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            & .main-panel-container form .add-a-title input {
+                padding: 15px 10px;
+                margin: 10px 0;
+                border: unset;
+                background-color: #ffffff;
+                border-radius: 10px;
+                width: 100%;
+            }
+
+            & .main-panel-container .date {
+                width: 100%;
+                justify-content: space-between;
+                display: flex;
+            }
+
+            & .main-panel-container .date>div {
+                background-color: #ffffff;
+                padding: 10px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            }
+
+            & .main-panel-container .date>div>div {
+                padding: 5px;
+                border-radius: 5px;
+                background-color: $general_green_2;
+            }
+
+            & .main-panel-container .is-recurring {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                margin: 10px 0;
+                padding: 15px;
+                background-color: #ffffff;
+                border-radius: 10px;
+            }
+
+            & .main-panel-container .info textarea {
+                width: 100%;
+                border: unset;
+                border-radius: 10px;
+                padding: 15px 10px;
+            }
+
+            & .main-panel-container .alert {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                margin: 10px 0;
+                padding: 15px;
+                background-color: #ffffff;
+                border-radius: 10px;
+            }
+
+            & .main-panel-container .alert svg {
+                height: 19px;
+            }
+
+            & .main-panel-container .confirm-options {
+                width: 100%;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                gap: 20px;
+            }
+
+            & .main-panel-container .confirm-options .add {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            & .main-panel-container .confirm-options .add:hover {
+                cursor: pointer;
+            }
+
+            & .main-panel-container .confirm-options .add svg {
+                width: 20px;
+            }
+        }
+    }
+}
+
+.add-item-overlay {
+    display: none;
+}

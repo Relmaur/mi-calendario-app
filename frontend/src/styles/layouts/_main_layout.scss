@@ -1,0 +1,374 @@
+#app {
+    width: 100vw;
+    height: 100vh;
+    max-width: 1440px;
+    max-height: 1080px;
+    margin: 0 auto;
+    padding: 20px;
+
+    & .app-main-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        border-radius: 20px;
+        border: 1px solid #000000;
+        
+
+        & .left-side {
+            width: 13%;
+            height: 100%;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+            background-color: $general_gray_3;
+            border-right: 1px solid #000000;
+            // background-color: rgb(180, 180, 180);
+            // padding: 20px;
+
+            & .logo {
+                width: 100%;
+                height: 10%;
+                // background-color: slategray;
+                background-color: #fff;
+                border-top-left-radius: 20px;
+                border-bottom: 1px solid #000000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            & .logo svg {
+                width: 100%;
+                padding: 5px 5px 5px 0;
+                margin: 0;
+            }
+
+            & .tabs {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                gap: 10px;
+                border-bottom: 1px solid #000000;
+            }
+
+            & .tabs div {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                gap: 5px;
+            }
+
+            & .tabs div:hover {
+                cursor: pointer;
+            }
+
+            & .tabs div.sign-out {
+                width: 100%;
+                height: auto;
+                position: absolute;
+                bottom: 0;
+                // transform: translateY(-50%);    
+            }
+
+            & .app-content-header--mobile {
+                display: none;
+            }
+        }
+
+        & .right-side {
+            width: 87%;
+            height: 100%;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+            background-color: $general_gray_3;
+            padding: 20px;
+
+            & .app-main-content {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            & .app-main-content .app-content-header,
+            & .app-main-content .view-body .app-content-table,
+            & .app-main-content .view-body .app-content-footer {
+                width: 100%;
+            }
+
+            & .app-main-content .app-content-header {
+                height: 7%;
+                max-height: 45px;
+                // background-color: rgb(220, 220, 220);
+                // padding: 10px;
+            }
+
+            & .app-main-content .app-content-header .search-bar-and-user {
+                display: flex;
+                gap: 10px;
+                width: 100%;
+                height: 100%;
+                // border: 1px dotted gray;
+            }
+
+            & .app-main-content .app-content-header .search-bar-and-user .search-bar {
+                width: 100%;
+                height: 100%;
+                // background-color: gray;
+                border-radius: 10px;
+                position: relative;
+            }
+
+            & .app-main-content .app-content-header .search-bar-and-user .search-bar .search-icon {
+                position: absolute;
+                top: 50%;
+                left: 20px;
+                transform: translateY(-50%);
+            }
+
+            & .app-main-content .app-content-header .search-bar-and-user .search-bar input {
+                width: 100%;
+                height: 100%;
+                padding-left: 57px;
+                border-radius: 10px;
+                border: unset;
+            }
+
+            & .app-main-content .app-content-header .search-bar-and-user .user {
+                width: auto;
+                height: 100%;
+                // background-color: gray;
+            }
+
+            & .app-main-content .app-content-header .search-bar-and-user .user .user-image {
+                height: 100%;    
+                aspect-ratio: 1;
+                margin: 0 0 0 auto;
+                border-radius: 10px;
+            }
+
+            & .app-main-content .app-content-header .search-bar-and-user .user .user-image:hover {
+                cursor: pointer;
+            }
+
+            & .app-main-content .app-content-header .search-bar-and-user .user .user-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 10px;
+            }
+
+            & .app-main-content .app-content-header .tabs--mobile {
+                display: none;
+            }
+
+            & .app-main-content .view-body {
+                width: 100%;
+                height: 97%;
+                // background-color: rgb(242, 242, 242);
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            & .app-main-content .view-body.view-schedule .app-content-table {
+                height: calc(100% - 28px);
+            }
+
+            & .app-main-content .view-body.view-schedule .app-content-footer {
+                height: 28px;
+                // background-color: #ffffff;
+                position: relative;
+            }
+
+            & .app-main-content .view-body .app-content-footer .plus-icon {
+                position: absolute;
+                top: 0;
+                right: 0;
+                z-index: 99;
+            }
+
+            & .app-main-content .view-body .app-content-footer .plus-icon:hover {
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+@media(max-width: 1024px) {
+    #app {
+        width: calc(100vw - 10px);
+        height: calc(100vh - 10px);
+        margin-top: 5px;
+        padding: 0;
+
+        & .app-main-container {
+            flex-direction: column;
+            width: 100%;
+
+            & .left-side,
+            & .right-side {
+                border-radius: unset;
+                width: 100%;
+            }
+
+            & .left-side {
+                height: 8%;   
+                border-top-left-radius: 20px;
+                border-top-right-radius: 20px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                border: unset;
+                border-bottom: 1px solid #000000;
+
+                & .logo,
+                & .tabs {
+                    height: 100%;
+                    border-bottom: unset;
+                }
+
+                & .logo {
+                    width: auto;
+                    padding: 5px 20px;
+                    border-right: 1px solid #000000;
+                    border-top-left-radius: 20px;
+                }
+
+                & .tabs {
+                    display: none;
+                }
+
+                & .app-content-header--mobile {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    max-height: 45px;
+                }
+
+                & .app-content-header--mobile .search-bar-and-user {
+                    display: flex;
+                    justify-content: flex-end;
+                    padding-right: 20px;
+                    gap: 10px;
+                    width: 100%;
+                    height: 100%;
+                }
+
+                & .app-content-header--mobile .search-bar-and-user .search-bar {
+                    width: 100%;
+                    max-width: 250px;
+                    height: 100%;
+                    border-radius: 10px;
+                    position: relative;
+                }
+
+                & .app-content-header--mobile .search-bar-and-user .search-bar .search-icon {
+                    position: absolute;
+                    top: 50%;
+                    left: 20px;
+                    transform: translateY(-50%);
+                }
+
+                & .app-content-header--mobile .search-bar-and-user .search-bar input {
+                    width: 100%;
+                    height: 100%;
+                    padding-left: 57px;
+                    border-radius: 10px;
+                    border: unset;
+                }
+
+                & .app-content-header--mobile .search-bar-and-user .user {
+                    width: auto;
+                    height: 100%;
+                }
+
+                & .app-content-header--mobile .search-bar-and-user .user .user-image {
+                    height: 100%;
+                    aspect-ratio: 1;
+                    margin: 0 0 0 auto;
+                    border-radius: 10px;
+                }
+
+                & .app-content-header--mobile .search-bar-and-user .user .user-image img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    border-radius: 10px;
+                }
+            }
+
+            & .right-side {
+                height: 100%;
+                border-bottom-right-radius: 20px;
+                border-bottom-left-radius: 20px;
+
+                & .app-main-content .app-content-header {
+                    height: auto;
+                }
+
+                & .app-main-content .app-content-header .tabs--mobile {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    border-radius: unset;
+                    justify-content: flex-start;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 0 20px 0 0;
+                }
+
+                & .app-main-content .app-content-header .tabs--mobile div {
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    gap: 5px;
+                }
+
+                & .app-main-content .app-content-header .tabs--mobile div:hover {
+                    cursor: pointer;
+                }
+
+                & .app-main-content .app-content-header .tabs--mobile div.sign-out {
+                    position: relative;
+                    top: unset;
+                    right: unset;
+                    width: auto;
+                }
+
+                & .app-main-content .app-content-header .search-bar-and-user {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+@media(max-width: 480px) {
+    #app {
+        & .app-main-container {
+
+            & .left-side {
+                height: 10%;
+            }
+
+            & .right-side {
+                padding: 10px; 
+                
+                & .app-main-content {
+                    gap: 10px;
+                }
+                & .app-main-content .app-content-header {
+                    height: 10%;
+                }
+                & .app-main-content .view-body {
+                    gap: 10px;  
+                }
+            }
+        }
+    }
+}

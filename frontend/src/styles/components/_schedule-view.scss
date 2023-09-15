@@ -1,0 +1,280 @@
+.view-body.view-schedule .app-content-table {
+    // Width and height already set in _main_layout.scss
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+
+    & .week-header,
+    & .week-table {
+        
+        width: 100%;
+        display: flex;
+        gap: 20px;
+
+        & .left-column,
+        & div[class|="week"] {
+            // background-color: gray;
+        }
+
+        & .left-column {
+            width: 7%;
+        }
+
+        & div[class|="week"] {
+            width: 93%;
+        }
+    }
+
+    & .week-header {
+        background-color: $general_green_2;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        height: 10%;
+        padding: 0 20px 0 20px;
+
+        & .left-column {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+
+            & .arrows-container {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 15%;
+            }
+
+            & .arrows-container div {
+                display: flex;
+                align-items: center;
+            }
+
+            & .arrows-container div:hover {
+                cursor: pointer;
+            }
+
+            & .arrows-container div svg {
+                width: 100%;
+                aspect-ratio: 1;
+            }
+        }
+
+        & .week-days {
+            height: 100%;
+            display: flex;
+            gap: 1.5%;
+            background-color: transparent;
+
+            & div[class|="header-day"] {
+                width: calc(100% / 7);
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            & div[class|="header-day"].active h6 {
+                color: $general_blue_2;
+            }
+
+            & div[class|="header-day"] h6 {
+                color: $general_blue_1;
+            }
+        }
+    }
+
+    & .week-table {
+        height: 90%;
+        padding: 0 20px 20px 20px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        // background-color: #ffffff;
+
+        & .left-column {
+            // width: 7%
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        & .left-column.hours div[class|="2h"] {
+            width: 100%;
+            height: calc(100% / 12);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            color: $general_gray_2;
+        }
+
+        & .left-column.hours div[class|="2h"] p {
+            position: relative;
+            top: 0;
+            transform: translateY(-50%);
+        }
+
+        & .left-column.hours div[class|="2h"]:last-child p:last-child {
+            bottom: 0;
+            transform: translateY(50%);
+        }
+
+        & .week-schedule-table {
+            position: relative;
+
+            & .horizontal-guides {
+                position: absolute;
+                z-index: 10;
+                background-color: transparent;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                display: flex;
+                flex-direction: column;
+                border-bottom: 1px solid gray;
+            }
+
+            & .horizontal-guides div[class|="2h"] {
+                width: 100%;
+                height: calc(100% / 12);
+                border-top: 1px solid gray;
+                position: relative;
+            }
+
+            & .horizontal-guides div[class|="2h"]::after {
+                content: "";
+                display: block;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 100%;
+                height: 1px;
+                background-color: rgb(198, 198, 198);
+            }
+
+            & .table-container {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                gap: 1.5%;
+            }
+            
+            & .table-container div[class|="day"] {
+                width: calc(100% / 7);
+                height: 100%;
+                background-color: $general_gray_3;
+                position: relative;
+            }
+
+            & .table-container div[class|="day"] .subject {
+                position: absolute;
+                width: 100%;
+                // // Starts
+                // top: calc((100% / 24) * 7.5);
+                // // Duration
+                // height: calc((100% / 24) * 2);
+                z-index: 15;
+                background-color: $subject_orange_3;
+                border: 1px solid $subject_orange_2;
+            }
+
+            & .table-container div[class|="day"] .subject:hover {
+                cursor: pointer;
+            }
+            & .table-container div[class|="day"] .subject:hover .subject-container .subject-menu {
+                opacity: 1;
+            }
+            & .table-container div[class|="day"] .subject .subject-container .subject-menu {
+                opacity: 0;
+                transition: opacity 300ms ease;
+            }
+            
+            & .table-container div[class|="day"] .subject .subject-container {
+                height: 100%;
+                padding: 5px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            & .table-container div[class|="day"] .subject .subject-container .subject-name {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                color: #ffffff;
+            }
+
+            & .table-container div[class|="day"] .subject .subject-container .subject-menu {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+            }
+
+            & .table-container div[class|="day"] .subject .subject-container .subject-menu svg {
+                width: 16px;
+                height: 16px;
+            }
+            & .table-container div[class|="day"] .subject .subject-container .subject-menu svg:hover {
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+@media(max-width: 768px) {
+    .view-body.view-schedule .app-content-table {
+        // Width and height already set in _main_layout.scss
+
+        & .week-header,
+        & .week-table {
+            padding: 0 20px;
+
+            & .left-column {
+                display: none;
+            }
+
+            & div[class|="week"] {
+                width: 100%;
+            }
+        }
+
+        & .week-table {
+            padding-bottom: 20px;
+        }
+    }
+}
+
+// @media(max-width: 1024px) {
+//     .view-body.view-schedule .app-content-table {
+//         // Width and height already set in _main_layout.scss
+
+//         & .week-header,
+//         & .week-table {
+
+//             & .left-column,
+//             & div[class|="week"] {}
+
+//             & .left-column {}
+
+//             & div[class|="week"] {}
+//         }
+
+//         & .week-header {}
+
+//         & .week-table {
+//             & .week-schedule-table {
+
+//                 & .horizontal-guides {}
+
+//                 & .horizontal-guides div[class|="2h"] {}
+
+//                 & .table-container {}
+
+//                 & .table-container div[class|="day"] {}
+//             }
+//         }
+//     }
+// }
