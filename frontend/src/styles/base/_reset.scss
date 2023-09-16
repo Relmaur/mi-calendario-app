@@ -50,5 +50,6 @@ body {
     
     p {
         margin: 0;
+        font-size: sass_clamp(0.5, 320, 1920, 1.2);
     }
 }

@@ -1,0 +1,118 @@
+<script setup>
+import Subjects from './Subjects.vue';
+
+</script>
+<template>
+    <div class="view-body view-schedule">
+        <div class="app-content-table">
+            <div class="week-header">
+                <div class="left-column arrows">
+                    <div class="arrows-container">
+                        <div class="prev group/prev">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-general_blue_1 group-hover/prev:scale-105 group-hover/prev:text-general_blue_2">
+                                <path fill-rule="evenodd"
+                                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-4.28 9.22a.75.75 0 000 1.06l3 3a.75.75 0 101.06-1.06l-1.72-1.72h5.69a.75.75 0 000-1.5h-5.69l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="next group/next">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-general_blue_1 group-hover/next:scale-105 group-hover/next:text-general_blue_2">
+                                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm4.28 10.28a.75.75 0 000-1.06l-3-3a.75.75 0 10-1.06 1.06l1.72 1.72H8.25a.75.75 0 000 1.5h5.69l-1.72 1.72a.75.75 0 101.06 1.06l3-3z" clip-rule="evenodd" />
+                              </svg>                              
+                        </div>
+                    </div>
+                </div>
+                <div class="week-days">
+                    <div class="header-day-1">
+                        <h6>SUN</h6>
+                    </div>
+                    <div class="header-day-2">
+                        <h6>MON</h6>
+                    </div>
+                    <div class="header-day-3">
+                        <h6>TUE</h6>
+                    </div>
+                    <div class="header-day-4 active">
+                        <h6>WED</h6>
+                    </div>
+                    <div class="header-day-5">
+                        <h6>THU</h6>
+                    </div>
+                    <div class="header-day-6">
+                        <h6>FRI</h6>
+                    </div>
+                    <div class="header-day-7">
+                        <h6>SAT</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="week-table">
+                <div class="left-column hours">
+                    <div class="2h-1">
+                        <p>00:00</p>
+                    </div>
+                    <div class="2h-2">
+                        <p>02:00</p>
+                    </div>
+                    <div class="2h-3">
+                        <p>04:00</p>
+                    </div>
+                    <div class="2h-4">
+                        <p>06:00</p>
+                    </div>
+                    <div class="2h-5">
+                        <p>08:00</p>
+                    </div>
+                    <div class="2h-6">
+                        <p>10:00</p>
+                    </div>
+                    <div class="2h-7">
+                        <p>12:00</p>
+                    </div>
+                    <div class="2h-8">
+                        <p>14:00</p>
+                    </div>
+                    <div class="2h-9">
+                        <p>16:00</p>
+                    </div>
+                    <div class="2h-10">
+                        <p>18:00</p>
+                    </div>
+                    <div class="2h-11">
+                        <p>20:00</p>
+                    </div>
+                    <div class="2h-12">
+                        <p>22:00</p>
+                        <p>00:00</p>
+                    </div>
+                </div>
+                <div class="week-schedule-table">
+                    <div class="horizontal-guides">
+                        <div class="2h-1"></div>
+                        <div class="2h-2"></div>
+                        <div class="2h-3"></div>
+                        <div class="2h-4"></div>
+                        <div class="2h-5"></div>
+                        <div class="2h-6"></div>
+                        <div class="2h-7"></div>
+                        <div class="2h-8"></div>
+                        <div class="2h-9"></div>
+                        <div class="2h-10"></div>
+                        <div class="2h-11"></div>
+                        <div class="2h-12"></div>
+                    </div>
+                    <subjects />
+                </div>
+            </div>
+        </div>
+        <div class="app-content-footer">
+            <div class="plus-icon">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="14" cy="14" r="14" fill="#D2D2D2" />
+                    <path d="M14 19.6V14M14 14V8.39999M14 14H19.6M14 14H8.40002" stroke="white" stroke-width="2"
+                        stroke-linecap="round" />
+                </svg>
+            </div>
+        </div>
+    </div>
+</template> 
