@@ -1,9 +1,9 @@
 <script setup>
 import Subject from '../../../components/subject/Subject.vue';
-import { store } from '../../../store/store.js'; // Global State Management
+import { useWeek } from '../../../store/userWeek.js'; // Global State Management
 
 
-const week = store.userWeek;
+const week = useWeek().getWeek();
 
 </script>
 <template>

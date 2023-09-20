@@ -1,9 +1,11 @@
 <script setup>
 import Subjects from './Subjects.vue';
-import { store } from '../../../store/store.js';
+import { usePopups } from '../../../store/popups.js';
+const popups = usePopups();
 
 const openAddItemToggler = (tab) => {
-    store.openAddItemToggler(tab)
+    popups.addItemOpen()
+    // alert('ploort')
 }
 
 </script>

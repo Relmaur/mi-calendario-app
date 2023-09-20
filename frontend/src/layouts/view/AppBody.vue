@@ -3,7 +3,9 @@ import ScheduleView from './schedule/ScheduleView.vue';
 import CalendarView from './calendar/CalendarView.vue'
 
 // Global State Management (for alternating the app views)
-import { store } from '../../store/store.js';
+import { useTabs } from '../../store/tabs.js';
+// import { store } from '../../store/tabs.js';
+const tabs = useTabs();
 
 </script>
 <template>
@@ -13,8 +15,8 @@ import { store } from '../../store/store.js';
     <transition name="fade">
         <schedule-view v-show="store.activeTab === 'schedule'"/>
     </transition> -->
-    <calendar-view v-show="store.activeTab === 'calendar'"/>
-    <schedule-view v-show="store.activeTab === 'schedule'"/>
+    <calendar-view v-show="tabs.getActiveTab() === 'calendar'"/>
+    <schedule-view v-show="tabs.getActiveTab() === 'schedule'"/>
 </template>
 
 <style lang="scss" scoped>

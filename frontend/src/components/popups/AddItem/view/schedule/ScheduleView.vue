@@ -1,14 +1,18 @@
 <script setup>
 import { ref } from 'vue';
-import { store } from '../../../../../store/store.js'; // Global State Management
+
+import { useWeek } from '../../../../../store/userWeek.js'; // Global State Management
+import { usePopups } from '../../../../../store/popups.js'; // Global State Management
+
+const week = useWeek();
+const popups = usePopups();
+
 import Calendar from 'primevue/calendar'; // Calendar
-// import ColorPicker from 'primevue/colorpicker'; // Color Picker
 import quillEditor from 'primevue/editor'; // Editor
 
-// Subject Name
-const subject_name = ref(null);
-// Subject Color
-const subject_color = ref(null);
+
+const subject_name = ref(null); // Subject Name
+const subject_color = ref(null); // Subject Color
 // Date
 const start_hour = ref(null);
 const end_hour = ref(null);
@@ -35,24 +39,24 @@ const submitForm = e => {
     subjectObject['color'] = `#${subjectColor}`;
     // subjectObject['color'] = 'rgb(255, 140, 25)';
 
-    const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
     // console.log(week[subjectDay]); // Testing
-    store.userWeek[week[subjectDay]].push(subjectObject)
+    week.addSubject(weekdays[subjectDay], subjectObject);
 
-    store.addItemToggler_open = false;
+    popups.addItemClose();
 }
 
 // Testing
-const logValues = () => {
-    console.log('Name', subject_name.value);
-    console.log('Color', subject_color.value);
-    console.log('Day', day.value.getDay());
-    console.log('Hours', start_hour.value.getHours());
-    console.log('Minutes', start_hour.value.getMinutes());
-    console.log('Hours', end_hour.value.getHours());
-    console.log('Minutes', end_hour.value.getMinutes());
-}
+// const logValues = () => {
+//     console.log('Name', subject_name.value);
+//     console.log('Color', subject_color.value);
+//     console.log('Day', day.value.getDay());
+//     console.log('Hours', start_hour.value.getHours());
+//     console.log('Minutes', start_hour.value.getMinutes());
+//     console.log('Hours', end_hour.value.getHours());
+//     console.log('Minutes', end_hour.value.getMinutes());
+// }
 
 </script>
 <template>
@@ -112,7 +116,7 @@ const logValues = () => {
                 <p>At the time of the event</p>
             </div> -->
             <div class="confirm-options">
-                <div class="cancel hover:cursor-pointer" @click="store.addItemToggler_open = false">
+                <div class="cancel hover:cursor-pointer" @click="popups.addItemClose">
                     <p>Cancel</p>
                 </div>
                 <div class="add hover-cursor-pointer group/plus_icon" @click="submitForm">
