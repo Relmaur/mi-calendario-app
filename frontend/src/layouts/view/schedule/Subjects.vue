@@ -1,49 +1,9 @@
 <script setup>
 import Subject from '../../../components/subject/Subject.vue';
+import { store } from '../../../store/store.js'; // Global State Management
 
 
-const week = {
-    'sunday': {
-        'subject-1': {
-            'name': 'Algebra',
-            'starts': '6_0',
-            'duration': '2_0',
-            'color': '#FF8C19'
-        },
-        'subject-2': {
-            'name': 'Calculus',
-            'starts': '9_0',
-            'duration': '2_0',
-            'color': '#FF8C19'
-        },
-    },
-    'monday': {
-        'subject-1': {
-            'name': 'Calculus',
-            'starts': '7_0',
-            'duration': '3_0',
-            'color': '#D36B00'
-        },
-        'subject-1': {
-            'name': 'Calculus',
-            'starts': '7_0',
-            'duration': '3_0',
-            'color': '#D36B00'
-        },
-    },
-    'tuesday': {
-        'subject-1': {
-            'name': 'Educacion Fisica',
-            'starts': '20_0',
-            'duration': '4_0',
-            'color': '#00A2D4'
-        },
-    },
-    'wednesday': {},
-    'thursday': {},
-    'friday': {},
-    'saturday': {},
-}
+const week = store.userWeek;
 
 </script>
 <template>
@@ -54,14 +14,34 @@ const week = {
             </div>
         </div>
         <div class="day-2 monday">
-            <subject subjectName="Calculus" subjectStarts="7_0" subjectDuration="3_0" assignedColor="#D36B00" />
+            <div class="subject-wrapper" v-for="subject in week['monday']">
+                <subject :subjectName="subject.name" :subjectStarts="subject.starts" :subjectDuration="subject.duration" :assignedColor="subject.color"/>
+            </div>
         </div>
         <div class="day-3 tuesday">
-            <subject subjectName="Educacion Fisica" subjectStarts="20_0" subjectDuration="4_0" assignedColor="#00A2D4" />
+            <div class="subject-wrapper" v-for="subject in week['tuesday']">
+                <subject :subjectName="subject.name" :subjectStarts="subject.starts" :subjectDuration="subject.duration" :assignedColor="subject.color"/>
+            </div>
         </div>
-        <div class="day-4 wednesday"></div>
-        <div class="day-5 thursday"></div>
-        <div class="day-6 friday"></div>
-        <div class="day-7 saturday"></div>
+        <div class="day-4 wednesday">
+            <div class="subject-wrapper" v-for="subject in week['wednesday']">
+                <subject :subjectName="subject.name" :subjectStarts="subject.starts" :subjectDuration="subject.duration" :assignedColor="subject.color"/>
+            </div>
+        </div>
+        <div class="day-5 thursday">
+            <div class="subject-wrapper" v-for="subject in week['thursday']">
+                <subject :subjectName="subject.name" :subjectStarts="subject.starts" :subjectDuration="subject.duration" :assignedColor="subject.color"/>
+            </div>
+        </div>
+        <div class="day-6 friday">
+            <div class="subject-wrapper" v-for="subject in week['friday']">
+                <subject :subjectName="subject.name" :subjectStarts="subject.starts" :subjectDuration="subject.duration" :assignedColor="subject.color"/>
+            </div>
+        </div>
+        <div class="day-7 saturday">
+            <div class="subject-wrapper" v-for="subject in week['saturday']">
+                <subject :subjectName="subject.name" :subjectStarts="subject.starts" :subjectDuration="subject.duration" :assignedColor="subject.color"/>
+            </div>
+        </div>
     </div>
 </template>

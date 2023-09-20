@@ -1,5 +1,10 @@
 <script setup>
 import Subjects from './Subjects.vue';
+import { store } from '../../../store/store.js';
+
+const openAddItemToggler = (tab) => {
+    store.openAddItemToggler(tab)
+}
 
 </script>
 <template>
@@ -8,18 +13,22 @@ import Subjects from './Subjects.vue';
             <div class="week-header">
                 <div class="left-column arrows">
                     <div class="arrows-container">
-                        <div class="prev group/prev">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-general_blue_1 group-hover/prev:scale-105 group-hover/prev:text-general_blue_2">
+                        <!-- <div class="prev group/prev">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-8 h-8 text-general_blue_1 group-hover/prev:scale-105 group-hover/prev:text-general_blue_2">
                                 <path fill-rule="evenodd"
                                     d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-4.28 9.22a.75.75 0 000 1.06l3 3a.75.75 0 101.06-1.06l-1.72-1.72h5.69a.75.75 0 000-1.5h-5.69l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3z"
                                     clip-rule="evenodd" />
                             </svg>
                         </div>
                         <div class="next group/next">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-general_blue_1 group-hover/next:scale-105 group-hover/next:text-general_blue_2">
-                                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm4.28 10.28a.75.75 0 000-1.06l-3-3a.75.75 0 10-1.06 1.06l1.72 1.72H8.25a.75.75 0 000 1.5h5.69l-1.72 1.72a.75.75 0 101.06 1.06l3-3z" clip-rule="evenodd" />
-                              </svg>                              
-                        </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-8 h-8 text-general_blue_1 group-hover/next:scale-105 group-hover/next:text-general_blue_2">
+                                <path fill-rule="evenodd"
+                                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm4.28 10.28a.75.75 0 000-1.06l-3-3a.75.75 0 10-1.06 1.06l1.72 1.72H8.25a.75.75 0 000 1.5h5.69l-1.72 1.72a.75.75 0 101.06 1.06l3-3z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div> -->
                     </div>
                 </div>
                 <div class="week-days">
@@ -105,14 +114,13 @@ import Subjects from './Subjects.vue';
                 </div>
             </div>
         </div>
-        <div class="app-content-footer">
-            <div class="plus-icon">
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="14" cy="14" r="14" fill="#D2D2D2" />
-                    <path d="M14 19.6V14M14 14V8.39999M14 14H19.6M14 14H8.40002" stroke="white" stroke-width="2"
-                        stroke-linecap="round" />
+        <div class="app-content-footer" @click="openAddItemToggler('schedule')">
+            <div class="plus-icon group/plus_icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 text-general_gray_2 transition group-hover/plus_icon:text-general_gray_1">
+                    <path fill-rule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
+                        clip-rule="evenodd" />
                 </svg>
-            </div>
         </div>
     </div>
-</template> 
+</div></template> 

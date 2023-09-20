@@ -12,12 +12,19 @@ html {
 body {
     margin: 0;
     font-family: 'Montserrat';
+    // background-color: $general_gray_3;
+    // background-color: #353535;
 
     textarea {
         font-family: 'Montserrat';
     }
 
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
         margin: 0;
         color: $general_blue_1;
     }
@@ -26,7 +33,7 @@ body {
         font-size: sass_clamp(3, 320, 1920, 7);
         font-weight: 900;
     }
-    
+
     h2 {
         font-size: sass_clamp(2.2, 320, 1920, 5);
     }
@@ -42,14 +49,78 @@ body {
     h5 {
         font-size: sass_clamp(1.5, 320, 1920, 2);
     }
-    
+
     h6 {
         font-size: sass_clamp(1, 320, 1920, 1.5);
         font-weight: 500;
     }
-    
+
     p {
         margin: 0;
-        font-size: sass_clamp(0.5, 320, 1920, 1.2);
+        font-size: sass_clamp(1, 320, 1920, 1.2);
+    }
+}
+
+// Prime Vue Teleported Components
+
+.p-datepicker:not(.p-datepicker.p-datepicker-timeonly) {
+    flex-direction: column;
+    width: 100% !important;
+    left: 0 !important;
+    top: 0 !important;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid $general_gray_2;
+    border-bottom-right-radius: $border-radius;
+    border-bottom-left-radius: $border-radius;
+
+    & .p-datepicker-buttonbar {
+        gap: 10px;
+        background-color: #ffffff !important;
+        & button {
+            padding: 5px 10px;
+            border-radius: 4px;
+            background-color: $general_green_2;
+        }
+    }
+
+    & .p-datepicker-group-container {
+        width: 100%;
+        background-color: #ffffff !important;
+
+        & .p-datepicker-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+
+            & .p-datepicker-header .p-datepicker-title button {
+                font-size: sass_clamp(1, 320, 1920, 1.5);
+            }
+
+            & span {
+                font-size: sass_clamp(1, 320, 1920, 1.5);
+            }
+        }
+    }
+}
+
+.p-datepicker.p-datepicker-timeonly {
+    min-width: 150px !important;
+    width: 150px !important;
+    padding: 10px;
+    padding: 20px 50px;
+    background-color: white;
+    border: 1px solid $general_gray_2;
+    border-bottom-right-radius: $border-radius;
+    border-bottom-left-radius: $border-radius;
+
+    & .p-timepicker {
+        gap: 5px;
+
+        & div[class|="p"] {
+            & span {
+                font-size: sass_clamp(1, 320, 1920, 1.2);
+            }
+        }
     }
 }

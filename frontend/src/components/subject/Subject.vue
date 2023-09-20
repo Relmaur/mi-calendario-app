@@ -1,8 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-// Date Pickers
-import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css';
 
 const time = ref({
     hours: new Date().getHours(),
@@ -30,8 +27,6 @@ let subjectClasses = `${formatSpaces(props.subjectName)} subject_starts-${props.
             <div class="subject-name">
                 <p>{{props.subjectName}}</p>
             </div>
-            <!-- <vue-date-picker v-model="time" time-picker></vue-date-picker> -->
-            <!-- <p>{{ time.hours }}</p> -->
             <div class="subject-menu"> 
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                     xmlns="http://www.w3.org/2000/svg">

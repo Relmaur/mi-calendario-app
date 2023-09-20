@@ -4,7 +4,7 @@
     flex-direction: column;
     gap: 20px;
     background-color: #ffffff;
-    border-radius: 10px;
+    border-radius: $border-radius;
 
     & .week-header,
     & .week-table {
@@ -27,11 +27,14 @@
         }
     }
 
+    $week_header_height: 7%;
+    $week_table_height: calc(100% - #{$week_header_height});
+
     & .week-header {
         background-color: $general_green_2;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        height: 10%;
+        border-top-left-radius: $border-radius;
+        border-top-right-radius: $border-radius;
+        height: $week_header_height;
         padding: 0 20px 0 20px;
 
         & .left-column {
@@ -87,11 +90,10 @@
     }
 
     & .week-table {
-        height: 90%;
+        height: $week_table_height;
         padding: 0 20px 20px 20px;
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
-        // background-color: #ffffff;
+        border-bottom-left-radius: $border-radius;
+        border-bottom-right-radius: $border-radius;
 
         & .left-column {
             // width: 7%
@@ -230,7 +232,7 @@
 
         & .week-header,
         & .week-table {
-            padding: 0 20px;
+            padding: 0 10px;
 
             & .left-column {
                 display: none;

@@ -10,10 +10,9 @@
     align-items: center;
     background-color: rgb(255 255 255 / 85%);
 
-
-    .add-item-container {
+    & .add-item-container {
         position: absolute;
-        width: 100%;
+        width: 90%;
         max-width: 473px;
         height: auto;
         display: flex;
@@ -24,6 +23,7 @@
         & .tabs-panel .tabs>div,
         & .main-panel {
             background-color: $general_gray_3;
+            // box-shadow: $box-shadow;
         }
 
         & .tabs-panel {
@@ -45,7 +45,7 @@
                 min-width: 45px;
                 aspect-ratio: 1;
                 border: 1px solid rgb(0, 0, 0);
-                border-radius: 10px;
+                border-radius: $border-radius;
                 border-top-right-radius: unset;
             }
 
@@ -62,11 +62,12 @@
         & .main-panel {
             width: 90%;
             height: auto;
-            padding: 30px;
+            padding: 20px;
             border: 1px solid #000000;
-            border-radius: 20px;
+            border-radius: $border-radius;
             border-top-left-radius: unset;
             font-size: 12px;
+            min-height: 468px;
 
             & .main-panel-container {
                 height: 100%;
@@ -80,11 +81,27 @@
 
             & .main-panel-container form .add-a-title input {
                 padding: 15px 10px;
-                margin: 10px 0;
                 border: unset;
                 background-color: #ffffff;
-                border-radius: 10px;
+                border-radius: $border-radius;
                 width: 100%;
+            }
+            & .main-panel-container form .subject-color {
+                width: 100%;
+            }
+            & .main-panel-container form .subject-color input {
+                appearance: none;
+                -moz-appearance: none;
+                -webkit-appearance: none;
+                width: 20px;
+                height: 23px;
+                border-radius: 5px;
+            }
+            & .main-panel-container form .subject-color .p-colorpicker-panel {
+                top: 0 !important;
+                left: 0 !important;
+                background-color: #fff;
+                // border: 1px solid $general_gray_2;
             }
 
             & .main-panel-container .date {
@@ -96,7 +113,7 @@
             & .main-panel-container .date>div {
                 background-color: #ffffff;
                 padding: 10px;
-                border-radius: 10px;
+                border-radius: $border-radius;
                 display: flex;
                 align-items: center;
                 gap: 20px;
@@ -104,8 +121,20 @@
 
             & .main-panel-container .date>div>div {
                 padding: 5px;
-                border-radius: 5px;
+                border-radius: $border-radius;
                 background-color: $general_green_2;
+            }
+
+            & .main-panel-container .date .p-inputwrapper {
+                max-width: 36px !important;
+                width: auto;
+            }
+
+            & .main-panel-container .date .p-inputwrapper input {
+                max-width: 36px !important;
+                position: relative;
+                width: auto !important;
+                background-color: transparent;
             }
 
             & .main-panel-container .is-recurring {
@@ -115,13 +144,13 @@
                 margin: 10px 0;
                 padding: 15px;
                 background-color: #ffffff;
-                border-radius: 10px;
+                border-radius: $border-radius;
             }
 
             & .main-panel-container .info textarea {
                 width: 100%;
                 border: unset;
-                border-radius: 10px;
+                border-radius: $border-radius;
                 padding: 15px 10px;
             }
 
@@ -132,7 +161,7 @@
                 margin: 10px 0;
                 padding: 15px;
                 background-color: #ffffff;
-                border-radius: 10px;
+                border-radius: $border-radius;
             }
 
             & .main-panel-container .alert svg {
@@ -166,4 +195,22 @@
 
 .add-item-overlay {
     display: none;
+}
+
+@media(max-width: 480px) {
+    .add-item-overlay.opened {
+        & .add-item-container {
+            & .main-panel {
+                & .main-panel-container .date {
+                    flex-direction: column;
+                    justify-items: center;
+                    gap: 10px;
+                }
+                & .main-panel-container .date > div {
+                    // justify-content: center;
+                    width: auto;
+                }
+            }
+        }
+    }
 }

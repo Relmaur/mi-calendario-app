@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import LeftSide from './layouts/LeftSide.vue';
 import RightSide from './layouts/RightSide.vue';
-import AddItem from './components/popups/AddItem.vue';
+import AddItem from './components/popups/AddItem/AddItem.vue';
 
 </script>
 
@@ -12,4 +12,5 @@ import AddItem from './components/popups/AddItem.vue';
     <left-side />
     <right-side />
   </div>
+  <add-item />
 </template>

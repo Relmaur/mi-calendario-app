@@ -73,3 +73,11 @@ $subject_gray_2: map.get($colors, "subjects", "gray-2");
 // $subject_start: attr(data-starts-on number);
 
 // @debug $subject_duration;
+
+/*
+   ========
+      Utils
+   ========
+*/
+$border-radius: 5px;
+$box-shadow: 0px 0px 12px 0px rgba(135, 135, 135, 0.2);
