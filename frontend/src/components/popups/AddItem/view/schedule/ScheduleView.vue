@@ -1,30 +1,38 @@
 <script setup>
 import { ref } from 'vue';
-
+import { useForm } from 'vee-validate'; // Form Validator
 import { useWeek } from '../../../../../store/userWeek.js'; // Global State Management
 import { usePopups } from '../../../../../store/popups.js'; // Global State Management
-
-const week = useWeek();
-const popups = usePopups();
-
 import Calendar from 'primevue/calendar'; // Calendar
 import quillEditor from 'primevue/editor'; // Editor
 
+/* Form Values */
+const subject_name = ref(null); // Name - Subject Name
+const color_picked = ref('#FF8C19'); // Color - Subject Color
+const color_picker = ref(null); // Color - Color Picker
+const start_hour = ref(null); // Date - Hour
+const end_hour = ref(null); // Date - Hour
+const day = ref(null); // Date - Hour
+const value = ref(null); // Editor - Subject Info
 
-const subject_name = ref(null); // Subject Name
-const subject_color = ref(null); // Subject Color
-// Date
-const start_hour = ref(null);
-const end_hour = ref(null);
-const value = ref(null);
-const day = ref(null);
+/* Pinia Stores */
+const week = useWeek();
+const popups = usePopups();
 
+/* Vee-validate Form Context */
+const { formValues } = useForm();
+
+/* Helpers */
+const colorPicker = () => {
+    color_picker.value.click();
+}
+/* Methods */
 const submitForm = e => {
     e.preventDefault();
     // alert('Submitted!'); // Testing
 
     let subjectName = subject_name.value;
-    let subjectColor = subject_color.value;
+    let subjectColor = color_picked.value;
     let subjectDay = day.value.getDay();
     let subjectStartHour = start_hour.value.getHours();
     let subjectStartMinutes = start_hour.value.getMinutes();
@@ -36,18 +44,19 @@ const submitForm = e => {
     subjectObject['name'] = subjectName;
     subjectObject['starts'] = `${subjectStartHour}_${subjectStartMinutes}`;
     subjectObject['duration'] = `${durationHours}_${durationMinutes}`;
-    subjectObject['color'] = `#${subjectColor}`;
+    subjectObject['color'] = subjectColor;
     // subjectObject['color'] = 'rgb(255, 140, 25)';
 
     const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
     // console.log(week[subjectDay]); // Testing
+    console.log(weekdays[subjectDay], subjectObject);
     week.addSubject(weekdays[subjectDay], subjectObject);
 
     popups.addItemClose();
 }
 
-// Testing
+/* Testing */
 // const logValues = () => {
 //     console.log('Name', subject_name.value);
 //     console.log('Color', subject_color.value);
@@ -70,7 +79,8 @@ const submitForm = e => {
             <div class="subject-color flex justify-normal items-center gap-2 relative">
                 <p>Pick a color: </p>
                 <!-- <color-picker v-model="subject_color" format="hex" appendTo=".main-panel .schedule .subject-color"/> -->
-                <input type="color">
+                <input type="color" class="opacity-0 absolute w-[1px] h-[1px] overflow-hidden -left-5 -z-[1]" ref="color_picker" v-model="color_picked">
+                <div class="color-picker w-7 h-7 rounded-md hover:cursor-pointer" @click="colorPicker" :style="{backgroundColor: `${color_picked}`}"></div>
             </div>
             <div class="date relative">
                 <div class="day hover:cursor-pointer">

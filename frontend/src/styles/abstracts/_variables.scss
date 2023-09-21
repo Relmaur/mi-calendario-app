@@ -18,6 +18,7 @@ $colors: (
         "blue-2": #39AEA9,
         "green-1": #A2D5AB,
         "green-2": #E5EFC1,
+        "green-3": #9DB5A2,
         "gray-1": #8e8e8e,
         "gray-2": #D9D9D9,
         "gray-3": #f2f2f2,
@@ -42,6 +43,7 @@ $general_blue_2: map.get($colors, "general", "blue-2");
 /* Green */
 $general_green_1: map.get($colors, "general", "green-1");
 $general_green_2: map.get($colors, "general", "green-2");
+$general_green_3: map.get($colors, "general", "green-3");
 
 /* Gray */
 $general_gray_1: map.get($colors, "general", "gray-1");

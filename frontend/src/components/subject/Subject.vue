@@ -25,7 +25,7 @@ let subjectClasses = `${formatSpaces(props.subjectName)} subject_starts-${props.
     <div class="subject" :class="subjectClasses" :style="{backgroundColor: props.assignedColor, borderColor: props.assignedColor}">
         <div class="subject-container">
             <div class="subject-name">
-                <p>{{props.subjectName}}</p>
+                <p class="hidden md:inline">{{props.subjectName}}</p>
             </div>
             <div class="subject-menu"> 
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
