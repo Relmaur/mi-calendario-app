@@ -11,6 +11,7 @@ export default {
         general_blue_2: '#39AEA9',
         general_green_1: '#A2D5AB',
         general_green_2: '#E5EFC1',
+        general_green_3: '#9DB5A2',
         general_gray_1: '#8e8e8e',
         general_gray_2: '#D9D9D9',
         general_gray_3: '#f2f2f2',

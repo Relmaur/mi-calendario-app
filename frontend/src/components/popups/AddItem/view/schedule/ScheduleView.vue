@@ -1,32 +1,34 @@
 <script setup>
-import { ref } from 'vue';
-import { useForm } from 'vee-validate'; // Form Validator
+import { onMounted, ref } from 'vue';
 import { useWeek } from '../../../../../store/userWeek.js'; // Global State Management
 import { usePopups } from '../../../../../store/popups.js'; // Global State Management
 import Calendar from 'primevue/calendar'; // Calendar
 import quillEditor from 'primevue/editor'; // Editor
+import { useForm, useField } from 'vee-validate'; // Form Helper
+import * as yup from 'yup'; // Form Validation
+import FormError from '../../../../../components/FormError.vue'; // Form Error
 
-/* Form Values */
-const subject_name = ref(null); // Name - Subject Name
-const color_picked = ref('#FF8C19'); // Color - Subject Color
+
+/* Form Values (without vee-validate and by leveraging v-model on the input fields) */
+// const subject_name = ref(null); // Name - Subject Name
+// const start_hour = ref(null); // Date - Hour
+// const end_hour = ref(null); // Date - Hour
+// const day = ref(null); // Date - Hour
+// const value = ref(null); // Editor - Subject Info
+// const color_picked = ref('#FF8C19'); // Color - Subject Color
 const color_picker = ref(null); // Color - Color Picker
-const start_hour = ref(null); // Date - Hour
-const end_hour = ref(null); // Date - Hour
-const day = ref(null); // Date - Hour
-const value = ref(null); // Editor - Subject Info
+const color_theme = ref(['#874400', '#D36B00', '#FF8C19', '#006787', '#00A2D4']);
 
 /* Pinia Stores */
 const week = useWeek();
 const popups = usePopups();
 
-/* Vee-validate Form Context */
-const { formValues } = useForm();
-
 /* Helpers */
 const colorPicker = () => {
     color_picker.value.click();
 }
-/* Methods */
+/* Handle Submission (without vee-validate) */
+/*
 const submitForm = e => {
     e.preventDefault();
     // alert('Submitted!'); // Testing
@@ -55,6 +57,90 @@ const submitForm = e => {
 
     popups.addItemClose();
 }
+*/
+
+/* Vee-validate Form Context, validation and stuff' (either we use this or use Vue's ref() Reactivity API)*/
+
+const schema = yup.object({
+    subject_name: yup.string().required('Required'),
+    color_picked: yup.string(),
+    start_hour: yup.date().required('Required'),
+    end_hour: yup.date().required('Required'),
+    day: yup.date().required('Required'),
+    info: yup.string(),
+});
+const { values, errors, defineInputBinds, defineComponentBinds, handleSubmit, errorBag } = useForm({
+    validationSchema: schema,
+    initialValues: {
+        subject_name: '',
+        color_picked: '#FF8C19',
+        start_hour: new Date(),
+        end_hour: new Date(),
+        day: new Date(),
+        info: '',
+    },
+});
+// Form Values (with vee-validate of course)
+const subject_name = defineInputBinds('subject_name');
+const color_picked = defineInputBinds('color_picked');
+const start_hour = defineComponentBinds('start_hour');
+const end_hour = defineComponentBinds('end_hour');
+const day = defineComponentBinds('day');
+const info = defineComponentBinds('info');
+
+/* To change the form's value externally, via a click event, in this case */
+const { value: color, setValue: setColor } = useField('color_picked');
+
+/* Handle submission (with vee-validate) */
+const submitForm = handleSubmit((values) => {
+
+    // alert(JSON.stringify(values, null, 2));
+    let subjectName = values.subject_name;
+    let subjectColor = values.color_picked;
+    let subjectDay = values.day.getDay();
+    let subjectStartHour = values.start_hour.getHours();
+    let subjectStartMinutes = values.start_hour.getMinutes();
+    let duration = values.end_hour - values.start_hour;
+    let durationHours = Math.floor(duration / 3600000);
+    let durationMinutes = Math.floor((duration / 60000) % 60);
+
+    let subjectObject = {};
+    subjectObject['name'] = subjectName;
+    subjectObject['starts'] = `${subjectStartHour}_${subjectStartMinutes}`;
+    subjectObject['duration'] = `${durationHours}_${durationMinutes}`;
+    subjectObject['color'] = subjectColor;
+    // subjectObject['color'] = 'rgb(255, 140, 25)';
+
+    const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+
+    // console.log(week[subjectDay]); // Testing
+    // console.log(weekdays[subjectDay], subjectObject); // Testing
+    /* Temp | push object to the Pinia store */
+    week.addSubject(weekdays[subjectDay], subjectObject);
+
+    /* Save the data locally on the browser */
+    console.log('Hello from the add item form!... The store is: ', JSON.stringify(week.getWeek())); // Testing
+    localStorage.setItem('week', JSON.stringify(week.getWeek()));
+
+    // alert(typeof JSON.stringify(week.getWeek()));
+
+    /* Send Data over to the Backend... */
+    try {
+        fetch('http://127.0.0.1:3000/update_user_week/1', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(week.getWeek()),
+        })
+    } catch {
+
+    }
+
+    /* Close form */
+    popups.addItemClose();
+});
 
 /* Testing */
 // const logValues = () => {
@@ -67,42 +153,68 @@ const submitForm = e => {
 //     console.log('Minutes', end_hour.value.getMinutes());
 // }
 
+onMounted(() => {
+    // console.log('Hello from the add item form!... The store is: ', JSON.stringify(week.getWeek())); // Testing 
+})
+
 </script>
 <template>
     <div class="schedule main-panel-container">
-        <button @click="logValues">Im a testing button</button>
+        <!-- <button @click="logValues">Im a testing button</button> -->
         <form>
             <h5>Add a Subject</h5>
-            <div class="add-a-title">
-                <input type="text" v-model="subject_name" placeholder="Add a title...">
+            <div class="add-a-title relative">
+                <input type="email" v-bind="subject_name" placeholder="Add a title...">
+                <form-error v-if="errorBag.subject_name" />
+                <!-- <pre>values: {{ values }}</pre> -->
             </div>
-            <div class="subject-color flex justify-normal items-center gap-2 relative">
-                <p>Pick a color: </p>
-                <!-- <color-picker v-model="subject_color" format="hex" appendTo=".main-panel .schedule .subject-color"/> -->
-                <input type="color" class="opacity-0 absolute w-[1px] h-[1px] overflow-hidden -left-5 -z-[1]" ref="color_picker" v-model="color_picked">
-                <div class="color-picker w-7 h-7 rounded-md hover:cursor-pointer" @click="colorPicker" :style="{backgroundColor: `${color_picked}`}"></div>
+            <div class="subject-color flex justify-start items-center gap-5 relative">
+                <div class="color-picker flex justify-start items-center gap-2">
+                    <p>Pick a color: </p>
+                    <!-- <color-picker v-model="subject_color" format="hex" appendTo=".main-panel .schedule .subject-color"/> -->
+                    <input type="color" class="opacity-0 absolute w-[1px] h-[1px] overflow-hidden -left-5 -z-[1]"
+                        ref="color_picker" v-bind="color_picked">
+                    <div class="picked-color w-7 h-7 rounded-md hover:cursor-pointer" @click="colorPicker"
+                        :style="{ backgroundColor: `${values.color_picked}` }"></div>
+                </div>
+                <div class="color-theme flex justify-end items-center gap-1 p-3 rounded-md bg-white">
+                    <div class="color-theme_color-1 w-7 h-7 rounded-md hover:cursor-pointer" :style="{backgroundColor: `${color_theme[0]}`}" @click="setColor(color_theme[0])"></div>
+                    <div class="color-theme_color-1 w-7 h-7 rounded-md hover:cursor-pointer" :style="{backgroundColor: `${color_theme[1]}`}" @click="setColor(color_theme[1])"></div>
+                    <div class="color-theme_color-1 w-7 h-7 rounded-md hover:cursor-pointer" :style="{backgroundColor: `${color_theme[2]}`}" @click="setColor(color_theme[2])"></div>
+                    <div class="color-theme_color-1 w-7 h-7 rounded-md hover:cursor-pointer" :style="{backgroundColor: `${color_theme[3]}`}" @click="setColor(color_theme[3])"></div>
+                    <div class="color-theme_color-1 w-7 h-7 rounded-md hover:cursor-pointer" :style="{backgroundColor: `${color_theme[4]}`}" @click="setColor(color_theme[4])"></div>
+                </div>
             </div>
             <div class="date relative">
-                <div class="day hover:cursor-pointer">
-                    <p>Day</p>
-                    <!-- <div class="day-badge">Wed</div> -->
-                    <div class="day-badge">
-                        <calendar v-model="day" dateFormat="D" appendTo=".main-panel .schedule .date" showButtonBar/>
+                <div class="day hover:cursor-pointer relative">
+                    <div class="flex justify-center items-center gap-3">
+                        <p>Day</p>
+                        <!-- <div class="day-badge">Wed</div> -->
+                        <div class="day-badge w-full flex justify-center">
+                            <calendar v-bind="day" dateFormat="D" appendTo=".main-panel .schedule .date" showButtonBar />
+                        </div>
                     </div>
+                    <form-error v-if="errorBag.day" />
                 </div>
-                <div class="starts hover:cursor-pointer">
-                    <p>Starts</p>
-                    <!-- <div class="start_hour-badge">7:00</div> -->
-                    <div class="start_hour-badge">
-                        <calendar v-model="start_hour" timeOnly />
+                <div class="starts hover:cursor-pointer relative">
+                    <div class="flex justify-center items-center gap-3">
+                        <p>Starts</p>
+                        <!-- <div class="start_hour-badge">7:00</div> -->
+                        <div class="start_hour-badge w-full flex justify-center">
+                            <calendar v-bind="start_hour" appendTo=".main-panel .schedule .date .starts" timeOnly />
+                        </div>
                     </div>
+                    <form-error v-if="errorBag.start_hour" />
                 </div>
-                <div class="ends hover:cursor-pointer">
-                    <p>Ends</p>
-                    <!-- <div class="end_hour-badge">8:00</div> -->
-                    <div class="end_hour-badge">
-                        <calendar v-model="end_hour" timeOnly />
+                <div class="ends hover:cursor-pointer relative">
+                    <div class="flex justify-center items-center gap-3">
+                        <p>Ends</p>
+                        <!-- <div class="end_hour-badge">8:00</div> -->
+                        <div class="end_hour-badge w-full flex justify-center">
+                            <calendar v-bind="end_hour" appendTo=".main-panel .schedule .date .ends" timeOnly />
+                        </div>
                     </div>
+                    <form-error v-if="errorBag.end_hour" />
                 </div>
             </div>
             <!-- <div class="is-recurring">
@@ -115,7 +227,7 @@ const submitForm = e => {
             </div> -->
             <div class="info mt-5">
                 <!-- <textarea name="" id="" cols="30" rows="10" placeholder="Info"></textarea> -->
-                <quill-editor v-model="value" editorStyle="height: 250px; width: 100%; background-color: white;" />
+                <quill-editor v-bind="info" editorStyle="height: 250px; width: 100%; background-color: white;" />
             </div>
             <!-- <div class="alert">
                 <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -126,6 +238,16 @@ const submitForm = e => {
                 <p>At the time of the event</p>
             </div> -->
             <div class="confirm-options">
+                <div class="error-disclaimer mr-auto flex gap-1 justify-center items-center" v-if="Object.keys(errorBag).length > 0">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                        class="w-8 h-8 text-general_red_1">
+                        <path fill-rule="evenodd"
+                            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <p>Errors in form!</p>
+                    <!-- <p>{{ errorBag }}</p> -->
+                </div>
                 <div class="cancel hover:cursor-pointer" @click="popups.addItemClose">
                     <p>Cancel</p>
                 </div>

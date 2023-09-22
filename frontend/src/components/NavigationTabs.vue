@@ -5,6 +5,8 @@ import { useTabs } from '../store/tabs.js';
 
 const tabs = useTabs();
 
+const is_disabled = true;
+
 const props = defineProps(['is_mobile']);
 let classes = props.is_mobile ? 'tabs--mobile' : 'tabs';
 
@@ -27,9 +29,11 @@ const toggleTab = (tab) => {
                 <path
                     d="M4.462 19.462c.42-.419.753-.89 1-1.394.453.213.902.434 1.347.661a6.743 6.743 0 01-1.286 1.794.75.75 0 11-1.06-1.06z" />
             </svg>
-            <p>Schedule</p>
+            <div class="menu-item">
+                <p>Schedule</p>
+            </div>
         </div>
-        <div class="calendar group/calendar flex items-center" :class="{'w-full': !props.is_mobile}" @click="toggleTab('calendar')">
+        <div class="calendar group/calendar flex items-center" :class="[{'w-full': !props.is_mobile, 'disabled': is_disabled}]" @click="toggleTab('calendar')">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                 class="w-8 h-8 group-hover/calendar:scale-105" :class="tabs.getActiveTab() === 'calendar' ? 'text-general_blue_2' : 'text-general_blue_1'">
                 <path
@@ -38,7 +42,10 @@ const toggleTab = (tab) => {
                     d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zm13.5 9a1.5 1.5 0 00-1.5-1.5H5.25a1.5 1.5 0 00-1.5 1.5v7.5a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-7.5z"
                     clip-rule="evenodd" />
             </svg>
-            <p>Calendar</p>
+            <div class="menu-item">
+                <p>Calendar</p>
+                <span class="p-1 bg-general_green_3 text-[8px] rounded-md text-white" v-if="is_disabled">Soon</span>
+            </div>
         </div>
         <!-- <div class="sign-out">
             <div class="signout-icon">

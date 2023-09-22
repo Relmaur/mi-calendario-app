@@ -178,6 +178,7 @@
                 // top: calc((100% / 24) * 7.5);
                 // // Duration
                 // height: calc((100% / 24) * 2);
+                min-height: 25px;
                 z-index: 15;
                 // background-color: $subject_orange_3;
                 // border: 1px solid $subject_orange_2;
@@ -198,7 +199,8 @@
                 height: 100%;
                 padding: 5px;
                 display: flex;
-                flex-direction: column;
+                // flex-direction: column;
+                align-items: flex-start;
                 justify-content: space-between;
             }
 

@@ -107,34 +107,45 @@
             & .main-panel-container .date {
                 width: 100%;
                 justify-content: space-between;
+                // justify-content: flex-start;
                 display: flex;
+                gap: 10px;
             }
 
             & .main-panel-container .date>div {
+                width: calc(100% / 3);
+                // width: auto;
                 background-color: #ffffff;
                 padding: 10px;
                 border-radius: $border-radius;
-                display: flex;
-                align-items: center;
-                gap: 20px;
+                // display: flex;
+                // align-items: center;
+                // gap: 20px;
             }
 
-            & .main-panel-container .date>div>div {
+            & .main-panel-container .date .day .day-badge,
+            & .main-panel-container .date .starts .start_hour-badge,
+            & .main-panel-container .date .ends .end_hour-badge {
                 padding: 5px;
                 border-radius: $border-radius;
                 background-color: $general_green_2;
             }
-
-            & .main-panel-container .date .p-inputwrapper {
-                max-width: 36px !important;
-                width: auto;
+            & .main-panel-container .date .p-datepicker .p-datepicker-buttonbar {
+                display: flex;
+                justify-content: center;
+                margin: 20px 0 0 0;
             }
 
+            & .main-panel-container .date .p-inputwrapper {
+                width: 100%;
+                justify-content: center;
+            }
+            
             & .main-panel-container .date .p-inputwrapper input {
-                max-width: 36px !important;
+                // width: auto !important;
                 position: relative;
-                width: auto !important;
                 background-color: transparent;
+                text-align: center;
             }
 
             & .main-panel-container .is-recurring {

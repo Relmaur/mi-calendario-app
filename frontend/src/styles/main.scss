@@ -2,8 +2,20 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+@layer components {
+    .disabled {
 
-// Abstaracts
+        & svg path {
+            fill: gray !important; 
+        }
+        & p {
+            color: gray !important;
+        }
+        
+    }
+}
+
+// Abstracts
 @import 'abstracts/variables';
 @import 'abstracts/utils';
 
@@ -16,3 +28,5 @@
 // Layouts
 @import 'layouts/main_layout';
 @import 'layouts/view/schedule/schedule-view';
+
+
