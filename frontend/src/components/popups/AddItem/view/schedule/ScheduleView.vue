@@ -177,12 +177,17 @@ onMounted(() => {
                     <div class="picked-color w-7 h-7 rounded-md hover:cursor-pointer" @click="colorPicker"
                         :style="{ backgroundColor: `${values.color_picked}` }"></div>
                 </div>
-                <div class="color-theme flex justify-end items-center gap-1 p-3 rounded-md bg-white">
-                    <div class="color-theme_color-1 w-7 h-7 rounded-md hover:cursor-pointer" :style="{backgroundColor: `${color_theme[0]}`}" @click="setColor(color_theme[0])"></div>
-                    <div class="color-theme_color-1 w-7 h-7 rounded-md hover:cursor-pointer" :style="{backgroundColor: `${color_theme[1]}`}" @click="setColor(color_theme[1])"></div>
-                    <div class="color-theme_color-1 w-7 h-7 rounded-md hover:cursor-pointer" :style="{backgroundColor: `${color_theme[2]}`}" @click="setColor(color_theme[2])"></div>
-                    <div class="color-theme_color-1 w-7 h-7 rounded-md hover:cursor-pointer" :style="{backgroundColor: `${color_theme[3]}`}" @click="setColor(color_theme[3])"></div>
-                    <div class="color-theme_color-1 w-7 h-7 rounded-md hover:cursor-pointer" :style="{backgroundColor: `${color_theme[4]}`}" @click="setColor(color_theme[4])"></div>
+                <div class="color-theme flex justify-end items-center gap-2 p-3 rounded-md bg-white hover:cursor-pointer">
+                    <div class="color-theme_color-1 w-7 h-7 rounded-md hover:scale-105"
+                        :style="{ backgroundColor: `${color_theme[0]}` }" @click="setColor(color_theme[0])"></div>
+                    <div class="color-theme_color-1 w-7 h-7 rounded-md hover:scale-105"
+                        :style="{ backgroundColor: `${color_theme[1]}` }" @click="setColor(color_theme[1])"></div>
+                    <div class="color-theme_color-1 w-7 h-7 rounded-md hover:scale-105"
+                        :style="{ backgroundColor: `${color_theme[2]}` }" @click="setColor(color_theme[2])"></div>
+                    <div class="color-theme_color-1 w-7 h-7 rounded-md hover:scale-105"
+                        :style="{ backgroundColor: `${color_theme[3]}` }" @click="setColor(color_theme[3])"></div>
+                    <div class="color-theme_color-1 w-7 h-7 rounded-md hover:scale-105"
+                        :style="{ backgroundColor: `${color_theme[4]}` }" @click="setColor(color_theme[4])"></div>
                 </div>
             </div>
             <div class="date relative">
@@ -227,7 +232,43 @@ onMounted(() => {
             </div> -->
             <div class="info mt-5">
                 <!-- <textarea name="" id="" cols="30" rows="10" placeholder="Info"></textarea> -->
-                <quill-editor v-bind="info" editorStyle="height: 250px; width: 100%; background-color: white;" />
+                <quill-editor v-bind="info" editorStyle="height: 250px; width: 100%; background-color: white;" placeholder="Your amazing notes go here:">
+                    <template v-slot:toolbar>
+                        <button class="ql-bold"></button>
+                        <button class="ql-italic"></button>
+                        <button class="ql-underline"></button>
+                        <button class="ql-script" value="sub"></button>
+                        <button class="ql-script" value="super"></button>
+                        <select class="ql-color">
+                            <option v-for="color in color_theme" :value="`${color}`"></option>
+                            <option value="#ffffff"></option>
+                            <option value="#000000"></option>
+                        </select>
+                        <select class="ql-background">
+                            <option v-for="color in color_theme" :value="`${color}`"></option>
+                            <option value="#ffffff"></option>
+                            <option value="#000000"></option>
+                        </select>
+                        
+                        <select class="ql-header">
+                            <option value="1"></option>
+                            <option value="2"></option>
+                            <option value="3"></option>
+                            <option value="4"></option>
+                            <option value="5"></option>
+                            <option value="6"></option>
+                        </select>
+
+                        <button class="ql-link"></button>
+                        <button class="ql-code"></button>
+                        <!-- <select class="ql-size">
+                            <option value="small"></option>
+                            <option value="large"></option>
+                            <option value="hughe"></option>
+                        </select> -->
+                    </template>
+                </quill-editor>
+                <!-- <quill-editor v-bind="info" editorStyle="height: 250px; width: 100%; background-color: white;" ></quill-editor> -->
             </div>
             <!-- <div class="alert">
                 <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -238,7 +279,8 @@ onMounted(() => {
                 <p>At the time of the event</p>
             </div> -->
             <div class="confirm-options">
-                <div class="error-disclaimer mr-auto flex gap-1 justify-center items-center" v-if="Object.keys(errorBag).length > 0">
+                <div class="error-disclaimer mr-auto flex gap-1 justify-center items-center"
+                    v-if="Object.keys(errorBag).length > 0">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         class="w-8 h-8 text-general_red_1">
                         <path fill-rule="evenodd"
@@ -259,8 +301,7 @@ onMounted(() => {
                             d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
                             clip-rule="evenodd" />
                     </svg>
-                </div>
             </div>
-        </form>
-    </div>
-</template>
+        </div>
+    </form>
+</div></template>
