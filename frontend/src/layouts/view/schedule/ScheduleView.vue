@@ -1,12 +1,18 @@
 <script setup>
-import Subjects from './Subjects.vue';
-import { usePopups } from '../../../store/popups.js';
-const popups = usePopups();
+/* Deps */
+import { ref } from 'vue';
 
-const openAddItemToggler = (tab) => {
-    popups.addItemOpen()
-    // alert('ploort')
-}
+/* Components */
+import Subjects from './Subjects.vue';
+import AddItem from '../../../components/popups/AddItem/AddItem.vue';
+
+/* Stores */
+import { usePopups } from '../../../store/popups.js';
+const add_subject_popup = usePopups().addSubjectPopup;
+
+const open_popup = ref(false)
+
+
 
 </script>
 <template>
@@ -117,12 +123,14 @@ const openAddItemToggler = (tab) => {
             </div>
         </div>
         <div class="app-content-footer">
-            <div class="plus-icon group/plus_icon" @click="openAddItemToggler('schedule')">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 text-general_gray_2 transition group-hover/plus_icon:text-general_gray_1">
+            <div class="plus-icon group/plus_icon" @click="add_subject_popup.addSubjectOpen()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                    class="w-10 h-10 text-general_gray_2 transition group-hover/plus_icon:text-general_gray_1">
                     <path fill-rule="evenodd"
                         d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
                         clip-rule="evenodd" />
                 </svg>
+            </div>
         </div>
     </div>
-</div></template> 
+</template> 

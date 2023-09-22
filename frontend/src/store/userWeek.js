@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from 'vue';
+import _ from 'lodash';
 
 export const useWeek = defineStore("userWeek", () => {
     const WEEK = ref(
@@ -62,6 +63,37 @@ export const useWeek = defineStore("userWeek", () => {
     const addSubject = (day, subject) => {
         WEEK.value[day].push(subject);
     }
+    const updateSubject = (day, subject) => {
+
+        // console.log('updateSubject day: ', day);
+        // console.log('updateSubject subject: ', subject);
+        // console.log('Week from Pinia: ', week);
+
+        let foundIndex = _.findIndex(WEEK.value[day], {id: subject.id });
+
+        // console.log('Found Subject', foundSubject);
+
+        if(foundIndex !== -1) {
+            WEEK.value[day][foundIndex] = {...WEEK.value[day][foundIndex], ...subject}
+        }
+
+        console.log(foundIndex)
+
+        // console.log('From Piniaz', WEEK.value[day]);
+
+        // let foundSubject = WEEK.value[day].find(subj => {
+        //     return subj.id == subject.id;
+        // });
+        // if(foundSubject) {
+        //     foundSubject.raw = subject.raw;
+        //     foundSubject.name = subject.name;
+        //     foundSubject.starts = subject.starts;
+        //     foundSubject.duration = subject.duration;
+        //     foundSubject.color = subject.color;
+        //     foundSubject.info = subject.info;
+        //     foundSubject.info_delta = subject.info_delta;
+        // }
+    }
     const getWeek = () => {
         return WEEK.value;
     }
@@ -69,6 +101,6 @@ export const useWeek = defineStore("userWeek", () => {
         WEEK.value = new_week;
     } 
 
-    return { WEEK, addSubject, getWeek, updateWeek }
+    return { WEEK, addSubject, getWeek, updateWeek, updateSubject}
     
 });

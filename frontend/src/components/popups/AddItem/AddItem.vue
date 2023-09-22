@@ -5,7 +5,7 @@ import ScheduleView from './view/schedule/ScheduleView.vue';
 import { usePopups } from '../../../store/popups.js'; // Global State Management
 import { useTabs } from '../../../store/tabs.js'; // Global State Management
 // import { store } from '../../../store/tabs.js';
-const popups = usePopups();
+const add_item_popup = usePopups().addSubjectPopup;
 const tabs = useTabs();
 
 import { onMounted }  from 'vue'
@@ -13,7 +13,7 @@ import { onMounted }  from 'vue'
 onMounted(() => {
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
-            popups.addItemClose();
+            add_item_popup.addSubjectClose();
         }
     });
 });
@@ -21,7 +21,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="add-item-overlay" :class="popups.isAddItemOpen() ? 'opened' : ''">
+    <div class="app-popup" :class="add_item_popup.isAddSubjectOpen() ? 'opened' : ''">
         <div class="add-item-container">
             <div class="tabs-panel">
                 <div class="tabs">

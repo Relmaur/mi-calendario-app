@@ -1,0 +1,32 @@
+@import './AddItem/add_item.scss';
+@import './EditItem/edit_item.scss';
+
+body .app-popup {
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    position: absolute;
+    z-index: 99;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(255 255 255 / 85%);
+
+    & .add-item-container {
+        @extend .add-item-container;
+    }
+    & .edit-item-container {
+        @extend .edit-item-container;
+    }
+}
+
+// body .app-popup {
+//     display: none;
+// }
+
+@media(max-width: 480px) {
+    body .app-popup.opened {
+        @include _add_item_max_width_480;
+    }
+}

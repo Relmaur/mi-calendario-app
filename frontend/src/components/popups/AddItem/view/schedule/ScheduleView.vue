@@ -1,27 +1,40 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+/* Store */
 import { useWeek } from '../../../../../store/userWeek.js'; // Global State Management
 import { usePopups } from '../../../../../store/popups.js'; // Global State Management
+import { useSubjectsColorTheme } from '../../../../../store/subjectsColorTheme'; // Global State Management
+
+/* Components */
 import Calendar from 'primevue/calendar'; // Calendar
 import quillEditor from 'primevue/editor'; // Editor
+import FormError from '../../../../../components/FormError.vue'; // Form Error
+/* Deps */
+import { onMounted, ref } from 'vue';
 import { useForm, useField } from 'vee-validate'; // Form Helper
 import * as yup from 'yup'; // Form Validation
-import FormError from '../../../../../components/FormError.vue'; // Form Error
+import DOMPurify from 'dompurify'; // Sanitize HTML
+import {v4 as uuidv4 } from 'uuid';
 
+/* Refs */
+const color_picker = ref(null); // Color - Color Picker
+const color_theme = useSubjectsColorTheme().theme;
+const editor_content = ref(null); // Editor - Subject Info
+const editor_content_delta = ref(null); // Editor - Subject Info delta
+
+/* API URLs */
+const USER_ID = 1;
+const PUT_USER_WEEK_URL = `http://127.0.0.1:3000/api/users/${USER_ID}/week`;
 
 /* Form Values (without vee-validate and by leveraging v-model on the input fields) */
 // const subject_name = ref(null); // Name - Subject Name
 // const start_hour = ref(null); // Date - Hour
 // const end_hour = ref(null); // Date - Hour
 // const day = ref(null); // Date - Hour
-// const value = ref(null); // Editor - Subject Info
 // const color_picked = ref('#FF8C19'); // Color - Subject Color
-const color_picker = ref(null); // Color - Color Picker
-const color_theme = ref(['#874400', '#D36B00', '#FF8C19', '#006787', '#00A2D4']);
 
 /* Pinia Stores */
 const week = useWeek();
-const popups = usePopups();
+const add_subject_popup = usePopups().addSubjectPopup;
 
 /* Helpers */
 const colorPicker = () => {
@@ -55,12 +68,11 @@ const submitForm = e => {
     console.log(weekdays[subjectDay], subjectObject);
     week.addSubject(weekdays[subjectDay], subjectObject);
 
-    popups.addItemClose();
+    add_subject_popup.addSubjectClose();
 }
 */
 
 /* Vee-validate Form Context, validation and stuff' (either we use this or use Vue's ref() Reactivity API)*/
-
 const schema = yup.object({
     subject_name: yup.string().required('Required'),
     color_picked: yup.string(),
@@ -91,10 +103,10 @@ const info = defineComponentBinds('info');
 /* To change the form's value externally, via a click event, in this case */
 const { value: color, setValue: setColor } = useField('color_picked');
 
-/* Handle submission (with vee-validate) */
+/* Handle submission */
 const submitForm = handleSubmit((values) => {
 
-    // alert(JSON.stringify(values, null, 2));
+    /* With vee-validate */
     let subjectName = values.subject_name;
     let subjectColor = values.color_picked;
     let subjectDay = values.day.getDay();
@@ -104,18 +116,30 @@ const submitForm = handleSubmit((values) => {
     let durationHours = Math.floor(duration / 3600000);
     let durationMinutes = Math.floor((duration / 60000) % 60);
 
+    /* With the ref() Reactivity API */
+    let subjectInfoHTML = editor_content.value;
+    let subjectInfoDelta = editor_content_delta.value ? JSON.stringify(editor_content_delta.value) : '{"ops": []}';
+
+    let subjectId = uuidv4();
+
     let subjectObject = {};
+    subjectObject['id'] = subjectId;
+    
+    /* Raw values */
+    subjectObject['raw'] = {};
+    subjectObject['raw']['starts'] = values.start_hour;
+    subjectObject['raw']['ends'] = values.end_hour;
+
     subjectObject['name'] = subjectName;
+    subjectObject['day'] = subjectDay;
     subjectObject['starts'] = `${subjectStartHour}_${subjectStartMinutes}`;
     subjectObject['duration'] = `${durationHours}_${durationMinutes}`;
     subjectObject['color'] = subjectColor;
-    // subjectObject['color'] = 'rgb(255, 140, 25)';
+    subjectObject['info'] = subjectInfoHTML;
+    subjectObject['info_delta'] = subjectInfoDelta;
 
     const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
-
-    // console.log(week[subjectDay]); // Testing
-    // console.log(weekdays[subjectDay], subjectObject); // Testing
     /* Temp | push object to the Pinia store */
     week.addSubject(weekdays[subjectDay], subjectObject);
 
@@ -123,12 +147,10 @@ const submitForm = handleSubmit((values) => {
     console.log('Hello from the add item form!... The store is: ', JSON.stringify(week.getWeek())); // Testing
     localStorage.setItem('week', JSON.stringify(week.getWeek()));
 
-    // alert(typeof JSON.stringify(week.getWeek()));
-
     /* Send Data over to the Backend... */
     try {
-        fetch('http://127.0.0.1:3000/update_user_week/1', {
-            method: 'POST',
+        fetch(PUT_USER_WEEK_URL, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -139,23 +161,31 @@ const submitForm = handleSubmit((values) => {
     }
 
     /* Close form */
-    popups.addItemClose();
+    add_subject_popup.addSubjectClose();
 });
 
 /* Testing */
-// const logValues = () => {
-//     console.log('Name', subject_name.value);
-//     console.log('Color', subject_color.value);
-//     console.log('Day', day.value.getDay());
-//     console.log('Hours', start_hour.value.getHours());
-//     console.log('Minutes', start_hour.value.getMinutes());
-//     console.log('Hours', end_hour.value.getHours());
-//     console.log('Minutes', end_hour.value.getMinutes());
-// }
+const logValues = () => {
+    // console.log('Editor content: ', editor_content.value); // Testing
+    // console.log('Editor content delta: ', editor_content_delta.value); // Testing
+    // console.log('Editor content delta: ', typeof editor_content_delta.value); // Testing
+    // console.log('Name', subject_name.value);
+    // console.log('Color', subject_color.value);
+    // console.log('Day', day.value.getDay());
+    // console.log('Hours', start_hour.value.getHours());
+    // console.log('Minutes', start_hour.value.getMinutes());
+    // console.log('Hours', end_hour.value.getHours());
+    // console.log('Minutes', end_hour.value.getMinutes());
+}
 
 onMounted(() => {
     // console.log('Hello from the add item form!... The store is: ', JSON.stringify(week.getWeek())); // Testing 
-})
+});
+
+const handleEditorChange = (changeEvent) => {
+    editor_content.value = DOMPurify.sanitize(changeEvent.htmlValue); // Sanitized HTML for extra security
+    editor_content_delta.value = changeEvent.instance.editor.delta; // the Delta object
+}
 
 </script>
 <template>
@@ -164,7 +194,7 @@ onMounted(() => {
         <form>
             <h5>Add a Subject</h5>
             <div class="add-a-title relative">
-                <input type="email" v-bind="subject_name" placeholder="Add a title...">
+                <input type="text" v-bind="subject_name" placeholder="Add a title...">
                 <form-error v-if="errorBag.subject_name" />
                 <!-- <pre>values: {{ values }}</pre> -->
             </div>
@@ -196,7 +226,7 @@ onMounted(() => {
                         <p>Day</p>
                         <!-- <div class="day-badge">Wed</div> -->
                         <div class="day-badge w-full flex justify-center">
-                            <calendar v-bind="day" dateFormat="D" appendTo=".main-panel .schedule .date" showButtonBar />
+                            <calendar v-bind="day" dateFormat="D" appendTo=".schedule .date" showButtonBar />
                         </div>
                     </div>
                     <form-error v-if="errorBag.day" />
@@ -206,7 +236,7 @@ onMounted(() => {
                         <p>Starts</p>
                         <!-- <div class="start_hour-badge">7:00</div> -->
                         <div class="start_hour-badge w-full flex justify-center">
-                            <calendar v-bind="start_hour" appendTo=".main-panel .schedule .date .starts" timeOnly />
+                            <calendar v-bind="start_hour" appendTo=".schedule .date .starts" timeOnly />
                         </div>
                     </div>
                     <form-error v-if="errorBag.start_hour" />
@@ -216,7 +246,7 @@ onMounted(() => {
                         <p>Ends</p>
                         <!-- <div class="end_hour-badge">8:00</div> -->
                         <div class="end_hour-badge w-full flex justify-center">
-                            <calendar v-bind="end_hour" appendTo=".main-panel .schedule .date .ends" timeOnly />
+                            <calendar v-bind="end_hour" appendTo=".schedule .date .ends" timeOnly />
                         </div>
                     </div>
                     <form-error v-if="errorBag.end_hour" />
@@ -232,7 +262,8 @@ onMounted(() => {
             </div> -->
             <div class="info mt-5">
                 <!-- <textarea name="" id="" cols="30" rows="10" placeholder="Info"></textarea> -->
-                <quill-editor v-bind="info" editorStyle="height: 250px; width: 100%; background-color: white;" placeholder="Your amazing notes go here:">
+                <quill-editor v-bind="info" editorStyle="height: 250px; width: 100%; background-color: white;"
+                    placeholder="Your amazing notes go here:" @text-change="handleEditorChange">
                     <template v-slot:toolbar>
                         <button class="ql-bold"></button>
                         <button class="ql-italic"></button>
@@ -249,7 +280,7 @@ onMounted(() => {
                             <option value="#ffffff"></option>
                             <option value="#000000"></option>
                         </select>
-                        
+
                         <select class="ql-header">
                             <option value="1"></option>
                             <option value="2"></option>
@@ -290,7 +321,7 @@ onMounted(() => {
                     <p>Errors in form!</p>
                     <!-- <p>{{ errorBag }}</p> -->
                 </div>
-                <div class="cancel hover:cursor-pointer" @click="popups.addItemClose">
+                <div class="cancel hover:cursor-pointer" @click="add_subject_popup.addSubjectClose()">
                     <p>Cancel</p>
                 </div>
                 <div class="add hover-cursor-pointer group/plus_icon" @click="submitForm">
@@ -301,7 +332,8 @@ onMounted(() => {
                             d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
                             clip-rule="evenodd" />
                     </svg>
+                </div>
             </div>
-        </div>
-    </form>
-</div></template>
+        </form>
+    </div>
+</template>
