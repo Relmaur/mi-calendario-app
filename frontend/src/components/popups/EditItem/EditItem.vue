@@ -16,6 +16,7 @@ import { useForm, useField } from 'vee-validate'; // Form Helper
 import * as yup from 'yup'; // Form Validation
 import DOMPurify from 'dompurify'; // Sanitize HTML
 import { DateTime } from 'luxon'; // Date and Time
+import { parse } from 'uuid';
 
 /* Refs and Stores */
 const week = useWeek();
@@ -44,27 +45,25 @@ const schema = yup.object({
     color_picked: yup.string(),
     start_hour: yup.date().required('Required'),
     end_hour: yup.date().required('Required'),
-    // day: yup.date().required('Required'),
+    day: yup.date().required('Required'),
 });
 
 let starts_date_object = new Date(edit_subject_object.raw.starts);
 let ends_date_object = new Date(edit_subject_object.raw.ends);
 
-console.log('The start time is (incoming): ', edit_subject_object.raw.starts)
-let dt = DateTime.now()
-console.log('The Luxor start time is (incoming): ', DateTime.fromISO(edit_subject_object.raw.starts));
-
 /* Start and end Datetimes with Trailing zeros */
-const s_hours = new Date(starts_date_object).getUTCHours() > 9 ? new Date(starts_date_object).getUTCHours() : `0${new Date(starts_date_object).getUTCHours()}`;
-const s_minutes = new Date(starts_date_object).getUTCMinutes() < 10 ? `0${new Date(starts_date_object).getUTCMinutes()}` : new Date(starts_date_object).getUTCMinutes();
-const e_hours = new Date(ends_date_object).getUTCHours() > 9 ? new Date(ends_date_object).getUTCHours() : `0${new Date(ends_date_object).getUTCHours()}`;
-const e_minutes = new Date(ends_date_object).getUTCMinutes() < 10 ? `0${new Date(ends_date_object).getUTCMinutes()}` : new Date(ends_date_object).getUTCMinutes();
-
-const starts = `${s_hours}:${s_minutes}`;
-const ends = `${e_hours}:${e_minutes}`;
+// const s_hours = new Date(starts_date_object).getUTCHours() > 9 ? new Date(starts_date_object).getUTCHours() : `0${new Date(starts_date_object).getUTCHours()}`;
+// const s_minutes = new Date(starts_date_object).getUTCMinutes() < 10 ? `0${new Date(starts_date_object).getUTCMinutes()}` : new Date(starts_date_object).getUTCMinutes();
+// const e_hours = new Date(ends_date_object).getUTCHours() > 9 ? new Date(ends_date_object).getUTCHours() : `0${new Date(ends_date_object).getUTCHours()}`;
+// const e_minutes = new Date(ends_date_object).getUTCMinutes() < 10 ? `0${new Date(ends_date_object).getUTCMinutes()}` : new Date(ends_date_object).getUTCMinutes();
+// const starts = `${s_hours}:${s_minutes}`;
+// const ends = `${e_hours}:${e_minutes}`;
 // const starts = `${starts_date_object.getUTCHours()}:${starts_date_object.getUTCMinutes()}`;
 // const ends = `${ends_date_object.getUTCHours()}:${ends_date_object.getUTCHours()}`;
 
+const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+/* These default values come from the Pinia Store */
 const { values, errorBag, defineInputBinds, defineComponentBinds, handleSubmit } = useForm({
     validationSchema: schema,
     initialValues: {
@@ -72,7 +71,7 @@ const { values, errorBag, defineInputBinds, defineComponentBinds, handleSubmit }
         color_picked: edit_subject_object.color,
         start_hour: starts_date_object,
         end_hour: ends_date_object,
-        day: edit_subject_object.day,
+        day: starts_date_object,
     },
 });
 
@@ -90,12 +89,12 @@ const { value: color, setValue: setColor } = useField('color_picked');
 /* Handle submission */
 const submitForm = handleSubmit((values) => {
 
-    console.log('Form Values: ', values)
+    console.log('Form Values: ', values); // Testing
 
     /* With vee-validate */
     let subjectName = values.subject_name;
     let subjectColor = values.color_picked;
-    let subjectDay = values.day;
+    let subjectDay = weekdays[values.day.getDay()];
     let subjectStartHour = starts_date_object.getHours();
     let subjectStartMinutes = starts_date_object.getMinutes();
     let duration = values.end_hour - values.start_hour;
@@ -105,65 +104,72 @@ const submitForm = handleSubmit((values) => {
     /* With the ref() Reactivity API */
     /* TODO you might want to sanitize this, man! (already did!)*/
     let subjectInfoHTML = editor_content.value;
-    let subjectInfoDelta = editor_content_delta.value ? JSON.stringify(editor_content_delta.value) : '{ops: []}';
+    let subjectInfoDelta = editor_content_delta.value ? JSON.stringify(editor_content_delta.value) : '{"ops":[]}';
 
     let subjectId = edit_subject_object.id;
 
     let subjectObject = {};
-    
+
     /* Raw values */
     subjectObject['raw'] = {};
-    subjectObject['raw']['starts'] = values.start_hour;
-    subjectObject['raw']['ends'] = values.end_hour;
+    subjectObject['raw']['starts'] = values.start_hour.toISOString();
+    subjectObject['raw']['ends'] = values.end_hour.toISOString();
 
     subjectObject['id'] = subjectId;
     subjectObject['name'] = subjectName;
     subjectObject['starts'] = `${subjectStartHour}_${subjectStartMinutes}`;
     subjectObject['duration'] = `${durationHours}_${durationMinutes}`;
+    subjectObject['day'] = subjectDay;
     subjectObject['color'] = subjectColor;
     subjectObject['info'] = subjectInfoHTML;
     subjectObject['info_delta'] = subjectInfoDelta;
 
     // console.log(edit_subject_object.day);
-    console.log('The Updated info is: ', subjectObject);
+    console.log('The object to send to Pinia and the Database: ', subjectObject);
 
-    week.updateWeek(JSON.parse(localStorage.getItem('week')));
-
-    week.updateSubject(edit_subject_object.day, subjectObject);
-
+    // Update Subject in Pinia Store
+    // week.updateSubject(weekdays[edit_subject_object.day.getDay()], subjectObject);
+    // Update Subject in the local storage
     localStorage.setItem('week', JSON.stringify(week.getWeek()));
-    
-    // const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    /* Push object to the Pinia store */
-    // week.addSubject(edit_subject_object.day, subjectObject);
 
     /* Save the data locally on the browser */
     // console.log('Hello from the edit item form!... The store is: ', typeof subjectObject); // Testing
-    // localStorage.setItem('week', JSON.stringify(week.getWeek()));
+
+    localStorage.setItem('week', JSON.stringify(week.getWeek()));
 
     /* Send Data over to the Backend... */
-    // try {
-    //     fetch(PUT_USER_WEEK_URL, {
-    //         method: 'PUT',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(week.getWeek()),
-    //     })
-    // } catch {
+    try {
+        fetch(PUT_USER_WEEK_URL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(week.getWeek()),
+        })
+    } catch {
 
-    // }
+    }
 
     /* Close form */
     edit_subject_popup.editSubjectClose();
 });
 
 onMounted(() => {
-    // console.log('Edit Item got mounted, and this is the store: ', edit_subject_object.id)
+    // console.log('Edit Item got mounted, and this is the store: ', edit_subject_object.id); // Testing
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            edit_subject_popup.editSubjectClose();
+        }
+    });
 });
 
 /* Testing */
 const logValues = () => {
+
+    console.log(edit_subject_object.day);
+    console.log(weekdays[values.day.getDay()]);
+    // week.updateSubject(edit_subject_object)
 
     // console.log('From EditItem: ', edit_subject_object); // Testing
     // console.log('From EditItem Also: ', usePopups().getSubjectObject()); // Testing
@@ -192,7 +198,7 @@ const handleEditorChange = (changeEvent) => {
 <template>
     <div class="app-popup" :class="edit_subject_popup.isEditSubjectOpen() ? 'opened' : ''">
         <div class="edit-item-container">
-            <!-- <button @click="logValues">Im a testing button</button> -->
+            <button @click="logValues">Im a testing button</button>
             <form>
                 <h5>Edit Subject</h5>
                 <div class="add-a-title relative">

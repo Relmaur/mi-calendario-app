@@ -4,7 +4,8 @@
     flex-direction: column;
     gap: 20px;
     background-color: #ffffff;
-    border-radius: $border-radius;
+    // border-radius: $border-radius;
+    padding: 10px;
 
     & .week-header,
     & .week-table {
@@ -13,21 +14,19 @@
         display: flex;
         gap: 20px;
 
-        & .left-column,
-        & div[class|="week"] {
-            // background-color: gray;
-        }
-
+        $left-column: 3%;
+        $right-column: calc(100% - #{$left-column});
+        
         & .left-column {
-            width: 7%;
+            width: $left-column;
         }
 
         & div[class|="week"] {
-            width: 93%;
+            width: $right-column;
         }
     }
 
-    $week_header_height: 7%;
+    $week_header_height: 5%;
     $week_table_height: calc(100% - #{$week_header_height});
 
     & .week-header {
@@ -91,7 +90,7 @@
 
     & .week-table {
         height: $week_table_height;
-        padding: 0 20px 20px 20px;
+        padding: 0 10px 10px 10px;
         border-bottom-left-radius: $border-radius;
         border-bottom-right-radius: $border-radius;
 
@@ -234,7 +233,7 @@
 
         & .week-header,
         & .week-table {
-            padding: 0 10px;
+            // padding: 0 10px;
 
             & .left-column {
                 display: none;

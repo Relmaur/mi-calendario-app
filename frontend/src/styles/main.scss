@@ -3,16 +3,16 @@
 @import 'tailwindcss/utilities';
 
 @layer components {
-    .disabled {
+    // .disabled {
 
-        & svg path {
-            fill: gray !important; 
-        }
-        & p {
-            color: gray !important;
-        }
+    //     & svg path {
+    //         fill: gray !important; 
+    //     }
+    //     & p {
+    //         color: gray !important;
+    //     }
         
-    }
+    // }
 }
 
 // Abstracts

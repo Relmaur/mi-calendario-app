@@ -6,7 +6,7 @@
     max-width: 1920px;
     max-height: 1080px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 5px;
     
     & .app-main-container {
         width: 100%;
@@ -19,6 +19,7 @@
 
         & .left-side {
             width: 13%;
+            min-width: 200px;
             height: 100%;
             border-top-left-radius: $border-radius;
             border-bottom-left-radius: $border-radius;
@@ -29,6 +30,7 @@
 
             & .logo {
                 width: 100%;
+                display: none;
                 // height: 10%;
                 // background-color: slategray;
                 // background-color: #fff;
@@ -38,13 +40,13 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                padding: 10px;
+                padding: 5px;
             }
 
             & .logo svg {
                 width: 100%;
                 min-width: 80px;
-                height: auto;
+                height: 33px;
                 margin: 0;
             }
 
@@ -52,7 +54,7 @@
                 position: relative;
                 width: 100%;
                 height: auto;
-                padding: 20px;
+                padding: 10px;
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
@@ -61,12 +63,12 @@
                 border-bottom: 1px solid #000000;
             }
 
-            & .tabs div {
-                display: flex;
-                justify-content: flex-start;
-                align-items: center;
-                gap: 5px;
-            }
+            // & .tabs div {
+            //     display: flex;
+            //     justify-content: flex-start;
+            //     align-items: center;
+            //     gap: 5px;
+            // }
 
             & .tabs div:hover {
                 cursor: pointer;
@@ -86,19 +88,20 @@
         }
 
         & .right-side {
-            width: 87%;
+            width: 100%;
             height: 100%;
             border-top-right-radius: $border-radius;
             border-bottom-right-radius: $border-radius;
             background-color: $general_gray_3;
-            padding: 20px;
+            // padding: 10px;
 
             & .app-main-content {
                 width: 100%;
                 height: 100%;
                 display: flex;
                 flex-direction: column;
-                gap: 20px;
+                border-radius: $border-radius;
+                // gap: 10px;
             }
 
             & .app-main-content .app-content-header,
@@ -110,19 +113,23 @@
             & .app-main-content .app-content-header {
                 display: flex;
                 justify-content: flex-end;
-                height: 7%;
+                height: 5%;
+                min-height: 44px;
                 max-height: 45px;
+                padding: 10px;
+                border-bottom: 1px solid black;
                 // background-color: rgb(220, 220, 220);
                 // padding: 10px;
             }
 
             & .app-main-content .app-content-header .search-bar-and-user {
                 $width_factor: 1;
+                width: calc(100% / #{$width_factor});
                 display: flex;
+                justify-content: space-between;
                 right: 0;
                 gap: 10px;
-                width: calc(100% / #{$width_factor});
-                height: 100%;
+                // height: 100%;
             }
 
             & .app-main-content .app-content-header .search-bar-and-user .search-bar {
@@ -169,7 +176,7 @@
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                // border-radius: $border-radius;
+                border-radius: $border-radius;
             }
 
             & .app-main-content .app-content-header .tabs--mobile {
@@ -178,20 +185,19 @@
 
             & .app-main-content .view-body {
                 width: 100%;
-                height: 97%;
-                // background-color: rgb(242, 242, 242);
+                height: 100%;
                 display: flex;
                 flex-direction: column;
-                gap: 20px;
+                gap: 10px;
             }
 
             & .app-main-content .view-body.view-schedule .app-content-table {
-                height: calc(100% - 28px);
+                height: 100%;
             }
 
             & .app-main-content .view-body.view-schedule .app-content-footer {
-                height: 28px;
                 // background-color: #ffffff;
+                display: none;
                 position: relative;
             }
 
@@ -227,7 +233,7 @@
             }
 
             & .left-side {
-                height: 8%;   
+                height: auto;   
                 border-top-left-radius: $border-radius;
                 border-top-right-radius: $border-radius;
                 display: flex;
@@ -244,7 +250,7 @@
 
                 & .logo {
                     width: auto;
-                    padding: 5px;
+                    padding: 0;
                     border-right: 1px solid #000000;
                     border-top-left-radius: $border-radius;
                 }
@@ -263,7 +269,7 @@
                 & .app-content-header--mobile .search-bar-and-user {
                     display: flex;
                     justify-content: flex-end;
-                    padding-right: 20px;
+                    padding: 10px;
                     gap: 10px;
                     width: 100%;
                     height: 100%;
@@ -319,6 +325,8 @@
 
                 & .app-main-content .app-content-header {
                     height: auto;
+                    padding: 15px 10px;
+                    max-height: unset;
                 }
 
                 & .app-main-content .app-content-header .tabs--mobile {
@@ -332,11 +340,23 @@
                     padding: 0 0 0 0;
                 }
 
-                & .app-main-content .app-content-header .tabs--mobile div {
+                & .app-main-content .app-content-header .tabs--mobile .schedule,
+                & .app-main-content .app-content-header .tabs--mobile .calendar {
                     display: flex;
                     justify-content: flex-start;
                     align-items: center;
                     gap: 5px;
+                }
+                & .app-main-content .app-content-header .tabs--mobile > div {
+                    padding: 5px;
+                    border: 1px solid $general_gray_2;
+                    border-radius: $border-radius;
+                }
+                & .app-main-content .app-content-header .tabs--mobile > div.active {
+                    border: 1px solid $general_green_3;
+                }
+                & .app-main-content .app-content-header .tabs--mobile > div div[class|="add"] {
+                    display: none;
                 }
 
                 & .app-main-content .app-content-header .tabs--mobile div:hover {
@@ -364,9 +384,6 @@
     
             & .left-side {
     
-                & .logo {
-                }
-    
                 & .logo svg {
                     width: 100%;
                 }
@@ -378,18 +395,10 @@
     #app {
         & .app-main-container {
 
-            & .left-side {
-                height: 10%;
-            }
-
             & .right-side {
-                padding: 10px; 
                 
                 & .app-main-content {
                     gap: 10px;
-                }
-                & .app-main-content .app-content-header {
-                    height: 10%;
                 }
                 & .app-main-content .view-body {
                     gap: 10px;  

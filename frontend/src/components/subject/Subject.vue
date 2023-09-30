@@ -1,15 +1,17 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { usePopups } from '../../store/popups';
+import { useWeek } from '../../store/userWeek';
 import EditItem from '../popups/EditItem/EditItem.vue';
 
 const edit_subject_popup = usePopups().editSubjectPopup;
+const week_store = useWeek();
 const props = defineProps(['subjectObject']);
 
 // console.log('The props are: ', props.subjectObject);
 
 let subjectName = props.subjectObject.name;
-let subjectStarts = props.subjectObject.starts;
+let subjectStarts = `${parseInt(props.subjectObject.starts.split('_')[0])}_${parseInt(props.subjectObject.starts.split('_')[1])}`;
 let subjectDuration = props.subjectObject.duration;
 let assignedColor = props.subjectObject.color;
 let subjectDelta = props.subjectObject.delta;
@@ -21,6 +23,8 @@ const formatSpaces = (string) => {
 }
 
 onMounted(() => {
+    console.log('Subject Props: ', props.subjectObject);
+    console.log('Subject Pinia Info', week_store.getWeek());
 });
 
 let subjectClasses = `${formatSpaces(subjectName)} subject_starts-${subjectStarts} subject_duration-${subjectDuration}`;

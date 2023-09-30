@@ -12,8 +12,6 @@ const add_subject_popup = usePopups().addSubjectPopup;
 
 const open_popup = ref(false)
 
-
-
 </script>
 <template>
     <div class="view-body view-schedule">

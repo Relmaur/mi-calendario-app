@@ -65,34 +65,15 @@ export const useWeek = defineStore("userWeek", () => {
     }
     const updateSubject = (day, subject) => {
 
-        // console.log('updateSubject day: ', day);
-        // console.log('updateSubject subject: ', subject);
-        // console.log('Week from Pinia: ', week);
-
         let foundIndex = _.findIndex(WEEK.value[day], {id: subject.id });
 
-        // console.log('Found Subject', foundSubject);
+        console.log('Found Subject Index (From Pinia)', foundIndex);
 
         if(foundIndex !== -1) {
             WEEK.value[day][foundIndex] = {...WEEK.value[day][foundIndex], ...subject}
         }
+        console.log('Sot the corresponding week day is: ', WEEK.value[day][foundIndex]);  
 
-        console.log(foundIndex)
-
-        // console.log('From Piniaz', WEEK.value[day]);
-
-        // let foundSubject = WEEK.value[day].find(subj => {
-        //     return subj.id == subject.id;
-        // });
-        // if(foundSubject) {
-        //     foundSubject.raw = subject.raw;
-        //     foundSubject.name = subject.name;
-        //     foundSubject.starts = subject.starts;
-        //     foundSubject.duration = subject.duration;
-        //     foundSubject.color = subject.color;
-        //     foundSubject.info = subject.info;
-        //     foundSubject.info_delta = subject.info_delta;
-        // }
     }
     const getWeek = () => {
         return WEEK.value;

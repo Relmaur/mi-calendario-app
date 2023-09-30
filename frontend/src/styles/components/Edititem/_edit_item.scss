@@ -1,6 +1,6 @@
 .edit-item-container {
     position: relative;
-    width: 90%;
+    width: calc(100% - 10px);
     max-width: 473px;
     height: auto;
     min-height: 468px;
@@ -9,7 +9,7 @@
     padding: 20px;
     border: 1px solid #000000;
     border-radius: $border-radius;
-    border-top-left-radius: unset;
+    // border-top-left-radius: unset;
     font-size: 12px;
     display: flex;
     flex-direction: column;

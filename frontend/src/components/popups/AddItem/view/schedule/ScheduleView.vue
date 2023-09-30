@@ -125,26 +125,27 @@ const submitForm = handleSubmit((values) => {
     let subjectObject = {};
     subjectObject['id'] = subjectId;
     
-    /* Raw values */
+    const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
     subjectObject['raw'] = {};
     subjectObject['raw']['starts'] = values.start_hour;
     subjectObject['raw']['ends'] = values.end_hour;
 
     subjectObject['name'] = subjectName;
-    subjectObject['day'] = subjectDay;
+    subjectObject['day'] = weekdays[subjectDay];
     subjectObject['starts'] = `${subjectStartHour}_${subjectStartMinutes}`;
     subjectObject['duration'] = `${durationHours}_${durationMinutes}`;
     subjectObject['color'] = subjectColor;
     subjectObject['info'] = subjectInfoHTML;
     subjectObject['info_delta'] = subjectInfoDelta;
 
-    const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
     /* Temp | push object to the Pinia store */
-    week.addSubject(weekdays[subjectDay], subjectObject);
+    week.addSubject(subjectObject['day'], subjectObject);
 
     /* Save the data locally on the browser */
-    console.log('Hello from the add item form!... The store is: ', JSON.stringify(week.getWeek())); // Testing
+    // console.log('Hello from the add item form!... The store is: ', JSON.stringify(week.getWeek())); // Testing
+    console.log('Hello from the add item form!... The store is: ', week.getWeek()); // Testing
     localStorage.setItem('week', JSON.stringify(week.getWeek()));
 
     /* Send Data over to the Backend... */
@@ -190,7 +191,7 @@ const handleEditorChange = (changeEvent) => {
 </script>
 <template>
     <div class="schedule main-panel-container">
-        <!-- <button @click="logValues">Im a testing button</button> -->
+        <button @click="logValues">Im a testing button</button>
         <form>
             <h5>Add a Subject</h5>
             <div class="add-a-title relative">

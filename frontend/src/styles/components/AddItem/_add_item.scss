@@ -1,6 +1,7 @@
 .add-item-container {
     position: relative;
-    width: 90%;
+    width: 100%;
+    width: calc(100% - 10px);
     max-width: 473px;
     height: auto;
     display: flex;

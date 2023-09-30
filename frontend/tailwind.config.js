@@ -6,6 +6,13 @@ export default {
   ],
   theme: {
     extend: {
+      // breakPoints: {
+      //   'xs': '320px',
+      //   'sm': '640px',
+      //   'md': '768px',
+      //   'lg': '1024px',
+      //   'xl': '1280px',
+      // },
       colors: {
         general_blue_1: '#557B83',
         general_blue_2: '#39AEA9',

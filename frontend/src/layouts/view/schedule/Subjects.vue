@@ -9,6 +9,7 @@ const GET_USER_WEEK_SUBJECTS = `http://localhost:3000/api/users/${USER_ID}/week`
 
 let week_store = useWeek();
 let local_storage_week = localStorage.getItem('week') ? JSON.parse(localStorage.getItem('week')) : week_store.getWeek();
+console.log(local_storage_week);
 let userWeek = ref({});
 userWeek.value = local_storage_week;
 
@@ -17,6 +18,9 @@ userWeek.value = local_storage_week;
 
 /* Lifecycle Hooks */
 onMounted(() => {
+    
+    week_store.updateWeek(userWeek.value);
+    console.log('And the Pinia store is this! ', week_store.getWeek());
 
     let db_week = fetch(GET_USER_WEEK_SUBJECTS, {
         method: 'GET',
@@ -46,7 +50,7 @@ onMounted(() => {
 
     }).catch(error => {
 
-        console.log('Something went wrong with the data fetchin');
+        console.log('Something went wrong with the data fetchin, the error is: ', error);
         // console.log('Hello from the catch block: ', week_store.getWeek()); // Testing
         
     });
