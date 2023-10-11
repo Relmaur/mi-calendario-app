@@ -172,7 +172,7 @@ const handleEditorChange = (changeEvent) => {
 <template>
     <div class="app-popup" :class="edit_subject_popup.isEditSubjectOpen() ? 'opened' : ''">
         <div class="edit-item-container">
-            <button @click="logValues">Im a testing button</button>
+            <!-- <button @click="logValues">Im a testing button</button> -->
             <form>
                 <h5>Edit Subject</h5>
                 <div class="add-a-title relative">

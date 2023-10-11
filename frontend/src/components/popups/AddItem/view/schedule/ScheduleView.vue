@@ -207,7 +207,7 @@ const handleEditorChange = (changeEvent) => {
 </script>
 <template>
     <div class="schedule main-panel-container">
-        <button @click="logValues">Im a testing button</button>
+        <!-- <button @click="logValues">Im a testing button</button> -->
         <form>
             <h5>Add a Subject</h5>
             <div class="add-a-title relative">

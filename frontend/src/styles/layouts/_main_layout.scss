@@ -110,10 +110,10 @@
             & .app-main-content .app-content-header {
                 display: flex;
                 justify-content: flex-end;
-                height: 5%;
+                height: auto;
                 min-height: 45px;
                 max-height: 45px;
-                padding: 10px;
+                padding: 0 0 0 10px;
                 border-bottom: 1px solid black;
                 // background-color: rgb(220, 220, 220);
                 // padding: 10px;
@@ -162,7 +162,6 @@
                 height: 100%;    
                 aspect-ratio: 1;
                 margin: 0 0 0 auto;
-                border-radius: $border-radius;
             }
 
             & .app-main-content .app-content-header .search-bar-and-user .user .user-image:hover {
@@ -173,7 +172,7 @@
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                border-radius: $border-radius;
+                // border-radius: $border-radius;
             }
 
             & .app-main-content .app-content-header .tabs--mobile {
@@ -266,7 +265,7 @@
                 & .app-content-header--mobile .search-bar-and-user {
                     display: flex;
                     justify-content: flex-end;
-                    padding: 10px;
+                    // padding: 10px;
                     gap: 10px;
                     width: 100%;
                     height: 100%;
@@ -304,14 +303,14 @@
                     height: 100%;
                     aspect-ratio: 1;
                     margin: 0 0 0 auto;
-                    border-radius: $border-radius;
+                    // border-radius: $border-radius;
                 }
 
                 & .app-content-header--mobile .search-bar-and-user .user .user-image img {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
-                    border-radius: $border-radius;
+                    // border-radius: $border-radius;
                 }
             }
 
