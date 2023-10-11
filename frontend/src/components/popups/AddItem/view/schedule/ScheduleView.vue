@@ -19,7 +19,7 @@ import {v4 as uuidv4 } from 'uuid';
 const color_picker = ref(null); // Color - Color Picker
 const color_theme = useSubjectsColorTheme().theme;
 const editor_content = ref(null); // Editor - Subject Info
-const editor_content_delta = ref(null); // Editor - Subject Info delta
+const editor_content_delta = ref('{"ops":[]}'); // Editor - Subject Info delta
 
 /* API URLs */
 const USER_ID = 1;
@@ -106,19 +106,38 @@ const { value: color, setValue: setColor } = useField('color_picked');
 /* Handle submission */
 const submitForm = handleSubmit((values) => {
 
+    let start_time_from_picked_date = new Date(
+        values.day.getFullYear(),
+        values.day.getMonth(),
+        values.day.getDate(),
+        values.start_hour.getHours(),
+        values.start_hour.getMinutes(),
+        values.start_hour.getSeconds(),
+        values.start_hour.getMilliseconds()
+    );
+    let end_time_from_picked_date = new Date(
+        values.day.getFullYear(),
+        values.day.getMonth(),
+        values.day.getDate(),
+        values.end_hour.getHours(),
+        values.end_hour.getMinutes(),
+        values.end_hour.getSeconds(),
+        values.end_hour.getMilliseconds()
+    );
+
     /* With vee-validate */
     let subjectName = values.subject_name;
     let subjectColor = values.color_picked;
     let subjectDay = values.day.getDay();
-    let subjectStartHour = values.start_hour.getHours();
-    let subjectStartMinutes = values.start_hour.getMinutes();
-    let duration = values.end_hour - values.start_hour;
+    let subjectStartHour = start_time_from_picked_date.getHours();
+    let subjectStartMinutes = end_time_from_picked_date.getMinutes();
+    let duration = end_time_from_picked_date - start_time_from_picked_date;
     let durationHours = Math.floor(duration / 3600000);
     let durationMinutes = Math.floor((duration / 60000) % 60);
 
     /* With the ref() Reactivity API */
     let subjectInfoHTML = editor_content.value;
-    let subjectInfoDelta = editor_content_delta.value ? JSON.stringify(editor_content_delta.value) : '{"ops": []}';
+    let subjectInfoDelta = editor_content_delta.value;
 
     let subjectId = uuidv4();
 
@@ -128,8 +147,9 @@ const submitForm = handleSubmit((values) => {
     const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
     subjectObject['raw'] = {};
-    subjectObject['raw']['starts'] = values.start_hour;
-    subjectObject['raw']['ends'] = values.end_hour;
+    subjectObject['raw']['starts'] = start_time_from_picked_date.toISOString();
+    subjectObject['raw']['ends'] = end_time_from_picked_date.toISOString();
+    subjectObject['raw']['day'] = values.day.toISOString();
 
     subjectObject['name'] = subjectName;
     subjectObject['day'] = weekdays[subjectDay];
@@ -140,26 +160,22 @@ const submitForm = handleSubmit((values) => {
     subjectObject['info_delta'] = subjectInfoDelta;
 
 
-    /* Temp | push object to the Pinia store */
+    /* Push the subject object to the Pinia store */
     week.addSubject(subjectObject['day'], subjectObject);
-
-    /* Save the data locally on the browser */
-    // console.log('Hello from the add item form!... The store is: ', JSON.stringify(week.getWeek())); // Testing
-    console.log('Hello from the add item form!... The store is: ', week.getWeek()); // Testing
-    localStorage.setItem('week', JSON.stringify(week.getWeek()));
-
+    // console.log('The Pinia Store after submit: ', week.getWeek()); // Testing
+    
     /* Send Data over to the Backend... */
-    try {
-        fetch(PUT_USER_WEEK_URL, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(week.getWeek()),
-        })
-    } catch {
+    // try {
+    //     fetch(PUT_USER_WEEK_URL, {
+    //         method: 'PUT',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify(week.getWeek()),
+    //     })
+    // } catch {
 
-    }
+    // }
 
     /* Close form */
     add_subject_popup.addSubjectClose();

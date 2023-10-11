@@ -1,20 +1,17 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed, watch, defineProps, toRef } from 'vue';
 import { usePopups } from '../../store/popups';
 import { useWeek } from '../../store/userWeek';
-import EditItem from '../popups/EditItem/EditItem.vue';
 
 const edit_subject_popup = usePopups().editSubjectPopup;
-const week_store = useWeek();
+
 const props = defineProps(['subjectObject']);
 
-// console.log('The props are: ', props.subjectObject);
+const week_store = useWeek();
 
-let subjectName = props.subjectObject.name;
-let subjectStarts = `${parseInt(props.subjectObject.starts.split('_')[0])}_${parseInt(props.subjectObject.starts.split('_')[1])}`;
-let subjectDuration = props.subjectObject.duration;
-let assignedColor = props.subjectObject.color;
-let subjectDelta = props.subjectObject.delta;
+onMounted(() => {
+
+});
 
 // Format strings with spaces
 const formatSpaces = (string) => {
@@ -22,19 +19,12 @@ const formatSpaces = (string) => {
     return new_string.toLowerCase();
 }
 
-onMounted(() => {
-    console.log('Subject Props: ', props.subjectObject);
-    console.log('Subject Pinia Info', week_store.getWeek());
-});
-
-let subjectClasses = `${formatSpaces(subjectName)} subject_starts-${subjectStarts} subject_duration-${subjectDuration}`;
-
 </script>
 <template>
-    <div class="subject" :class="subjectClasses" :style="{ backgroundColor: assignedColor, borderColor: assignedColor }">
+    <div class="subject" :class="`${formatSpaces(props.subjectObject.name)} subject_starts-${props.subjectObject.starts} subject_duration-${props.subjectObject.duration}`" :style="{ backgroundColor: props.subjectObject.color, borderColor: props.subjectObject.color }">
         <div class="subject-container">
             <div class="subject-name">
-                <p class="hidden md:inline">{{ subjectName }}</p>
+                <p class="hidden md:inline">{{ props.subjectObject.name }}</p>
             </div>
             <div class="subject-menu" @click="edit_subject_popup.editSubjectOpen(props.subjectObject)">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

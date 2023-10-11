@@ -15,18 +15,16 @@ import { onMounted, ref } from 'vue';
 import { useForm, useField } from 'vee-validate'; // Form Helper
 import * as yup from 'yup'; // Form Validation
 import DOMPurify from 'dompurify'; // Sanitize HTML
-import { DateTime } from 'luxon'; // Date and Time
-import { parse } from 'uuid';
 
 /* Refs and Stores */
 const week = useWeek();
 const edit_subject_popup = usePopups().editSubjectPopup;
 const edit_subject_object = edit_subject_popup.getSubjectObject();
 
-const color_picker = ref(null); // Color - Color sPicker
+const color_picker = ref(null); // Color - Colors Picker
 const color_theme = useSubjectsColorTheme().theme;
 const editor_content = ref(null); // Editor - Subject Info
-const editor_content_delta = ref(null); // Editor - Subject Info delta
+const editor_content_delta = ref(edit_subject_object.info_delta); // Editor - Subject Info delta
 
 /* Props */
 const props = defineProps(['subjectObject']);
@@ -50,6 +48,7 @@ const schema = yup.object({
 
 let starts_date_object = new Date(edit_subject_object.raw.starts);
 let ends_date_object = new Date(edit_subject_object.raw.ends);
+let subject_day_object = new Date(edit_subject_object.raw.day);
 
 /* Start and end Datetimes with Trailing zeros */
 // const s_hours = new Date(starts_date_object).getUTCHours() > 9 ? new Date(starts_date_object).getUTCHours() : `0${new Date(starts_date_object).getUTCHours()}`;
@@ -71,7 +70,7 @@ const { values, errorBag, defineInputBinds, defineComponentBinds, handleSubmit }
         color_picked: edit_subject_object.color,
         start_hour: starts_date_object,
         end_hour: ends_date_object,
-        day: starts_date_object,
+        day: subject_day_object,
     },
 });
 
@@ -81,7 +80,6 @@ const color_picked = defineInputBinds('color_picked');
 const start_hour = defineComponentBinds('start_hour');
 const end_hour = defineComponentBinds('end_hour');
 const day = defineComponentBinds('day');
-// const info = defineComponentBinds('info');
 
 /* To change the form's value externally, via a click event, in this case */
 const { value: color, setValue: setColor } = useField('color_picked');
@@ -89,14 +87,12 @@ const { value: color, setValue: setColor } = useField('color_picked');
 /* Handle submission */
 const submitForm = handleSubmit((values) => {
 
-    console.log('Form Values: ', values); // Testing
-
     /* With vee-validate */
     let subjectName = values.subject_name;
     let subjectColor = values.color_picked;
     let subjectDay = weekdays[values.day.getDay()];
-    let subjectStartHour = starts_date_object.getHours();
-    let subjectStartMinutes = starts_date_object.getMinutes();
+    let subjectStartHour = values.start_hour.getHours();
+    let subjectStartMinutes = values.start_hour.getMinutes();
     let duration = values.end_hour - values.start_hour;
     let durationHours = Math.floor(duration / 3600000);
     let durationMinutes = Math.floor((duration / 60000) % 60);
@@ -104,7 +100,7 @@ const submitForm = handleSubmit((values) => {
     /* With the ref() Reactivity API */
     /* TODO you might want to sanitize this, man! (already did!)*/
     let subjectInfoHTML = editor_content.value;
-    let subjectInfoDelta = editor_content_delta.value ? JSON.stringify(editor_content_delta.value) : '{"ops":[]}';
+    let subjectInfoDelta = editor_content_delta.value;
 
     let subjectId = edit_subject_object.id;
 
@@ -114,6 +110,7 @@ const submitForm = handleSubmit((values) => {
     subjectObject['raw'] = {};
     subjectObject['raw']['starts'] = values.start_hour.toISOString();
     subjectObject['raw']['ends'] = values.end_hour.toISOString();
+    subjectObject['raw']['day'] = values.day.toISOString();
 
     subjectObject['id'] = subjectId;
     subjectObject['name'] = subjectName;
@@ -124,31 +121,24 @@ const submitForm = handleSubmit((values) => {
     subjectObject['info'] = subjectInfoHTML;
     subjectObject['info_delta'] = subjectInfoDelta;
 
-    // console.log(edit_subject_object.day);
-    console.log('The object to send to Pinia and the Database: ', subjectObject);
+    console.log('The data to be submitted: ', subjectObject);
 
-    // Update Subject in Pinia Store
-    // week.updateSubject(weekdays[edit_subject_object.day.getDay()], subjectObject);
-    // Update Subject in the local storage
-    localStorage.setItem('week', JSON.stringify(week.getWeek()));
+    // // Update Subject in Pinia Store
+    week.updateSubject(subjectObject['day'], subjectObject);
+    console.log('The new day is: ', subjectObject['day']);
+    
+    // /* Send Data over to the Backend... */
+    // try {
+    //     fetch(PUT_USER_WEEK_URL, {
+    //         method: 'PUT',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify(week.getWeek()),
+    //     })
+    // } catch {
 
-    /* Save the data locally on the browser */
-    // console.log('Hello from the edit item form!... The store is: ', typeof subjectObject); // Testing
-
-    localStorage.setItem('week', JSON.stringify(week.getWeek()));
-
-    /* Send Data over to the Backend... */
-    try {
-        fetch(PUT_USER_WEEK_URL, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(week.getWeek()),
-        })
-    } catch {
-
-    }
+    // }
 
     /* Close form */
     edit_subject_popup.editSubjectClose();
@@ -167,26 +157,10 @@ onMounted(() => {
 /* Testing */
 const logValues = () => {
 
-    console.log(edit_subject_object.day);
-    console.log(weekdays[values.day.getDay()]);
-    // week.updateSubject(edit_subject_object)
-
-    // console.log('From EditItem: ', edit_subject_object); // Testing
-    // console.log('From EditItem Also: ', usePopups().getSubjectObject()); // Testing
-    // console.log('Editor content: ', editor_content.value); // TeseditSubjectPopupting
-    // console.log('Editor content delta: ', editor_content_delta.value); // Testing
-    // console.log('Editor content delta: ', typeof editor_content_delta.value); // Testing
-    // console.log('Name', subject_name.value);
-    // console.log('Color', subject_color.value);
-    // console.log('Day', day.value.getDay());
-    // console.log('Hours', start_hour.value.getHours());
-    // console.log('Minutes', start_hour.value.getMinutes());
-    // console.log('Hours', end_hour.value.getHours());
-    // console.log('Minutes', end_hour.value.getMinutes());
 }
 
 const handleEditorLoad = (loadEvent) => {
-    loadEvent.instance.setContents(JSON.parse(edit_subject_object.info_delta));
+    loadEvent.instance.setContents(editor_content_delta.value);
     // console.log('Edit Editor Instance: ', loadEvent.instance); // Testing
 }
 const handleEditorChange = (changeEvent) => {
@@ -334,7 +308,7 @@ const handleEditorChange = (changeEvent) => {
                         <p>Cancel</p>
                     </div>
                     <div class="add hover-cursor-pointer group/plus_icon" @click="submitForm">
-                        <p>Add</p>
+                        <p>Apply</p>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                             class="w-10 h-10 text-general_gray_2 transition group-hover/plus_icon:text-general_green_1">
                             <path fill-rule="evenodd"

@@ -1,6 +1,5 @@
 <script setup>
-import { ref } from 'vue';
-import { onMounted, onBeforeMount } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import Subject from '../../../components/subject/Subject.vue';
 import { useWeek } from '../../../store/userWeek.js'; // Global State Management
 
@@ -8,55 +7,46 @@ const USER_ID = 1;
 const GET_USER_WEEK_SUBJECTS = `http://localhost:3000/api/users/${USER_ID}/week`;
 
 let week_store = useWeek();
-let local_storage_week = localStorage.getItem('week') ? JSON.parse(localStorage.getItem('week')) : week_store.getWeek();
-console.log(local_storage_week);
-let userWeek = ref({});
-userWeek.value = local_storage_week;
+let userWeek = week_store.getWeek();
 
-// console.log('Local Storage: ', localStorage.getItem('week')); // Testing 
-// console.log('Local Storage (parsed): ', JSON.parse(JSON.parse(localStorage.getItem('week')))); // Testing
+watch(userWeek, (newVal) => {
+    console.log('something changed: ', newVal);
+})
 
 /* Lifecycle Hooks */
 onMounted(() => {
-    
-    week_store.updateWeek(userWeek.value);
-    console.log('And the Pinia store is this! ', week_store.getWeek());
 
-    let db_week = fetch(GET_USER_WEEK_SUBJECTS, {
-        method: 'GET',
-    });
-    db_week.then((response) => {
-        // This parses the weird format the response comes in
-        // console.log(response.json());
-        return response.json();
+    console.log('The store is: ', week_store.getWeek()); // Testing
 
-    }).then((data) => {
+    // let db_week = fetch(GET_USER_WEEK_SUBJECTS, {
+    //     method: 'GET',
+    // });
+    // db_week.then((response) => {
 
-        // console.log(data.user_week); // Testing
-        /* Parse response data into a good ol', usable object notation */
-        let week_subjects = JSON.parse(data.user_week);
-        // console.log('The data object is this: ', week_subjects); // Testing
+    //     // This parses the weird format the response comes in
+    //     return response.json();
 
-        /* Update Pinia Store */
-        week_store.updateWeek(week_subjects);
-        /* Update component value */
-        userWeek.value = week_subjects;
-        // console.log('The store is: ', week_store.getWeek()); // Testing
-        // console.log('The new user week ref is: ', userWeek); // Testing 
+    // }).then((data) => {
 
-        /* Apparently, Vue's v-for unwraps the ref() properties sot that it makes their .value property available... So instead of doing: userWeek.value['sunday'] you just type userWeek['sunday'] */
+    //     /* Parse response data into a good ol', usable object notation */
+    //     let week_subjects = JSON.parse(data.user_week);
 
-        localStorage.setItem('week', JSON.stringify(week_subjects));
+    //     /* Update Pinia Store */
+    //     week_store.updateWeek(week_subjects);
+    //     /* Update component value */
+    //     userWeek.value = week_subjects;
 
-    }).catch(error => {
+    //     /* Apparently, Vue's v-for unwraps the ref() properties sot that it makes their .value property available... So instead of doing: userWeek.value['sunday'] you just type userWeek['sunday'] */
 
-        console.log('Something went wrong with the data fetchin, the error is: ', error);
-        // console.log('Hello from the catch block: ', week_store.getWeek()); // Testing
+    //     localStorage.setItem('week', JSON.stringify(week_subjects));
+
+    // }).catch(error => {
+
+    //     console.log('Something went wrong with the data fetchin, the error is: ', error);
+    //     // console.log('Hello from the catch block: ', week_store.getWeek()); // Testing
         
-    });
-    // console.log('UserWeek: ', typeof userWeek.value.sunday[0].info_delta); // Testing
-    // console.log('UserWeek JSON: ', JSON.parse(userWeek.value.sunday[0].info_delta)); // Testing
-})
+    // });
+});
 
 
 </script>

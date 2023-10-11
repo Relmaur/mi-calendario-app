@@ -10,7 +10,13 @@ import AddItem from '../../../components/popups/AddItem/AddItem.vue';
 import { usePopups } from '../../../store/popups.js';
 const add_subject_popup = usePopups().addSubjectPopup;
 
-const open_popup = ref(false)
+const open_popup = ref(false);
+const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+
+const isToday = (day) => {
+    const today = week[new Date().getDay()];
+    return day === today;
+}
 
 </script>
 <template>
@@ -38,25 +44,25 @@ const open_popup = ref(false)
                     </div>
                 </div>
                 <div class="week-days">
-                    <div class="header-day-1">
+                    <div class="header-day-1" :class="{'active': isToday('sunday')}">
                         <h6>SUN</h6>
                     </div>
-                    <div class="header-day-2">
+                    <div class="header-day-2" :class="{'active': isToday('monday')}">
                         <h6>MON</h6>
                     </div>
-                    <div class="header-day-3">
+                    <div class="header-day-3" :class="{'active': isToday('tuesday')}">
                         <h6>TUE</h6>
                     </div>
-                    <div class="header-day-4 active">
+                    <div class="header-day-4" :class="{'active': isToday('wednesday')}">
                         <h6>WED</h6>
                     </div>
-                    <div class="header-day-5">
+                    <div class="header-day-5" :class="{'active': isToday('thursday')}">
                         <h6>THU</h6>
                     </div>
-                    <div class="header-day-6">
+                    <div class="header-day-6" :class="{'active': isToday('friday')}">
                         <h6>FRI</h6>
                     </div>
-                    <div class="header-day-7">
+                    <div class="header-day-7" :class="{'active': isToday('saturday')}">
                         <h6>SAT</h6>
                     </div>
                 </div>

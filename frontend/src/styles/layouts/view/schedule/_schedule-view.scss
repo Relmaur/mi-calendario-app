@@ -81,9 +81,10 @@
             & div[class|="header-day"].active h6 {
                 color: $general_blue_2;
             }
-
+            
             & div[class|="header-day"] h6 {
                 color: $general_blue_1;
+                font-size: sass_clamp(1, 320, 1920, 1.5);
             }
         }
     }

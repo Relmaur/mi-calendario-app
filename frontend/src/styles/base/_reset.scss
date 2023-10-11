@@ -77,10 +77,12 @@ body {
     & .p-datepicker-buttonbar {
         gap: 10px;
         background-color: #ffffff !important;
+        margin: 10px 0 0 0 !important;
+
         & button {
             padding: 5px 10px;
             border-radius: 4px;
-            background-color: $general_green_2;
+            background-color: $general_gray_3;
         }
     }
 
@@ -98,7 +100,24 @@ body {
             }
 
             & span {
+                padding: 2.5px 0;
+                margin: 5px;
                 font-size: sass_clamp(1, 320, 1920, 1.5);
+            }
+            th, tr {
+                width: 55px;
+            }
+            & span:hover {
+                cursor: pointer;
+            }
+
+            & span[aria-selected='true'] {
+                border: 1px solid $general_green_3;
+                border-radius: 5px;
+            }
+            .p-datepicker-today span {
+                background-color: $general_green_2;
+                border-radius: 5px;
             }
         }
     }
@@ -124,3 +143,4 @@ body {
         }
     }
 }
+
