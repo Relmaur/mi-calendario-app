@@ -29,7 +29,7 @@ const icons_classes = "w-7 h-7 text-general_blue_1 hover:text-general_blue_2";
         :class="{ 'active': isToday(props.day), 'selected': main_app.selected_day === props.day }"
         @click="main_app.openSelected(props.day)">
         <h6>{{ props.day.substring(0, 3).toUpperCase() }}</h6>
-        <div class="icons hidden md:flex justify-center items-center relative -top-[2px]"
+        <div class="icons p-1 border border-general_green_3 rounded-md hidden md:flex justify-center items-center relative"
             v-show="main_app.selected_day === props.day">
             <div class="icon edit">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"

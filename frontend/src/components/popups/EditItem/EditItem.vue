@@ -168,6 +168,8 @@ const handleEditorChange = (changeEvent) => {
     editor_content_delta.value = changeEvent.instance.editor.delta; // the Delta object
 }
 
+
+
 </script>
 <template>
     <div class="app-popup" :class="edit_subject_popup.isEditSubjectOpen() ? 'opened' : ''">

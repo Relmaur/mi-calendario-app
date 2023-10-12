@@ -1,6 +1,6 @@
 <script setup>
 /* Deps */
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 /* Components */
 import Subjects from './Subjects.vue';
@@ -12,7 +12,23 @@ import { usePopups } from '../../../store/popups.js';
 
 const add_subject_popup = usePopups().addSubjectPopup;
 
-const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+const getDecimalHour = () => {
+    const date = new Date();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    return hours + minutes / 60;
+}
+
+setInterval(() => {
+    indicator_position.value = getDecimalHour();
+}, 1000 * 60);
+
+let indicator_position = ref(getDecimalHour());
+
+onMounted(() => {
+})
 
 </script>
 <template>
@@ -84,6 +100,18 @@ const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 
                     </div>
                 </div>
                 <div class="week-schedule-table">
+                    <div class="current-time-indicator absolute -left-8 w-[calc(100%_+_2rem)] flex justify-start items-center"
+                        :style="`top:calc((100% / 24) * ${indicator_position} - 1rem)`">
+                        <div class="icon relative -left-[2px]">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-8 h-8 text-general_blue_1">
+                                <path fill-rule="evenodd"
+                                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="line w-full h-[2px] bg-general_blue_1"></div>
+                    </div>
                     <div class="horizontal-guides">
                         <div class="2h-1"></div>
                         <div class="2h-2"></div>
