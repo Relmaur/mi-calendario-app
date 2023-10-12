@@ -28,15 +28,18 @@
 
     $week_header_height: 5%;
     $week_table_height: calc(100% - #{$week_header_height});
+    $right_column_width: 100%;
+    $left_column_width: 3%;
 
     & .week-header {
         background-color: $general_green_2;
         border-top-left-radius: $border-radius;
         border-top-right-radius: $border-radius;
         height: $week_header_height;
-        padding: 0 20px 0 20px;
+        // padding: 0 20px 0 20px;
 
         & .left-column {
+            width: $left_column_width;
             display: flex;
             justify-content: flex-end;
             align-items: center;
@@ -65,7 +68,7 @@
         }
 
         & .week-days {
-            height: 100%;
+            height: calc(100% - #{$left_column_width});
             display: flex;
             gap: 1.5%;
             background-color: transparent;
@@ -76,6 +79,21 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                transition: all 150ms ease;
+            }
+
+            & div[class|="header-day"]:hover,
+            & div[class|="header-day"].selected {
+                // border: 1px solid $general_green_3;
+                // border-radius: $border-radius;
+                // background-color: $general_green_3;
+                // box-shadow: 0 1px 5px 0 rgba(160, 160, 160, 0.5);
+                border-left: 1px solid white;
+                border-right: 1px solid white;
+                cursor: pointer;
+            }
+            & div[class|="header-day"]:hover h6 {
+                // color: white;
             }
 
             & div[class|="header-day"].active h6 {
@@ -91,12 +109,12 @@
 
     & .week-table {
         height: $week_table_height;
-        padding: 0 10px 10px 10px;
+        // padding: 0 10px 10px 10px;
         border-bottom-left-radius: $border-radius;
         border-bottom-right-radius: $border-radius;
 
         & .left-column {
-            // width: 7%
+            width: $left_column_width;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -125,6 +143,7 @@
 
         & .week-schedule-table {
             position: relative;
+            width: calc(100% - #{$left_column_width});
 
             & .horizontal-guides {
                 position: absolute;
@@ -170,6 +189,12 @@
                 background-color: $general_gray_3;
                 position: relative;
             }
+            & .table-container div[class|="day"].selected {
+                // border-left: 1px solid black;
+                // border-right: 1px solid black;
+                background-color: $general_green_2;
+                transition: all 150ms ease;
+            }
 
             & .table-container div[class|="day"] .subject {
                 position: absolute;
@@ -197,11 +222,10 @@
             
             & .table-container div[class|="day"] .subject .subject-container {
                 height: 100%;
-                padding: 5px;
-                display: flex;
-                // flex-direction: column;
-                align-items: flex-start;
-                justify-content: space-between;
+                // display: flex;
+                // // flex-direction: column;
+                // align-items: flex-start;
+                // justify-content: space-between;
             }
 
             & .table-container div[class|="day"] .subject .subject-container .subject-name {

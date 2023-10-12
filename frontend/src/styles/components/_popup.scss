@@ -11,7 +11,7 @@ body .app-popup {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgb(255 255 255 / 85%);
+    // background-color: rgb(255 255 255 / 85%);
 
     & .add-item-container {
         @extend .add-item-container;
