@@ -1,4 +1,11 @@
 <script setup>
+/* Deps */
+import { onMounted, ref } from 'vue';
+import { useForm, useField } from 'vee-validate'; // Form Helper
+import * as yup from 'yup'; // Form Validation
+import DOMPurify from 'dompurify'; // Sanitize HTML
+import {v4 as uuidv4 } from 'uuid';
+
 /* Store */
 import { useWeek } from '../../../../../store/userWeek.js'; // Global State Management
 import { usePopups } from '../../../../../store/popups.js'; // Global State Management
@@ -8,12 +15,6 @@ import { useSubjectsColorTheme } from '../../../../../store/subjectsColorTheme';
 import Calendar from 'primevue/calendar'; // Calendar
 import quillEditor from 'primevue/editor'; // Editor
 import FormError from '../../../../../components/FormError.vue'; // Form Error
-/* Deps */
-import { onMounted, ref } from 'vue';
-import { useForm, useField } from 'vee-validate'; // Form Helper
-import * as yup from 'yup'; // Form Validation
-import DOMPurify from 'dompurify'; // Sanitize HTML
-import {v4 as uuidv4 } from 'uuid';
 
 /* Refs */
 const color_picker = ref(null); // Color - Color Picker

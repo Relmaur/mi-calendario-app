@@ -1,20 +1,21 @@
 <script setup>
-/* Store */
-import { usePopups } from '../../../store/popups';
-import { useWeek } from '../../../store/userWeek';
-import { useSubjectsColorTheme } from '../../../store/subjectsColorTheme';
-// import { useTabs } from '../../../store/tabs';
+/* Deps */
+import { onMounted, ref } from 'vue';
+import { useForm, useField } from 'vee-validate'; // Form Helper
+import * as yup from 'yup'; // Form Validation
+import DOMPurify from 'dompurify'; // Sanitize HTML
+import interact from 'interactjs';
 
 /* Components */
 import Calendar from 'primevue/calendar'; // Calendar
 import quillEditor from 'primevue/editor'; // Editor
 import FormError from '../../FormError.vue'; // Form Error
 
-/* Deps */
-import { onMounted, ref } from 'vue';
-import { useForm, useField } from 'vee-validate'; // Form Helper
-import * as yup from 'yup'; // Form Validation
-import DOMPurify from 'dompurify'; // Sanitize HTML
+/* Store */
+import { usePopups } from '../../../store/popups';
+import { useWeek } from '../../../store/userWeek';
+import { useSubjectsColorTheme } from '../../../store/subjectsColorTheme';
+// import { useTabs } from '../../../store/tabs';
 
 /* Refs and Stores */
 const week = useWeek();
@@ -126,7 +127,7 @@ const submitForm = handleSubmit((values) => {
     // // Update Subject in Pinia Store
     week.updateSubject(subjectObject['day'], subjectObject);
     console.log('The new day is: ', subjectObject['day']);
-    
+
     // /* Send Data over to the Backend... */
     // try {
     //     fetch(PUT_USER_WEEK_URL, {
@@ -168,12 +169,26 @@ const handleEditorChange = (changeEvent) => {
     editor_content_delta.value = changeEvent.instance.editor.delta; // the Delta object
 }
 
+const position = { x: 0, y: 0 }
+interact('.app-popup .draggable').draggable({
+    listeners: {
+        start(event) {
+            console.log(event.type, event.target)
+        },
+        move(event) {
+            position.x += event.dx
+            position.y += event.dy
 
+            event.target.style.transform =
+                `translate(${position.x}px, ${position.y}px)`
+        },
+    }
+});
 
 </script>
 <template>
     <div class="app-popup" :class="edit_subject_popup.isEditSubjectOpen() ? 'opened' : ''">
-        <div class="edit-item-container">
+        <div class="edit-item-container draggable">
             <!-- <button @click="logValues">Im a testing button</button> -->
             <form>
                 <h5>Edit Subject</h5>

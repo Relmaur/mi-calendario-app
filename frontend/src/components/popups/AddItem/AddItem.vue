@@ -1,10 +1,15 @@
 <script setup>
+// Deps
+import interact from 'interactjs';
+
+// Components
 import CalendarView from './view/calendar/CalendarView.vue';
 import ScheduleView from './view/schedule/ScheduleView.vue';
 
+// Stores
 import { usePopups } from '../../../store/popups.js'; // Global State Management
 import { useTabs } from '../../../store/tabs.js'; // Global State Management
-// import { store } from '../../../store/tabs.js';
+
 const add_item_popup = usePopups().addSubjectPopup;
 const tabs = useTabs();
 
@@ -18,11 +23,27 @@ onMounted(() => {
     });
 });
 
+const position = { x: 0, y: 0 }
+interact('.app-popup .draggable').draggable({
+    listeners: {
+        start(event) {
+            console.log(event.type, event.target)
+        },
+        move(event) {
+            position.x += event.dx
+            position.y += event.dy
+
+            event.target.style.transform =
+                `translate(${position.x}px, ${position.y}px)`
+        },
+    }
+});
+
 </script>
 
 <template>
     <div class="app-popup" :class="add_item_popup.isAddSubjectOpen() ? 'opened' : ''">
-        <div class="add-item-container">
+        <div class="add-item-container draggable">
             <div class="tabs-panel">
                 <div class="tabs">
                     <div class="schedule" @click="tabs.changeTab('schedule')">

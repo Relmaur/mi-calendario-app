@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "dompurify": "^3.0.5",
+    "interactjs": "^1.10.19",
     "luxon": "^3.4.3",
     "pinia": "^2.1.6",
     "primevue": "^3.34.1",
