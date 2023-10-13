@@ -7,7 +7,27 @@ export const usePopups = defineStore("popups", () => {
     const addSubject_open = ref(false);
     /* Edit Subject */
     const editSubject_open = ref(false);
+    /* The Subject Object */
     const subjectObject = ref({});
+    /* Toast Ref */
+    const toast_open = ref(false);
+    const toast_data = ref({});
+
+    let toastPopup = {
+        openToast(data) {
+            toast_open.value = true;
+            toast_data.value = data;
+        },
+        closeToast() {
+            toast_open.value = false;
+        },
+        isToastOpen() {
+            return toast_open.value
+        },
+        getToastData() {
+            return toast_data.value;
+        }
+    };
 
     /* Add Subject Popup */
     let addSubjectPopup = {
@@ -45,6 +65,6 @@ export const usePopups = defineStore("popups", () => {
         }
     }
 
-    return { addSubjectPopup, editSubjectPopup }
+    return { addSubjectPopup, editSubjectPopup, toastPopup }
 
 });

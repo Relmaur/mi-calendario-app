@@ -100,9 +100,9 @@ onMounted(() => {
                     </div>
                 </div>
                 <div class="week-schedule-table">
-                    <div class="current-time-indicator absolute -left-8 w-[calc(100%_+_2rem)] flex justify-start items-center"
+                    <div class="current-time-indicator absolute z-[9] md:z-0 left-0 md:-left-8 w-full md:w-[calc(100%_+_2rem)] flex justify-start items-center"
                         :style="`top:calc((100% / 24) * ${indicator_position} - 1rem)`">
-                        <div class="icon relative -left-[2px]">
+                        <div class="icon relative hidden md:block -left-[2px]">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                 class="w-8 h-8 text-general_blue_1">
                                 <path fill-rule="evenodd"

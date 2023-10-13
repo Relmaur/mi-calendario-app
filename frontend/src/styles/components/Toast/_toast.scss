@@ -1,0 +1,25 @@
+.toast-container {
+    position: absolute;
+    z-index: 999;
+    max-width: 500px;
+    background-color: white;
+    bottom: 15px;
+    right: 15px;
+    // right: 50%;
+    // transform: translate(50%, 0);
+    // padding: 20px;
+    border-radius: $border-radius;
+    transition: box-shadow 0.3s ease;
+} 
+
+.toast-container:hover {
+    cursor: pointer;
+    box-shadow: $box-shadow;
+}
+
+@media(max-width: 768px) {
+    .toast-container {
+        right: 50%;
+        transform: translate(50%, 0);
+    }    
+}

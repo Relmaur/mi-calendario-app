@@ -21,6 +21,7 @@ import { useSubjectsColorTheme } from '../../../store/subjectsColorTheme';
 const week = useWeek();
 const edit_subject_popup = usePopups().editSubjectPopup;
 const edit_subject_object = edit_subject_popup.getSubjectObject();
+const toast = usePopups().toastPopup;
 
 const color_picker = ref(null); // Color - Colors Picker
 const color_theme = useSubjectsColorTheme().theme;
@@ -141,6 +142,11 @@ const submitForm = handleSubmit((values) => {
 
     // }
 
+    /* Open Toast */
+    toast.openToast({
+        message: `The subject ${subjectObject.name} was updated successfully!`,
+        type: 'failure',
+    });
     /* Close form */
     edit_subject_popup.editSubjectClose();
 });
@@ -170,20 +176,22 @@ const handleEditorChange = (changeEvent) => {
 }
 
 const position = { x: 0, y: 0 }
-interact('.app-popup .draggable').draggable({
-    listeners: {
-        start(event) {
-            console.log(event.type, event.target)
-        },
-        move(event) {
-            position.x += event.dx
-            position.y += event.dy
+interact('.app-popup .draggable')
+    .draggable({
+        allowFrom: '.drag-handle',
+        listeners: {
+            start(event) {
+                console.log(event.type, event.target)
+            },
+            move(event) {
+                position.x += event.dx
+                position.y += event.dy
 
-            event.target.style.transform =
-                `translate(${position.x}px, ${position.y}px)`
-        },
-    }
-});
+                event.target.style.transform =
+                    `translate(${position.x}px, ${position.y}px)`
+            },
+        }
+    });
 
 </script>
 <template>
@@ -191,7 +199,16 @@ interact('.app-popup .draggable').draggable({
         <div class="edit-item-container draggable">
             <!-- <button @click="logValues">Im a testing button</button> -->
             <form>
-                <h5>Edit Subject</h5>
+                <div class="title-and-handle flex justify-between items-center">
+                    <h5>Edit Subject</h5>
+                    <div class="drag-handle p-1 border border-general_gray_2 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 -rotate-[45deg]">
+                            <path fill-rule="evenodd"
+                                d="M15 3.75a.75.75 0 01.75-.75h4.5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0V5.56l-3.97 3.97a.75.75 0 11-1.06-1.06l3.97-3.97h-2.69a.75.75 0 01-.75-.75zm-12 0A.75.75 0 013.75 3h4.5a.75.75 0 010 1.5H5.56l3.97 3.97a.75.75 0 01-1.06 1.06L4.5 5.56v2.69a.75.75 0 01-1.5 0v-4.5zm11.47 11.78a.75.75 0 111.06-1.06l3.97 3.97v-2.69a.75.75 0 011.5 0v4.5a.75.75 0 01-.75.75h-4.5a.75.75 0 010-1.5h2.69l-3.97-3.97zm-4.94-1.06a.75.75 0 010 1.06L5.56 19.5h2.69a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75v-4.5a.75.75 0 011.5 0v2.69l3.97-3.97a.75.75 0 011.06 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
                 <div class="add-a-title relative">
                     <input type="text" v-bind="subject_name" placeholder="Add a title...">
                     <form-error v-if="errorBag.subject_name" />

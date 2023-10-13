@@ -1,5 +1,6 @@
 @import './AddItem/add_item.scss';
 @import './EditItem/edit_item.scss';
+// @import './Toast/toast.scss';
 
 body .app-popup {
     width: 100vw;
@@ -19,6 +20,9 @@ body .app-popup {
     & .edit-item-container {
         @extend .edit-item-container;
     }
+    // & .toast-container {
+    //     @extend .toast-container;
+    // }
 }
 
 // body .app-popup {

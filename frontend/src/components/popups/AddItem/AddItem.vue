@@ -24,7 +24,9 @@ onMounted(() => {
 });
 
 const position = { x: 0, y: 0 }
-interact('.app-popup .draggable').draggable({
+interact('.app-popup .draggable')
+.draggable({
+    allowFrom: '.drag-handle',
     listeners: {
         start(event) {
             console.log(event.type, event.target)

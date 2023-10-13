@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue';
 import { useForm, useField } from 'vee-validate'; // Form Helper
 import * as yup from 'yup'; // Form Validation
 import DOMPurify from 'dompurify'; // Sanitize HTML
-import {v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 /* Store */
 import { useWeek } from '../../../../../store/userWeek.js'; // Global State Management
@@ -21,6 +21,7 @@ const color_picker = ref(null); // Color - Color Picker
 const color_theme = useSubjectsColorTheme().theme;
 const editor_content = ref(null); // Editor - Subject Info
 const editor_content_delta = ref('{"ops":[]}'); // Editor - Subject Info delta
+const toast = usePopups().toastPopup;
 
 /* API URLs */
 const USER_ID = 1;
@@ -107,6 +108,8 @@ const { value: color, setValue: setColor } = useField('color_picked');
 /* Handle submission */
 const submitForm = handleSubmit((values) => {
 
+    toast.openToast();
+
     let start_time_from_picked_date = new Date(
         values.day.getFullYear(),
         values.day.getMonth(),
@@ -144,7 +147,7 @@ const submitForm = handleSubmit((values) => {
 
     let subjectObject = {};
     subjectObject['id'] = subjectId;
-    
+
     const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
     subjectObject['raw'] = {};
@@ -164,7 +167,7 @@ const submitForm = handleSubmit((values) => {
     /* Push the subject object to the Pinia store */
     week.addSubject(subjectObject['day'], subjectObject);
     // console.log('The Pinia Store after submit: ', week.getWeek()); // Testing
-    
+
     /* Send Data over to the Backend... */
     // try {
     //     fetch(PUT_USER_WEEK_URL, {
@@ -210,7 +213,16 @@ const handleEditorChange = (changeEvent) => {
     <div class="schedule main-panel-container">
         <!-- <button @click="logValues">Im a testing button</button> -->
         <form>
-            <h5>Add a Subject</h5>
+            <div class="title-and-handle flex justify-between items-center">
+                <h5>Add Subject</h5>
+                <div class="drag-handle p-1 border border-general_gray_2 roudned-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 -rotate-[45deg]">
+                        <path fill-rule="evenodd"
+                            d="M15 3.75a.75.75 0 01.75-.75h4.5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0V5.56l-3.97 3.97a.75.75 0 11-1.06-1.06l3.97-3.97h-2.69a.75.75 0 01-.75-.75zm-12 0A.75.75 0 013.75 3h4.5a.75.75 0 010 1.5H5.56l3.97 3.97a.75.75 0 01-1.06 1.06L4.5 5.56v2.69a.75.75 0 01-1.5 0v-4.5zm11.47 11.78a.75.75 0 111.06-1.06l3.97 3.97v-2.69a.75.75 0 011.5 0v4.5a.75.75 0 01-.75.75h-4.5a.75.75 0 010-1.5h2.69l-3.97-3.97zm-4.94-1.06a.75.75 0 010 1.06L5.56 19.5h2.69a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75v-4.5a.75.75 0 011.5 0v2.69l3.97-3.97a.75.75 0 011.06 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+            </div>
             <div class="add-a-title relative">
                 <input type="text" v-bind="subject_name" placeholder="Add a title...">
                 <form-error v-if="errorBag.subject_name" />

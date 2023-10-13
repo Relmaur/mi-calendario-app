@@ -1,13 +1,14 @@
 <script setup>
 // Stores
 import { useMainApp } from '../store/mainApp';
+import { usePopups } from '../store/popups';
+
 const main_app_store = useMainApp();
+const toast = usePopups().toastPopup;
 
 // Components
 import SearchBarAndUser from '../components/SearchBarAndUser.vue';
 import NavigationTabs from '../components/NavigationTabs.vue';
-
-
 
 </script>
 
@@ -60,8 +61,8 @@ import NavigationTabs from '../components/NavigationTabs.vue';
                         fill="white" />
                 </svg>
             </div>
-
             <navigation-tabs :is_mobile="false" />
+            <!-- <p class="p-5 border border-general_gray_2 text-center w-11/12 mx-auto mt-10" @click="toast.openToast()">Test button</p> -->
             <div class="app-content-header--mobile">
                 <search-bar-and-user />
             </div>
