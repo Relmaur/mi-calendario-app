@@ -24,8 +24,9 @@ const editor_content_delta = ref('{"ops":[]}'); // Editor - Subject Info delta
 const toast = usePopups().toastPopup;
 
 /* API URLs */
-const USER_ID = 1;
-const PUT_USER_WEEK_URL = `http://127.0.0.1:3000/api/users/${USER_ID}/week`;
+const USER_ID = 1; // For Node
+const tkn = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb25nY29jayIsImlhdCI6MTY5ODQ2MDIxMywiZXhwIjoxNjk4NTQ2NjEzfQ.1FUG5uzWUFs20mbfQy0R54pdrGa2N7973d2s7I10Gso';
+const PUT_USER_WEEK_URL_JAVA = `http://192.168.1.31:8080/api/v1/schedules/by-user`;
 
 /* Form Values (without vee-validate and by leveraging v-model on the input fields) */
 // const subject_name = ref(null); // Name - Subject Name
@@ -108,8 +109,6 @@ const { value: color, setValue: setColor } = useField('color_picked');
 /* Handle submission */
 const submitForm = handleSubmit((values) => {
 
-    toast.openToast();
-
     let start_time_from_picked_date = new Date(
         values.day.getFullYear(),
         values.day.getMonth(),
@@ -166,37 +165,37 @@ const submitForm = handleSubmit((values) => {
 
     /* Push the subject object to the Pinia store */
     week.addSubject(subjectObject['day'], subjectObject);
-    // console.log('The Pinia Store after submit: ', week.getWeek()); // Testing
+
+    // Prepare for Java backend
+    let JavaWeek = {
+        
+    };
 
     /* Send Data over to the Backend... */
-    // try {
-    //     fetch(PUT_USER_WEEK_URL, {
-    //         method: 'PUT',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(week.getWeek()),
-    //     })
-    // } catch {
+    try {
+        fetch(PUT_USER_WEEK_URL_JAVA, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authentication': `Bearer ${tkn}`,
+            },
+            body: JSON.stringify(week.getWeek()),
+        })
+    } catch(error) {
+      console.log(error)
+    }
 
-    // }
-
+    /* Open Toast */
+    toast.openToast({
+        message: `The subject <strong style="color:${subjectObject['color']}">${subjectObject.name}</strong> was created successfully!`,
+        type: 'success',
+    });
     /* Close form */
     add_subject_popup.addSubjectClose();
 });
 
 /* Testing */
 const logValues = () => {
-    // console.log('Editor content: ', editor_content.value); // Testing
-    // console.log('Editor content delta: ', editor_content_delta.value); // Testing
-    // console.log('Editor content delta: ', typeof editor_content_delta.value); // Testing
-    // console.log('Name', subject_name.value);
-    // console.log('Color', subject_color.value);
-    // console.log('Day', day.value.getDay());
-    // console.log('Hours', start_hour.value.getHours());
-    // console.log('Minutes', start_hour.value.getMinutes());
-    // console.log('Hours', end_hour.value.getHours());
-    // console.log('Minutes', end_hour.value.getMinutes());
 }
 
 onMounted(() => {

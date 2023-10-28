@@ -1,0 +1,41 @@
+{
+    "sunday": [],
+    "monday": [
+        {
+            "id": "48d98b9b-8fc2-49fa-8073-a0f2198f78c5",
+            "raw": {
+                "starts": "2023-10-16T12:33:00.334Z",
+                "ends": "2023-10-16T14:45:00.437Z",
+                "day": "2023-10-16T06:00:00.000Z"
+            },
+            "name": "Topology",
+            "day": "monday",
+            "starts": "6_45",
+            "duration": "2_12",
+            "color": "#ea9eff",
+            "info": null,
+            "info_delta": "{\"ops\":[]}"
+        }
+    ],
+    "tuesday": [],
+    "wednesday": [],
+    "thursday": [],
+    "friday": [
+        {
+            "id": "0265d8e9-0ad1-4923-bfd5-9c33410f07f9",
+            "raw": {
+                "starts": "2023-10-28T02:33:41.370Z",
+                "ends": "2023-10-28T02:33:41.370Z",
+                "day": "2023-10-28T02:33:41.370Z"
+            },
+            "name": "Calculus",
+            "day": "friday",
+            "starts": "20_33",
+            "duration": "0_0",
+            "color": "#FF8C19",
+            "info": null,
+            "info_delta": "{\"ops\":[]}"
+        }
+    ],
+    "saturday": []
+}

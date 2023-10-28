@@ -1,7 +1,8 @@
 <script setup>
 /* Deps */
-import { onMounted, onUnmounted, watch } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { gsap } from 'gsap';
+
 
 /* Stores */
 import { usePopups } from '../../../store/popups.js';
@@ -11,19 +12,35 @@ const toast_data = usePopups().toastPopup.getToastData();
 const toast_entry_timeLine = gsap.timeline({});
 const toast_leave_timeLine = gsap.timeline({});
 
+const toast_queue = ref([]);
+
 onMounted(() => {
 
     /* Animations */
     toast_entry_timeLine
         .fromTo('.toast-container', {
-            bottom: '100px',
+            bottom: '-100px',
             opacity: 0
         }, {
             opacity: 1,
             bottom: '15px',
-            duration: 1.5,
+            duration: 1,
             ease: 'expo.out'
         });
+
+    /* Delayed closing */
+    setTimeout(() => {
+        toast_leave_timeLine
+            .to('.toast-container', {
+                opacity: 0,
+                bottom: '100px',
+                duration: 1,
+                ease: 'expo.out',
+                onComplete: () => {
+                    usePopups().toastPopup.closeToast();
+                }
+            }).play();
+    }, 5000);
 });
 
 const handleToastClick = () => {
@@ -31,7 +48,7 @@ const handleToastClick = () => {
         .to('.toast-container', {
             opacity: 0,
             bottom: '100px',
-            duration: 1.5,
+            duration: 1,
             ease: 'expo.out',
             onComplete: () => {
                 usePopups().toastPopup.closeToast();
@@ -42,7 +59,8 @@ const handleToastClick = () => {
 </script>
 <template>
     <div class="toast-container border border-general_gray_2 flex items-center gap-3 " @click="handleToastClick">
-        <div class="icon p-[15px] " :class="[toast_data.type === 'success' ? 'bg-general_green_2' : toast_data.type === 'failure' ? 'bg-red-500' : '']">
+        <div class="icon p-[10px] rounded-tl-md rounded-br-md"
+            :class="[toast_data.type === 'success' ? 'bg-general_green_2' : toast_data.type === 'failure' ? 'bg-red-500' : '']">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-12 h-12 text-white"
                 v-if="toast_data.type === 'success'">
                 <path fill-rule="evenodd"
@@ -58,7 +76,7 @@ const handleToastClick = () => {
 
         </div>
         <div class="text px-[10px]">
-            <p>{{ toast_data.message }}</p>
+            <p v-html="toast_data.message"></p>
         </div>
     </div>
 </template>

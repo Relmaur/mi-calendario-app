@@ -92,9 +92,6 @@
                 border-right: 1px solid white;
                 cursor: pointer;
             }
-            & div[class|="header-day"]:hover h6 {
-                // color: white;
-            }
 
             & div[class|="header-day"].active h6 {
                 color: $general_blue_2;
@@ -203,7 +200,7 @@
                 // top: calc((100% / 24) * 7.5);
                 // // Duration
                 // height: calc((100% / 24) * 2);
-                min-height: 25px;
+                min-height: 70px;
                 z-index: 15;
                 // background-color: $subject_orange_3;
                 // border: 1px solid $subject_orange_2;

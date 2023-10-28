@@ -33,7 +33,7 @@ const props = defineProps(['subjectObject']);
 
 /* API URLs */
 const USER_ID = 1;
-const PUT_USER_WEEK_URL = `http://127.0.0.1:3000/api/users/${USER_ID}/week`;
+const PUT_USER_WEEK_URL_JAVA = `http://192.168.1.31:8080/api/v1/schedules`;
 
 const colorPicker = () => {
     color_picker.value.click();
@@ -131,21 +131,21 @@ const submitForm = handleSubmit((values) => {
 
     // /* Send Data over to the Backend... */
     // try {
-    //     fetch(PUT_USER_WEEK_URL, {
+    //     fetch(PUT_USER_WEEK_URL_JAVA, {
     //         method: 'PUT',
     //         headers: {
     //             'Content-Type': 'application/json',
     //         },
     //         body: JSON.stringify(week.getWeek()),
     //     })
-    // } catch {
-
+    // } catch(error) { 
+    //   console.log(error)  
     // }
 
     /* Open Toast */
     toast.openToast({
-        message: `The subject ${subjectObject.name} was updated successfully!`,
-        type: 'failure',
+        message: `The subject <strong style="color:${subjectObject['color']}">${subjectObject.name}</strong> was updated successfully!`,
+        type: 'success',
     });
     /* Close form */
     edit_subject_popup.editSubjectClose();

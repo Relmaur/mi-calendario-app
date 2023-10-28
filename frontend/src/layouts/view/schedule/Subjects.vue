@@ -1,6 +1,7 @@
 <script setup>
 // Deps
 import { ref, onMounted, computed, watch } from 'vue';
+import _ from 'lodash';
 
 // Components
 import Subject from '../../../components/subject/Subject.vue';
@@ -10,52 +11,55 @@ import { useWeek } from '../../../store/userWeek.js'; // Pinia Store
 import { useMainApp } from '../../../store/mainApp.js'; // Pinia Store    
 
 const USER_ID = 1;
-const GET_USER_WEEK_SUBJECTS = `http://localhost:3000/api/users/${USER_ID}/week`;
+const tkn = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb25nY29jayIsImlhdCI6MTY5ODQ2MDIxMywiZXhwIjoxNjk4NTQ2NjEzfQ.1FUG5uzWUFs20mbfQy0R54pdrGa2N7973d2s7I10Gso';
+const GET_USER_WEEK_SUBJECTS_JAVA = `http://192.168.1.31:8080/api/v1/schedules/by-user`;
 
 let week_store = useWeek();
 let userWeek = week_store.getWeek();
 let main_app = useMainApp();
 
-const getTimeInMinutes = timeStr => {
-    const [hours, minutes] = timeStr.split('_').map(Number);
-    return hours * 60 + minutes;
-}
-const subjectsOverlap = (start1, duration1, start2, duration2) => {
+const WEEK = [ 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday' ];
 
-    const start1InMinutes = getTimeInMinutes(start1);
-    const end1InMinutes = start1InMinutes + getTimeInMinutes(duration1);
+// const getTimeInMinutes = timeStr => {
+//     const [hours, minutes] = timeStr.split('_').map(Number);
+//     return hours * 60 + minutes;
+// }
+// const subjectsOverlap = (start1, duration1, start2, duration2) => {
 
-    const start2InMinutes = getTimeInMinutes(start2);
-    const end2InMinutes = start2InMinutes + getTimeInMinutes(duration2);
+//     const start1InMinutes = getTimeInMinutes(start1);
+//     const end1InMinutes = start1InMinutes + getTimeInMinutes(duration1);
 
-    return !(end1InMinutes <= start2InMinutes || end2InMinutes <= start1InMinutes);
-}
-// /* Check for overlapping subjects */
-for (let day in userWeek) {
+//     const start2InMinutes = getTimeInMinutes(start2);
+//     const end2InMinutes = start2InMinutes + getTimeInMinutes(duration2);
 
-    /* For the array userWeek[day], of length n, we need iterate subsequent pair of items (starting from the first and the second) i, i+1, until we have the pair n-1, n (the second-to-last and the last)*/
-    userWeek[day].forEach((subject, index, array) => {
-        console.log(array)
+//     return !(end1InMinutes <= start2InMinutes || end2InMinutes <= start1InMinutes);
+// }
+// // /* Check for overlapping subjects */
+// for (let day in userWeek) {
 
-        /* For this, we need to make sure we're not taking the pair n, n+1, since n+1 would be undefined */
-        if (index < array.length - 1) {
+//     /* For the array userWeek[day], of length n, we need iterate subsequent pair of items (starting from the first and the second) i, i+1, until we have the pair n-1, n (the second-to-last and the last)*/
+//     userWeek[day].forEach((subject, index, array) => {
+//         console.log(array)
 
-            /* Once we're sure we're inside of the limits userWeek[day] poses, we extract the pair of items, -starting from the first item (i=0)- i, i+1... We use slice to get subarrays for this two items (that's why we say index, index + 2), and then we assign them using the destructuring assignment*/
-            let [subject_1, subject_2] = array.slice(index, index + 2);
+//         /* For this, we need to make sure we're not taking the pair n, n+1, since n+1 would be undefined */
+//         if (index < array.length - 1) {
 
-            // console.log('Subject 1: ', subject_1); // Testing
-            // console.log('Subject 2: ', subject_2); // Testing
+//             /* Once we're sure we're inside of the limits userWeek[day] poses, we extract the pair of items, -starting from the first item (i=0)- i, i+1... We use slice to get subarrays for this two items (that's why we say index, index + 2), and then we assign them using the destructuring assignment*/
+//             let [subject_1, subject_2] = array.slice(index, index + 2);
 
-            // console.log('Subject 1 starts: ', subject_1.starts); // Testing
-            // console.log('Subject 2 starts: ', subject_2.starts); // Testing
+//             // console.log('Subject 1: ', subject_1); // Testing
+//             // console.log('Subject 2: ', subject_2); // Testing
+
+//             // console.log('Subject 1 starts: ', subject_1.starts); // Testing
+//             // console.log('Subject 2 starts: ', subject_2.starts); // Testing
             
-            /* Once we get a hold of that pair of items, which represent subjects in a given weekday, then we compare them using the subjectsOverlap helper function to see if they overlap... Then we can do all kinds of neat stuff with this data. */
-            if (subjectsOverlap(subject_1.starts, subject_1.duration, subject_2.starts, subject_2.duration)) {
-                console.log('There are overlapping subjects!')
-            }
-        }
-    });
-}
+//             /* Once we get a hold of that pair of items, which represent subjects in a given weekday, then we compare them using the subjectsOverlap helper function to see if they overlap... Then we can do all kinds of neat stuff with this data. */
+//             if (subjectsOverlap(subject_1.starts, subject_1.duration, subject_2.starts, subject_2.duration)) {
+//                 console.log('There are overlapping subjects!')
+//             }
+//         }
+//     });
+// }
 
 /* Use this to test reactivity */
 // watch(userWeek, (newVal) => {
@@ -67,34 +71,45 @@ onMounted(() => {
 
     // console.log('The store is: ', week_store.getWeek()); // Testing
 
-    // let db_week = fetch(GET_USER_WEEK_SUBJECTS, {
-    //     method: 'GET',
-    // });
-    // db_week.then((response) => {
+    let db_week = fetch(GET_USER_WEEK_SUBJECTS_JAVA, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${tkn}`,
+        }
+    });
+    db_week.then((response) => {
 
-    //     // This parses the weird format the response comes in
-    //     return response.json();
+        // This parses the weird format the response comes in 
+        return response.json();
 
-    // }).then((data) => {
+    }).then((data) => {
 
-    //     /* Parse response data into a good ol', usable object notation */
-    //     let week_subjects = JSON.parse(data.user_week);
+        console.log('The data is: ', data[0].subjects);
+        let incoming_week_subjects = data[0].subjects ?? [];
 
-    //     /* Update Pinia Store */
-    //     week_store.updateWeek(week_subjects);
-    //     /* Update component value */
-    //     userWeek.value = week_subjects;
+        // Java Handling
+        WEEK.forEach(weekday => {
+            
+        });
 
-    //     /* Apparently, Vue's v-for unwraps the ref() properties sot that it makes their .value property available... So instead of doing: userWeek.value['sunday'] you just type userWeek['sunday'] */
+        // /* Parse response data into a good ol', usable object notation */
+        // let week_subjects = JSON.parse(data.subjects);
 
-    //     localStorage.setItem('week', JSON.stringify(week_subjects));
+        // /* Update Pinia Store */
+        // week_store.updateWeek(week_subjects);
+        // /* Update component value */
+        // userWeek.value = week_subjects;
 
-    // }).catch(error => {
+        // /* Apparently, Vue's v-for unwraps the ref() properties sot that it makes their .value property available... So instead of doing: userWeek.value['sunday'] you just type userWeek['sunday'] */
 
-    //     console.log('Something went wrong with the data fetchin, the error is: ', error);
-    //     // console.log('Hello from the catch block: ', week_store.getWeek()); // Testing
+        // localStorage.setItem('week', JSON.stringify(week_subjects));
 
-    // });
+    }).catch(error => {
+
+        console.log('Something went wrong with the data fetchinz, the error is: ', error);
+        // console.log('Hello from the catch block: ', week_store.getWeek()); // Testing
+
+    });
 });
 
 

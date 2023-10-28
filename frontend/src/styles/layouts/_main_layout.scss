@@ -52,7 +52,7 @@
                 position: relative;
                 width: 100%;
                 height: auto;
-                padding: 10px;
+                padding: 20px 10px;
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
@@ -91,6 +91,7 @@
             border-top-right-radius: $border-radius;
             border-bottom-right-radius: $border-radius;
             background-color: $general_gray_3;
+            overflow: hidden;
             // padding: 10px;
 
             & .app-main-content {
