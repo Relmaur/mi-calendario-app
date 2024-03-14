@@ -3,6 +3,7 @@ import { ref, watch } from 'vue';
 import _ from 'lodash';
 
 export const useWeek = defineStore("userWeek", () => {
+    
     const WEEK = ref(JSON.parse(localStorage.getItem('week')) ||
     {
         'sunday': [],
@@ -19,7 +20,7 @@ export const useWeek = defineStore("userWeek", () => {
     watch(WEEK, (newVal) => {
         // Store the changes in localStorage
         // localStorage.setItem('week', JSON.stringify(newVal));
-        console.log('Something changed!');
+        // console.log('Something changed!');
 
     }, { deep: true });
 
@@ -63,6 +64,11 @@ export const useWeek = defineStore("userWeek", () => {
 
         localStorage.setItem('week', JSON.stringify(WEEK.value));
     }
+    const deleteSubject = (day, subject) => {
+        let foundIndex = _.findIndex(WEEK.value[day], { id: subject.id });
+        WEEK.value[day].splice(foundIndex, 1);
+        localStorage.setItem('week', JSON.stringify(WEEK.value));
+    }
     const getWeek = () => {
         return WEEK.value;
     }
@@ -75,6 +81,6 @@ export const useWeek = defineStore("userWeek", () => {
         WEEK.value = new_week;
     }
 
-    return { WEEK, addSubject, getWeek, updateWeek, updateSubject, getSubject }
+    return { WEEK, addSubject, getWeek, updateWeek, updateSubject, getSubject, deleteSubject }
 
 });

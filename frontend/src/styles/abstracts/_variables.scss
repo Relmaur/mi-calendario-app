@@ -22,7 +22,8 @@ $colors: (
         "gray-1": #8e8e8e,
         "gray-2": #D9D9D9,
         "gray-3": #f2f2f2,
-        "red-1": #C86A6A
+        "red-1": #C86A6A,
+        "black": #000000,
     ),
     "subjects": (
         "orange-1": #874400,
@@ -52,6 +53,9 @@ $general_gray_3: map.get($colors, "general", "gray-3");
 
 /* Red */
 $general_red_1: map.get($colors, "general", "red-1");
+
+/* Black */
+$general_black: map.get($colors, "general", "black");
 
 /*===== Subjects =====*/
 

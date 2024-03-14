@@ -6,6 +6,10 @@ import * as yup from 'yup'; // Form Validation
 import DOMPurify from 'dompurify'; // Sanitize HTML
 import interact from 'interactjs';
 
+/* GraphQL */
+import { useQuery, useMutation } from '@vue/apollo-composable';
+import gql from 'graphql-tag';
+
 /* Components */
 import Calendar from 'primevue/calendar'; // Calendar
 import quillEditor from 'primevue/editor'; // Editor
@@ -26,14 +30,21 @@ const toast = usePopups().toastPopup;
 const color_picker = ref(null); // Color - Colors Picker
 const color_theme = useSubjectsColorTheme().theme;
 const editor_content = ref(null); // Editor - Subject Info
-const editor_content_delta = ref(edit_subject_object.info_delta); // Editor - Subject Info delta
+const editor_content_delta = ref(edit_subject_object.infoDelta); // Editor - Subject Info delta
+
+console.log('From Popup props: ', editor_content_delta.value); // Testing
 
 /* Props */
 const props = defineProps(['subjectObject']);
 
-/* API URLs */
-const USER_ID = 1;
-const PUT_USER_WEEK_URL_JAVA = `http://192.168.1.31:8080/api/v1/schedules`;
+/* Node backend */
+const USER_ID = 2;
+const SCHEDULE_ID = 1;
+// const PUT_USER_WEEK_URL_NODE = `http://localhost:3000/api/v1/${USER_ID}/${SCHEDULE_ID}`;
+
+/* Java Backend */
+const tkn = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtbGl6YXJkbyIsImlhdCI6MTcwMDc3NzY5MCwiZXhwIjoxNzAwODY0MDkwfQ.q7txz12Y2yjWKMAoESuXvLhi3iaOsfgT1Ft8z_bKQ38';
+const PUT_USER_WEEK_URL_JAVA = `http://192.168.1.31:8080/api/v1/subjects`;
 
 const colorPicker = () => {
     color_picker.value.click();
@@ -118,28 +129,56 @@ const submitForm = handleSubmit((values) => {
     subjectObject['name'] = subjectName;
     subjectObject['starts'] = `${subjectStartHour}_${subjectStartMinutes}`;
     subjectObject['duration'] = `${durationHours}_${durationMinutes}`;
-    subjectObject['day'] = subjectDay;
+    subjectObject['day'] = subjectDay.toUpperCase();
     subjectObject['color'] = subjectColor;
     subjectObject['info'] = subjectInfoHTML;
-    subjectObject['info_delta'] = subjectInfoDelta;
+    subjectObject['infoDelta'] = subjectInfoDelta;
 
-    console.log('The data to be submitted: ', subjectObject);
+    console.log('The data to be submitted: ', subjectObject); // Testing
 
     // // Update Subject in Pinia Store
-    week.updateSubject(subjectObject['day'], subjectObject);
+    week.updateSubject(subjectObject['day'].toLowerCase(), subjectObject);
     console.log('The new day is: ', subjectObject['day']);
+    console.log(week.getWeek());
 
-    // /* Send Data over to the Backend... */
+    /*
+       ===============
+          Node Backend
+       ===============
+    */
+    const UPDATE_WEEK_MUTATION = gql`
+        mutation updateWeek($id: ID!, $week: String!, $userId: ID!) {
+            updateWeek(id: $id, week: $week, userId: $userId) {
+                week
+            }
+        }
+    `;
+
+    const { mutate: updateWeek } = useMutation(UPDATE_WEEK_MUTATION);
+
+    updateWeek({
+        id: `${SCHEDULE_ID}`,
+        week: JSON.stringify(week.getWeek()),
+        userId: `${USER_ID}`
+    });
+
+    /*
+       ===============
+          Java Backend
+       ===============
+    */
+    /* Send Data over to the Backend... */
     // try {
     //     fetch(PUT_USER_WEEK_URL_JAVA, {
     //         method: 'PUT',
     //         headers: {
     //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${tkn}`,
     //         },
-    //         body: JSON.stringify(week.getWeek()),
+    //         body: JSON.stringify(subjectObject),
     //     })
-    // } catch(error) { 
-    //   console.log(error)  
+    // } catch (error) {
+    //     console.log(error)
     // }
 
     /* Open Toast */
@@ -151,14 +190,69 @@ const submitForm = handleSubmit((values) => {
     edit_subject_popup.editSubjectClose();
 });
 
+const deleteSubject = (id) => {
+
+    // console.log(edit_subject_object.day)
+    week.deleteSubject(edit_subject_object.day.toLowerCase(), id);
+
+    /*
+       ===============
+          Node Backend
+       ===============
+    */
+    const UPDATE_WEEK_MUTATION = gql`
+        mutation updateWeek($id: ID!, $week: String!, $userId: ID!) {
+            updateWeek(id: $id, week: $week, userId: $userId) {
+                week
+            }
+        }
+    `;
+
+    const { mutate: updateWeek } = useMutation(UPDATE_WEEK_MUTATION);
+
+    updateWeek({
+        id: `${SCHEDULE_ID}`,
+        week: JSON.stringify(week.getWeek()),
+        userId: `${USER_ID}`
+    });
+
+    /*
+       ===============
+          Java Backend
+       ===============
+    */
+    /* Send Data over to the Backend... */
+    // try {
+    //     fetch(`http://192.168.1.31:8080/api/v1/subjects/${id}`, {
+    //         method: 'DELETE',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             // 'Authorization': `Bearer ${tkn}`,
+    //         },
+    //     })
+    // } catch (error) {
+    //     console.log(error)
+    // }
+
+    edit_subject_popup.editSubjectClose();
+
+    /* Open Toast */
+    toast.openToast({
+        message: `The subject <strong style="color:${edit_subject_object['color']}">${edit_subject_object.name}</strong> has been deleted successfully!`,
+        type: 'success',
+    });
+
+}
+
 onMounted(() => {
-    // console.log('Edit Item got mounted, and this is the store: ', edit_subject_object.id); // Testing
+    // console.log('Edit Item got mounted, and this is the store: ', edit_subject_object.id); // 
 
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
             edit_subject_popup.editSubjectClose();
         }
     });
+
 });
 
 /* Testing */
@@ -167,12 +261,11 @@ const logValues = () => {
 }
 
 const handleEditorLoad = (loadEvent) => {
-    loadEvent.instance.setContents(editor_content_delta.value);
-    // console.log('Edit Editor Instance: ', loadEvent.instance); // Testing
+    loadEvent.instance.setContents(JSON.parse(editor_content_delta.value));
 }
 const handleEditorChange = (changeEvent) => {
     editor_content.value = DOMPurify.sanitize(changeEvent.htmlValue); // Sanitized HTML for extra security
-    editor_content_delta.value = changeEvent.instance.editor.delta; // the Delta object
+    editor_content_delta.value = JSON.stringify(changeEvent.instance.editor.delta); // the Delta object
 }
 
 const position = { x: 0, y: 0 }
@@ -202,7 +295,8 @@ interact('.app-popup .draggable')
                 <div class="title-and-handle flex justify-between items-center">
                     <h5>Edit Subject</h5>
                     <div class="drag-handle p-1 border border-general_gray_2 rounded-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 -rotate-[45deg]">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-6 h-6 -rotate-[45deg]">
                             <path fill-rule="evenodd"
                                 d="M15 3.75a.75.75 0 01.75-.75h4.5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0V5.56l-3.97 3.97a.75.75 0 11-1.06-1.06l3.97-3.97h-2.69a.75.75 0 01-.75-.75zm-12 0A.75.75 0 013.75 3h4.5a.75.75 0 010 1.5H5.56l3.97 3.97a.75.75 0 01-1.06 1.06L4.5 5.56v2.69a.75.75 0 01-1.5 0v-4.5zm11.47 11.78a.75.75 0 111.06-1.06l3.97 3.97v-2.69a.75.75 0 011.5 0v4.5a.75.75 0 01-.75.75h-4.5a.75.75 0 010-1.5h2.69l-3.97-3.97zm-4.94-1.06a.75.75 0 010 1.06L5.56 19.5h2.69a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75v-4.5a.75.75 0 011.5 0v2.69l3.97-3.97a.75.75 0 011.06 0z"
                                 clip-rule="evenodd" />
@@ -327,7 +421,7 @@ interact('.app-popup .draggable')
                 <p>At the time of the event</p>
             </div> -->
                 <div class="confirm-options">
-                    <div class="error-disclaimer mr-auto flex gap-1 justify-center items-center"
+                    <div class="error-disclaimer mr-auto flex gap-1 justify-start items-center w-full"
                         v-if="Object.keys(errorBag).length > 0">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                             class="w-8 h-8 text-general_red_1">
@@ -338,17 +432,32 @@ interact('.app-popup .draggable')
                         <p>Errors in form!</p>
                         <!-- <p>{{ errorBag }}</p> -->
                     </div>
-                    <div class="cancel hover:cursor-pointer" @click="edit_subject_popup.editSubjectClose()">
-                        <p>Cancel</p>
-                    </div>
-                    <div class="add hover-cursor-pointer group/plus_icon" @click="submitForm">
-                        <p>Apply</p>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-10 h-10 text-general_gray_2 transition group-hover/plus_icon:text-general_green_1">
-                            <path fill-rule="evenodd"
-                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
-                                clip-rule="evenodd" />
-                        </svg>
+                    <div class="erase-cancel-apply flex justify-between gap-2 w-full">
+                        <div class="erase p-1 border border-general_gray_2 rounded-md flex justify-center items-center"
+                            @click="deleteSubject(edit_subject_object.id)">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-6 h-6 text-red-400 hover:cursor-pointer hover:scale-105">
+                                <path fill-rule="evenodd"
+                                    d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="add-cancel flex items-center justify-end">
+                            <div class="cancel pl-2 hover:cursor-pointer pr-3 border-r border-primary_gray_1"
+                                @click="edit_subject_popup.editSubjectClose()">
+                                <p>Cancel</p>
+                            </div>
+                            <div class="add pl-3 border-l border-primary_gray_1 hover-cursor-pointer group/plus_icon"
+                                @click="submitForm">
+                                <p>Apply</p>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                    class="w-10 h-10 text-general_gray_2 transition group-hover/plus_icon:text-general_green_1">
+                                    <path fill-rule="evenodd"
+                                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>

@@ -1,0 +1,68 @@
+.settings-menu-container {
+    position: relative;
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    // background-color: rgba(255, 255, 255, 0.5);
+    // backdrop-filter: blur(5px);
+
+    & .settings-menu {
+        display: none;
+        position: absolute;
+        width: 100%;
+        max-width: 300px;
+        top: 45px;
+        right: 0;
+        background-color: #ffffff;
+        padding: 20px 10px;
+        border: 1px solid $general_black;
+        border-radius: $border-radius;
+    }
+
+    & .settings-menu.opened {
+        display: flex !important;
+        flex-direction: column !important;
+
+        & div[class|="section"] {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        & div[class|="section"]:first-child {
+            padding: 0 0 10px 0;
+        }
+
+        & div[class|="section"]:last-child {
+            padding: 10px 0 0 0;
+        }
+
+        & div[class|="section"]:not(:last-child) {
+            border-bottom: 1px solid $general_gray_2;
+        }
+
+        & div[class|="section"]:not(:first-child, :last-child) {
+            padding: 10px 0;
+        }
+
+        & div[class|="section"] .section__item:hover {
+            cursor: pointer;
+        }
+
+        & div[class|="section"] .section__item:not(:first-child) {
+            padding: 0 0 0 25px;
+        }
+
+        & div[class|="section"] .section__item:not(:first-child, .logout) svg {
+            display: none;
+        }
+
+        & div[class|="section"] .section__item:not(.logout) svg path {
+            fill: $general_green_1;
+        }
+
+        & div[class|="section"] .section__item.logout svg path {
+            fill: $general_red_1;
+        }
+
+    }
+}

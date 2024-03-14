@@ -11,6 +11,8 @@ const week_store = useWeek();
 
 onMounted(() => {
 
+    // console.log('Props for Popup: ', props.subjectObject)
+
 });
 
 // Format strings with spaces

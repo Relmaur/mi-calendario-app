@@ -1,7 +1,18 @@
 <script setup>
+
 import { ref } from 'vue';
 import { useMainApp } from '../store/mainApp.js';
+import { useCookies } from '../store/cookies.js';
+import { usePopups } from '../store/popups.js'; 
+
+const cookies = useCookies();
 const main_app_store = useMainApp();
+const settings_menu = usePopups().settingsMenu;
+
+const userSession = ref({})
+userSession.value = JSON.parse(cookies.getCookie('userSession'));
+
+const userName = userSession.value.userName;
 
 let menuOpened = ref(true);
 
@@ -16,9 +27,11 @@ const menu_toggler = () => {
 
 <template>
     <div class="search-bar-and-user">
-        <div class="close-sidebar hidden lg:block p-1 border self-center rounded-md hover:cursor-pointer" :class="menuOpened ? 'border-general_green_3' : 'border-general_gray_2'" @click="menu_toggler">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                class="w-7 h-7 flex justify-center items-center" :class="menuOpened ? 'text-general_blue_1' : 'text-black'">
+        <div class="close-sidebar hidden lg:block p-1 border self-center rounded-md hover:cursor-pointer"
+            :class="menuOpened ? 'border-general_green_3' : 'border-general_gray_2'" @click="menu_toggler">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-7 h-7 flex justify-center items-center"
+                :class="menuOpened ? 'text-general_blue_1' : 'text-black'">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             </svg>
         </div>
@@ -44,10 +57,13 @@ const menu_toggler = () => {
                 </div>
                 <p class="text-md lg:text-md">Search</p>
             </div>
-            <div class="user">
-                <div class="user-image relative group/user_image">
+            <div class="user flex items-center justify-center gap-3">
+                <div class="user-name flex items-center justify-center gap-2 hover:cursor-pointer">
+                    <p class="text-general_gray_2 font-[500]" v-text="userName"></p>
+                </div>
+                <div class="user-image relative group/user_image" @click="settings_menu.toggleSettings()">
                     <div
-                        class="settings-icon absolute z-99 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full flex justify-center items-center transition group-hover/user_image:backdrop-brightness-75">
+                        class="settings-icon absolute z-[999] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full flex justify-center items-center transition group-hover/user_image:backdrop-brightness-75">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                             class="w-8 h-8 text-white opacity-0 transition rotate-12 group-hover/user_image:opacity-100 group-hover/user_image:rotate-0">
                             <path fill-rule="evenodd"

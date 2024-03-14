@@ -6,6 +6,10 @@ import * as yup from 'yup'; // Form Validation
 import DOMPurify from 'dompurify'; // Sanitize HTML
 import { v4 as uuidv4 } from 'uuid';
 
+/* Graphql */
+import { useMutation } from '@vue/apollo-composable'
+import gql from 'graphql-tag';
+
 /* Store */
 import { useWeek } from '../../../../../store/userWeek.js'; // Global State Management
 import { usePopups } from '../../../../../store/popups.js'; // Global State Management
@@ -19,14 +23,19 @@ import FormError from '../../../../../components/FormError.vue'; // Form Error
 /* Refs */
 const color_picker = ref(null); // Color - Color Picker
 const color_theme = useSubjectsColorTheme().theme;
-const editor_content = ref(null); // Editor - Subject Info
+const editor_content = ref(""); // Editor - Subject Info
 const editor_content_delta = ref('{"ops":[]}'); // Editor - Subject Info delta
 const toast = usePopups().toastPopup;
 
-/* API URLs */
-const USER_ID = 1; // For Node
-const tkn = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb25nY29jayIsImlhdCI6MTY5ODQ2MDIxMywiZXhwIjoxNjk4NTQ2NjEzfQ.1FUG5uzWUFs20mbfQy0R54pdrGa2N7973d2s7I10Gso';
-const PUT_USER_WEEK_URL_JAVA = `http://192.168.1.31:8080/api/v1/schedules/by-user`;
+
+/* Node backend */
+const USER_ID = 2;
+const SCHEDULE_ID = 1;
+// const PUT_USER_WEEK_URL_NODE = `http://localhost:3000/api/v1/${USER_ID}/${SCHEDULE_ID}`;
+
+/* Java backend */
+const tkn = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtbGl6YXJkbyIsImlhdCI6MTcwMDc3NzY5MCwiZXhwIjoxNzAwODY0MDkwfQ.q7txz12Y2yjWKMAoESuXvLhi3iaOsfgT1Ft8z_bKQ38';
+const PUT_USER_WEEK_URL_JAVA = `http://192.168.1.31:8080/api/v1/subjects`;
 
 /* Form Values (without vee-validate and by leveraging v-model on the input fields) */
 // const subject_name = ref(null); // Name - Subject Name
@@ -155,35 +164,57 @@ const submitForm = handleSubmit((values) => {
     subjectObject['raw']['day'] = values.day.toISOString();
 
     subjectObject['name'] = subjectName;
-    subjectObject['day'] = weekdays[subjectDay];
+    subjectObject['day'] = weekdays[subjectDay].toUpperCase();
     subjectObject['starts'] = `${subjectStartHour}_${subjectStartMinutes}`;
     subjectObject['duration'] = `${durationHours}_${durationMinutes}`;
     subjectObject['color'] = subjectColor;
     subjectObject['info'] = subjectInfoHTML;
-    subjectObject['info_delta'] = subjectInfoDelta;
+    subjectObject['infoDelta'] = subjectInfoDelta;
 
+    console.log('Subject is: ', JSON.stringify(subjectObject)); // Testing
 
     /* Push the subject object to the Pinia store */
-    week.addSubject(subjectObject['day'], subjectObject);
+    week.addSubject(subjectObject['day'].toLowerCase(), subjectObject);
 
-    // Prepare for Java backend
-    let JavaWeek = {
-        
-    };
+    /*
+       ===============
+          Node Backend
+       ===============
+    */
+    const UPDATE_WEEK_MUTATION = gql`
+        mutation updateWeek($id: ID!, $week: String!, $userId: ID!) {
+            updateWeek(id: $id, week: $week, userId: $userId) {
+                week
+            }
+        }
+    `;
 
+    const { mutate: updateWeek } = useMutation(UPDATE_WEEK_MUTATION);
+
+    updateWeek({
+        id: `${SCHEDULE_ID}`,
+        week: JSON.stringify(week.getWeek()),
+        userId: `${USER_ID}`
+    });
+    
+    /*
+       ===============
+          Java Backend
+       ===============
+    */
     /* Send Data over to the Backend... */
-    try {
-        fetch(PUT_USER_WEEK_URL_JAVA, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authentication': `Bearer ${tkn}`,
-            },
-            body: JSON.stringify(week.getWeek()),
-        })
-    } catch(error) {
-      console.log(error)
-    }
+    // try {
+    //     fetch(PUT_USER_WEEK_URL_JAVA, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${tkn}`,
+    //         },
+    //         body: JSON.stringify(subjectObject),
+    //     })
+    // } catch(error) {
+    //   console.log(error)
+    // }
 
     /* Open Toast */
     toast.openToast({
@@ -204,7 +235,7 @@ onMounted(() => {
 
 const handleEditorChange = (changeEvent) => {
     editor_content.value = DOMPurify.sanitize(changeEvent.htmlValue); // Sanitized HTML for extra security
-    editor_content_delta.value = changeEvent.instance.editor.delta; // the Delta object
+    editor_content_delta.value = JSON.stringify(changeEvent.instance.editor.delta); // the Delta object
 }
 
 </script>
@@ -272,7 +303,7 @@ const handleEditorChange = (changeEvent) => {
                 </div>
                 <div class="ends hover:cursor-pointer relative">
                     <div class="flex justify-center items-center gap-3">
-                        <p>Ends</p>
+                        <p>Ends</p> 
                         <!-- <div class="end_hour-badge">8:00</div> -->
                         <div class="end_hour-badge w-full flex justify-center">
                             <calendar v-bind="end_hour" appendTo=".schedule .date .ends" timeOnly />

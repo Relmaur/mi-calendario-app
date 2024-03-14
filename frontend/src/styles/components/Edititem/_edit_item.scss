@@ -127,6 +127,7 @@
     & .confirm-options {
         width: 100%;
         display: flex;
+        flex-direction: column;
         justify-content: flex-end;
         align-items: center;
         gap: 20px;

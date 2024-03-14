@@ -1,8 +1,10 @@
 import { defineStore } from "pinia";
 import { ref } from 'vue';
+import _ from 'lodash';
 
-export const usePopups = defineStore("popups", () => {
-
+export const usePopups = defineStore("popups", () => { 
+    /* Settings Menu*/
+    const settingsMenu_open = ref(false)
     /* Add Subject */
     const addSubject_open = ref(false);
     /* Edit Subject */
@@ -12,6 +14,28 @@ export const usePopups = defineStore("popups", () => {
     /* Toast Ref */
     const toast_open = ref(false);
     const toast_data = ref({});
+
+    const  closeAllPopups = function () {
+        settingsMenu_open.value = false;
+        addSubject_open.value = false;
+        editSubject_open.value = false;
+        toast_open.value = false;
+    }
+
+    let settingsMenu = {
+        openSettings() {
+            settingsMenu_open.value = true;
+        },
+        closeSettings() {
+            settingsMenu_open.value = false;
+        },
+        toggleSettings() {
+            settingsMenu_open.value = !settingsMenu_open.value;
+        },
+        isSettingsMenuOpen() {
+            return settingsMenu_open.value;
+        }
+    }
 
     let toastPopup = {
         openToast(data) {
@@ -49,7 +73,7 @@ export const usePopups = defineStore("popups", () => {
         editSubjectOpen(subject) {
             editSubject_open.value = true;
             subjectObject.value = subject;
-            console.log('From Pinia: ', subjectObject.value); // Testing
+            // console.log('From Pinia: ', subjectObject.value); // Testing
         },
         editSubjectClose() {
             editSubject_open.value = false;
@@ -62,9 +86,9 @@ export const usePopups = defineStore("popups", () => {
         },
         updateSubjectObject(subject) {
             subjectObject.value = subject;
-        }
+        },
     }
 
-    return { addSubjectPopup, editSubjectPopup, toastPopup }
+    return { settingsMenu, addSubjectPopup, editSubjectPopup, toastPopup, closeAllPopups }
 
 });

@@ -2,13 +2,17 @@
 // Stores
 import { useMainApp } from '../store/mainApp';
 import { usePopups } from '../store/popups';
+import { useWeek } from '../store/userWeek';
 
 const main_app_store = useMainApp();
 const toast = usePopups().toastPopup;
+const userWeek = useWeek().getWeek();
 
 // Components
 import SearchBarAndUser from '../components/SearchBarAndUser.vue';
 import NavigationTabs from '../components/NavigationTabs.vue';
+
+console.log(userWeek);
 
 </script>
 

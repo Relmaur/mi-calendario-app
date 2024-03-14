@@ -3,22 +3,34 @@
 import { ref, onMounted, computed, watch } from 'vue';
 import _ from 'lodash';
 
+/* GraphQL */
+import { useQuery } from '@vue/apollo-composable';
+import gql from 'graphql-tag';
+
 // Components
 import Subject from '../../../components/subject/Subject.vue';
 
 // Stores
 import { useWeek } from '../../../store/userWeek.js'; // Pinia Store    
 import { useMainApp } from '../../../store/mainApp.js'; // Pinia Store    
+import { useCookies } from '../../../store/cookies.js'; // Pinia Store
 
+/* Node backend */
 const USER_ID = 1;
-const tkn = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsb25nY29jayIsImlhdCI6MTY5ODQ2MDIxMywiZXhwIjoxNjk4NTQ2NjEzfQ.1FUG5uzWUFs20mbfQy0R54pdrGa2N7973d2s7I10Gso';
-const GET_USER_WEEK_SUBJECTS_JAVA = `http://192.168.1.31:8080/api/v1/schedules/by-user`;
+const SCHEDULE_ID = 1;
+// const GET_USER_WEEK_URL_NODE = `http://localhost:3000/api/v1/${USER_ID}/${SCHEDULE_ID}`;
+
+/* Java Backend */
+// const tkn = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtbGl6YXJkbyIsImlhdCI6MTcwMDc3NzY5MCwiZXhwIjoxNzAwODY0MDkwfQ.q7txz12Y2yjWKMAoESuXvLhi3iaOsfgT1Ft8z_bKQ38';
+const cookies = useCookies();
+const tkn = useCookies().getToken();
+const GET_USER_WEEK_URL_JAVA = `http://192.168.1.31:8080/api/v1/schedules/by-user`;
 
 let week_store = useWeek();
 let userWeek = week_store.getWeek();
 let main_app = useMainApp();
 
-const WEEK = [ 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday' ];
+const WEEK = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
 // const getTimeInMinutes = timeStr => {
 //     const [hours, minutes] = timeStr.split('_').map(Number);
@@ -52,7 +64,7 @@ const WEEK = [ 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday',
 
 //             // console.log('Subject 1 starts: ', subject_1.starts); // Testing
 //             // console.log('Subject 2 starts: ', subject_2.starts); // Testing
-            
+
 //             /* Once we get a hold of that pair of items, which represent subjects in a given weekday, then we compare them using the subjectsOverlap helper function to see if they overlap... Then we can do all kinds of neat stuff with this data. */
 //             if (subjectsOverlap(subject_1.starts, subject_1.duration, subject_2.starts, subject_2.duration)) {
 //                 console.log('There are overlapping subjects!')
@@ -69,47 +81,119 @@ const WEEK = [ 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday',
 /* Lifecycle Hooks */
 onMounted(() => {
 
-    // console.log('The store is: ', week_store.getWeek()); // Testing
+    /*
+       ===============
+          Node Backend
+       ===============
+    */
 
-    let db_week = fetch(GET_USER_WEEK_SUBJECTS_JAVA, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${tkn}`,
+    const get_week_from_db = async () => {
+        
+        try {
+            const GET_WEEK_QUERY = gql`
+                query getWeek($id: ID!) {
+                    week(id: $id)
+                }
+            `;
+
+            const { result } = await useQuery(GET_WEEK_QUERY, {
+                id: `${SCHEDULE_ID}`
+            });
+
+            console.log('This is the GraphQL week data: ', result.value); // Testing
+
+            let incoming_week_subjects = result.value.week ?? {};
+
+            console.log('Incoming week subjects', JSON.parse(incoming_week_subjects))
+
+            week_store.updateWeek(JSON.parse(incoming_week_subjects));
+
+            // for (const day in incoming_week_subjects) {
+            //     week_store.addSubject(day, incoming_week_subjects[day])   
+            // }
+
+            // incoming_week_subjects.forEach(day => {
+
+            //     // console.log(day); // Testing
+
+            //     let day_name = day.day.toLowerCase();
+            //     incoming_week_subject_object[day_name] = day.subjects;
+
+            //     // console.log(day_name)
+            //     day.subjects.forEach(subject => {
+            //         week_store.addSubject(day_name, subject)
+            //     });
+            // });
+
+
+            localStorage.setItem('week', incoming_week_subjects);
+
+        } catch (error) {
+            console.log('Something went wrong with the GraphQL data fetching, the error is: ', error);
         }
-    });
-    db_week.then((response) => {
+    }
 
-        // This parses the weird format the response comes in 
-        return response.json();
+    get_week_from_db();
 
-    }).then((data) => {
+    /*
+       ===============
+          Java Backend
+       ===============
+    */
+    // let db_week = fetch(GET_USER_WEEK_URL_JAVA, {
+    //     method: 'GET',
 
-        console.log('The data is: ', data[0].subjects);
-        let incoming_week_subjects = data[0].subjects ?? [];
+    //     // For Java backend
+    //     headers: {
+    //         'Authorization': `Bearer ${tkn}`,
+    //     }
+    // });
+    // db_week.then((response) => {
 
-        // Java Handling
-        WEEK.forEach(weekday => {
-            
-        });
 
-        // /* Parse response data into a good ol', usable object notation */
-        // let week_subjects = JSON.parse(data.subjects);
+    //     // console.log('Node response is: ', response.json()); // Node backend testing
 
-        // /* Update Pinia Store */
-        // week_store.updateWeek(week_subjects);
-        // /* Update component value */
-        // userWeek.value = week_subjects;
+    //     // This parses the weird format the response comes in 
+    //     return response.json();
 
-        // /* Apparently, Vue's v-for unwraps the ref() properties sot that it makes their .value property available... So instead of doing: userWeek.value['sunday'] you just type userWeek['sunday'] */
+    // }).then((data) => {
 
-        // localStorage.setItem('week', JSON.stringify(week_subjects));
+    //     let incoming_week_subjects = data.week ?? [];
+    //     let incoming_week_subject_object = {
+    //         'sunday': [],
+    //         'monday': [],
+    //         'tuesday': [],
+    //         'wednesday': [],
+    //         'thursday': [],
+    //         'friday': [],
+    //         'saturday': [],
+    //     };
 
-    }).catch(error => {
+    //     incoming_week_subjects.forEach(day => {
+    //         console.log(day); // Testing 
+    //         let day_name = day.day.toLowerCase();
+    //         incoming_week_subject_object[day_name] = day.subjects;
 
-        console.log('Something went wrong with the data fetchinz, the error is: ', error);
-        // console.log('Hello from the catch block: ', week_store.getWeek()); // Testing
+    //         // console.log(day_name)
+    //         day.subjects.forEach(subject => {
+    //             week_store.addSubject(day_name, subject)
+    //         });
+    //     });
 
-    });
+    //     week_store.updateWeek(incoming_week_subject_object);
+
+    //     // /* Update Pinia Store */
+    //     // week_store.updateWeek(week_subjects);
+
+    //     // /* Apparently, Vue's v-for unwraps the ref() properties sot that it makes their .value property available... So instead of doing: userWeek.value['sunday'] you just type userWeek['sunday'] */
+    //     // localStorage.setItem('week', JSON.stringify(incoming_week_subject_object));
+
+    // }).catch(error => {
+
+    //     console.log('Something went wrong with the data fetchin, the error is: ', error);
+    //     // console.log('Hello from the catch block: ', week_store.getWeek()); // Testing
+
+    // });
 });
 
 

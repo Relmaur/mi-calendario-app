@@ -7,8 +7,10 @@ import AppBody from './view/AppBody.vue';
 <template>
     <div class="right-side">
         <div class="app-main-content">
-            <app-header />
-            <app-body />
+            <div class="app-main-content-wrapper">
+                <app-header />
+                <app-body />
+            </div>
         </div>
     </div>
 </template>
