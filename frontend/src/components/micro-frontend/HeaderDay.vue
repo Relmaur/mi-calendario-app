@@ -4,6 +4,7 @@ import { defineProps } from 'vue';
 
 // Stores
 import { useMainApp } from '../../store/mainApp';
+import { useWeek } from '../../store/userWeek';
 
 const main_app = useMainApp();
 

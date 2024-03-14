@@ -7,8 +7,11 @@ import { useCookies } from '../../../store/cookies';
 
 let cookies = useCookies();
 
-let active_subscription = 'pro';
+// TODO: get this from the database
+let active_subscription = JSON.parse(cookies.getCookie('userSession')).subscription;
 let subscription_badge = ref('')
+ 
+console.log('User Subscription', active_subscription)
 
 if(active_subscription === 'pro') {
     subscription_badge.value = 'PRO'
@@ -51,14 +54,14 @@ onMounted(() => {
                     <div class="section__item flex items-center justify-start gap-2">
                         <p>Lorem Ipsum</p>
                     </div>
-                    <div class="section__item logout flex items-center justify-start gap-2 hover:cursor-pointer"
+                    <div class="section__item logout flex items-center justify-start gap-2 hover:cursor-pointer group/logout"
                         @click="cookies.logout()">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                             <path fill-rule="evenodd"
                                 d="M12 2.25a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM6.166 5.106a.75.75 0 0 1 0 1.06 8.25 8.25 0 1 0 11.668 0 .75.75 0 1 1 1.06-1.06c3.808 3.807 3.808 9.98 0 13.788-3.807 3.808-9.98 3.808-13.788 0-3.808-3.807-3.808-9.98 0-13.788a.75.75 0 0 1 1.06 0Z"
                                 clip-rule="evenodd" />
                         </svg>
-                        <p>Log Out</p>
+                        <p class="group-hover/logout:text-general_red_1">Log Out</p>
                     </div>
                 </div>
                 <div class="section-subscription">
@@ -70,10 +73,13 @@ onMounted(() => {
                         </svg>
 
                         <p>Subscription</p>
-                        <span class="p-1 text-[8px] rounded-md border border-general_gray_1" v-text="subscription_badge"></span>
+                        <span class="p-1 text-[8px] rounded-md border border-general_gray_1"
+                            v-text="subscription_badge"></span>
                     </div>
-                    <div class="section__item flex items-center justify-start gap-2">
-                        <p>Upgrade</p>
+                    <div class="section__item flex items-center justify-start gap-2"
+                        :class="{ 'pointer-events-none text-general-gray-2': active_subscription == 'pro'}">
+                        <p :class="{ 'text-general_gray_2': active_subscription == 'pro' }">Upgrade
+                        </p>
                     </div>
                 </div>
                 <div class="section-schedule">

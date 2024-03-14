@@ -33,7 +33,7 @@ export const useCookies = defineStore('cookies', () => {
     const logout = () => {
         Cookies.remove('accessToken');
         Cookies.remove('refreshToken');
-        Cookies.remove('userName');
+        Cookies.remove('userSession');
         token.value = '';
         userName.value = '';
         // Redirect to login page

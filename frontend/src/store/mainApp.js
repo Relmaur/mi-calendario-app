@@ -5,13 +5,20 @@ export const useMainApp = defineStore('mainApp', () => {
 
     const isSidebarOpen = ref(true);
     const selected_day = ref(null);
+    const isDaySubjectsOpen = ref(false);
 
     const openSelected = (day) => {
         selected_day.value = day;
+        // console.log('The selected day is: ',selected_day.value) // Testing
+    }
+    const openDaySubjects = () => {
+        isDaySubjectsOpen.value = true;
     }
     const closeSelected = () => {
         selected_day.value = '';
-        console.log('I got clicked!')
+    }
+    const getSelected = () => {
+        return selected_day.value;
     }
 
     const toggleSidebar = () => {
@@ -21,6 +28,6 @@ export const useMainApp = defineStore('mainApp', () => {
         return isSidebarOpen.value;
     }
 
-    return { isSidebarOpen, toggleSidebar, isOpened, openSelected, closeSelected, selected_day }
+    return { isSidebarOpen, toggleSidebar, isOpened, isDaySubjectsOpen, openSelected, closeSelected, selected_day, getSelected, openDaySubjects }
 
 });

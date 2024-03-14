@@ -1,4 +1,6 @@
 <script setup>
+import { ref, onMounted, watch } from 'vue';
+
 // Stores
 import { useMainApp } from '../store/mainApp';
 import { usePopups } from '../store/popups';
@@ -6,19 +8,30 @@ import { useWeek } from '../store/userWeek';
 
 const main_app_store = useMainApp();
 const toast = usePopups().toastPopup;
+const edit_subject_popup = usePopups().editSubjectPopup;
 const userWeek = useWeek().getWeek();
+const selected_day = ref(main_app_store.getSelected());
+
+
+
+// console.log('This is the user week right here:', userWeek[selected_day]) // This wont work because the selected day is unselected on first load
 
 // Components
 import SearchBarAndUser from '../components/SearchBarAndUser.vue';
 import NavigationTabs from '../components/NavigationTabs.vue';
 
-console.log(userWeek);
+// console.log('Selected day subjects', userWeek[selected_day]) // Testing
+
+const capitalizeFirstletter = string => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 </script>
 
 <template>
     <Transition>
         <div class="left-side" v-if="main_app_store.isOpened()">
+
             <div class="logo">
                 <svg class="hidden lg:block" width="139" height="24" viewBox="0 0 139 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
@@ -66,13 +79,33 @@ console.log(userWeek);
                 </svg>
             </div>
             <navigation-tabs :is_mobile="false" />
+
+            <div class="day-subjects-wrapper" v-if="userWeek[main_app_store.selected_day]">
+                <p><span class="font-[500] py-1 px-2 rounded-md bg-general_green_2 text-general_green_3">{{ capitalizeFirstletter(main_app_store.selected_day) }}</span></p>
+                <div class="day-subjects">
+
+                    <p class="text-general_gray_2" v-if="userWeek[main_app_store.selected_day].length == 0">No subjects on this day...</p>
+                    <div class="subject flex items-center justify-between" :style="{ backgroundColor: subject.color }"
+                        v-if="userWeek[main_app_store.selected_day]"
+                        v-for="subject in userWeek[main_app_store.selected_day]"
+                        @click="edit_subject_popup.editSubjectOpen(subject)">
+                        <p>{{ subject.name }}</p>
+                        <div
+                            class="subject-time px-2 py-1 bg-[rgba(255,255,255,0.2)] rounded-md hidden md:inline-block">
+                            <p class="text-white">{{ new Date(subject.raw.starts).getHours() }}: {{ new
+                                Date(subject.raw.starts).getMinutes() }}</p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
             <!-- <p class="p-5 border border-general_gray_2 text-center w-11/12 mx-auto mt-10" @click="toast.openToast()">Test button</p> -->
             <div class="app-content-header--mobile">
                 <search-bar-and-user />
             </div>
         </div>
     </Transition>
-    
+
 </template>
 
 <style lang="scss">

@@ -72,6 +72,7 @@ export const useWeek = defineStore("userWeek", () => {
     const getWeek = () => {
         return WEEK.value;
     }
+
     /* Subjects */
     const getSubject = (day, subject) => {
         let foundIndex = _.findIndex(WEEK.value[day], { id: subject.id });
@@ -80,7 +81,11 @@ export const useWeek = defineStore("userWeek", () => {
     const updateWeek = (new_week) => {
         WEEK.value = new_week;
     }
+    const getDaySubjects = (day) => {
+        console.log(WEEK.value[day]);
+        return WEEK.value[day];
+    }
 
-    return { WEEK, addSubject, getWeek, updateWeek, updateSubject, getSubject, deleteSubject }
+    return { WEEK, addSubject, getWeek, updateWeek, updateSubject, getSubject, deleteSubject, getDaySubjects }
 
 });
