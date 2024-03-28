@@ -3,9 +3,39 @@ import { ref } from 'vue';
 
 export const useMainApp = defineStore('mainApp', () => {
 
+    const user = ref({});
+    const userSchedules = ref([]);
     const isSidebarOpen = ref(true);
     const selected_day = ref(null);
     const isDaySubjectsOpen = ref(false);
+    const activeSchedule = ref(localStorage.getItem('activeSchedule') || '1');
+
+    // Schedules and users
+    const setUser = (user_object) => {
+        user.value = user_object;
+    }
+    const getUser = () => {
+        return user;
+    }
+    const setSchedules = (schedules) => {
+        userSchedules.value = schedules;
+    }
+    const getSchedules = () => {
+        return userSchedules;
+    }
+    const addSchedule = (schedule) => {
+        userSchedules.value.push(schedule);
+    }
+    const setActiveSchedule = (scheduleId) => {
+        activeSchedule.value = scheduleId;
+        localStorage.setItem('activeSchedule', scheduleId);
+    }
+    const getActiveSchedule = () => {
+        return activeSchedule;
+    }
+    const getWeekbySchedule = (scheduleId) => {
+        return userSchedules.value.find(schedule => schedule.id === scheduleId).week;
+    }
 
     const openSelected = (day) => {
         selected_day.value = day;
@@ -18,9 +48,8 @@ export const useMainApp = defineStore('mainApp', () => {
         selected_day.value = '';
     }
     const getSelected = () => {
-        return selected_day.value;
+        return selected_day;
     }
-
     const toggleSidebar = () => {
         isSidebarOpen.value = !isSidebarOpen.value;
     }
@@ -28,6 +57,6 @@ export const useMainApp = defineStore('mainApp', () => {
         return isSidebarOpen.value;
     }
 
-    return { isSidebarOpen, toggleSidebar, isOpened, isDaySubjectsOpen, openSelected, closeSelected, selected_day, getSelected, openDaySubjects }
+    return { setUser, getUser, user, userSchedules, isSidebarOpen, setSchedules, getSchedules, addSchedule, setActiveSchedule, getActiveSchedule, getWeekbySchedule, activeSchedule, toggleSidebar, isOpened, isDaySubjectsOpen, openSelected, closeSelected, selected_day, getSelected, openDaySubjects}
 
 });

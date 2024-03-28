@@ -1,13 +1,16 @@
 <script setup>
 
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useMainApp } from '../store/mainApp.js';
 import { useCookies } from '../store/cookies.js';
-import { usePopups } from '../store/popups.js'; 
+import { usePopups } from '../store/popups.js';
+
+import NavigationTabs from './NavigationTabs.vue';
 
 const cookies = useCookies();
-const main_app_store = useMainApp();
+const main_app = useMainApp();
 const settings_menu = usePopups().settingsMenu;
+const schedules = main_app.getSchedules();
 
 const userSession = ref({})
 userSession.value = JSON.parse(cookies.getCookie('userSession'));
@@ -18,33 +21,54 @@ let menuOpened = ref(true);
 
 const menu_toggler = () => {
 
-    main_app_store.toggleSidebar();
+    main_app.toggleSidebar();
     menuOpened.value = !menuOpened.value;
-
 }
 
 </script>
 
 <template>
     <div class="search-bar-and-user">
-        <div class="close-sidebar hidden lg:block p-1 border self-center rounded-md hover:cursor-pointer"
-            :class="menuOpened ? 'border-general_green_3' : 'border-general_gray_2'" @click="menu_toggler">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-7 h-7 flex justify-center items-center"
-                :class="menuOpened ? 'text-general_blue_1' : 'text-black'">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-            </svg>
-        </div>
-        <!-- <div class="search-bar">
-            <div class="search-icon">
-                <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M12.3417 10.3421C13.3301 9.02084 13.7729 7.38264 13.5813 5.7553C13.3897 4.12796 12.5779 2.63149 11.3083 1.56528C10.0388 0.499068 8.40508 -0.0582491 6.73406 0.00482408C5.06305 0.0678972 3.47796 0.74671 2.29592 1.90546C1.11388 3.0642 0.422061 4.61742 0.358869 6.25438C0.295678 7.89134 0.865775 9.49131 1.9551 10.7342C3.04443 11.9771 4.57266 12.7712 6.23404 12.9577C7.89542 13.1443 9.56743 12.7094 10.9156 11.7401H10.9145C10.9452 11.7801 10.9778 11.8181 11.0146 11.8551L14.9448 15.7051C15.1362 15.8928 15.3959 15.9983 15.6667 15.9984C15.9375 15.9984 16.1972 15.8932 16.3888 15.7056C16.5803 15.5181 16.688 15.2638 16.6881 14.9985C16.6882 14.7332 16.5807 14.4788 16.3893 14.2911L12.4591 10.4411C12.4226 10.405 12.3833 10.3715 12.3417 10.3411V10.3421ZM12.605 6.49815C12.605 7.22042 12.4598 7.93562 12.1777 8.60291C11.8955 9.2702 11.4819 9.87651 10.9606 10.3872C10.4392 10.898 9.82026 11.3031 9.13907 11.5795C8.45787 11.8559 7.72778 11.9981 6.99046 11.9981C6.25314 11.9981 5.52304 11.8559 4.84185 11.5795C4.16066 11.3031 3.54171 10.898 3.02035 10.3872C2.49899 9.87651 2.08542 9.2702 1.80326 8.60291C1.5211 7.93562 1.37588 7.22042 1.37588 6.49815C1.37588 5.03946 1.96741 3.64051 3.02035 2.60906C4.07329 1.57761 5.50138 0.998148 6.99046 0.998148C8.47954 0.998148 9.90763 1.57761 10.9606 2.60906C12.0135 3.64051 12.605 5.03946 12.605 6.49815V6.49815Z"
-                        fill="#557B83" />
+
+        <navigation-tabs :is_mobile="true" />
+
+        <div class="toggle-sidebar-and-schedule-tabs">
+            <div class="close-sidebar hidden lg:block p-1 border self-center rounded-md hover:cursor-pointer"
+                :class="menuOpened ? 'border-general_green_3' : 'border-general_gray_2'" @click="menu_toggler">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-7 h-7 flex justify-center items-center"
+                    :class="menuOpened ? 'text-general_blue_1' : 'text-black'">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
             </div>
-            <input type="text" placeholder="Search Here..." class="text-xl placeholder:text-xl">
-        </div> -->
+            <div class="schedule-tabs">
+
+                <div class="schedule-tab hover:cursor-pointer" v-for="schedule in schedules"
+                    :class="{ 'active': main_app.getActiveSchedule().value === schedule.id }"
+                    @click="main_app.setActiveSchedule(schedule.id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                        class="w-8 h-8 text-general_green_1 borderborder-general_green_1 group-hover/schedule:scale-105">
+                        <path
+                            d="M11.7 2.805a.75.75 0 01.6 0A60.65 60.65 0 0122.83 8.72a.75.75 0 01-.231 1.337 49.949 49.949 0 00-9.902 3.912l-.003.002-.34.18a.75.75 0 01-.707 0A50.009 50.009 0 007.5 12.174v-.224c0-.131.067-.248.172-.311a54.614 54.614 0 014.653-2.52.75.75 0 00-.65-1.352 56.129 56.129 0 00-4.78 2.589 1.858 1.858 0 00-.859 1.228 49.803 49.803 0 00-4.634-1.527.75.75 0 01-.231-1.337A60.653 60.653 0 0111.7 2.805z" />
+                        <path
+                            d="M13.06 15.473a48.45 48.45 0 017.666-3.282c.134 1.414.22 2.843.255 4.285a.75.75 0 01-.46.71 47.878 47.878 0 00-8.105 4.342.75.75 0 01-.832 0 47.877 47.877 0 00-8.104-4.342.75.75 0 01-.461-.71c.035-1.442.121-2.87.255-4.286A48.4 48.4 0 016 13.18v1.27a1.5 1.5 0 00-.14 2.508c-.09.38-.222.753-.397 1.11.452.213.901.434 1.346.661a6.729 6.729 0 00.551-1.608 1.5 1.5 0 00.14-2.67v-.645a48.549 48.549 0 013.44 1.668 2.25 2.25 0 002.12 0z" />
+                        <path
+                            d="M4.462 19.462c.42-.419.753-.89 1-1.394.453.213.902.434 1.347.661a6.743 6.743 0 01-1.286 1.794.75.75 0 11-1.06-1.06z" />
+                    </svg>
+                    <p>{{ schedule.title }}</p>
+                </div>
+            </div>
+            <div class="add-schedule p-[2px] border border-general_gray_2 rounded-md hover:cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                    <path fill-rule="evenodd"
+                        d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z"
+                        clip-rule="evenodd" />
+                </svg>
+            </div>
+
+        </div>
+
         <div class="search-and-user flex justify-end w-auto gap-5">
             <div
                 class="search flex justify-between items-center gap-2 px-2 py-1 border border-general_gray_2 rounded-lg self-center hover:cursor-pointer">
@@ -74,6 +98,7 @@ const menu_toggler = () => {
                     <img src="../assets/img/user-pic.png" alt="User Image" class="">
                 </div>
             </div>
+
         </div>
     </div>
 </template>

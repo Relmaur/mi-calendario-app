@@ -73,7 +73,7 @@ export const usePopups = defineStore("popups", () => {
         editSubjectOpen(subject) {
             editSubject_open.value = true;
             subjectObject.value = subject;
-            // console.log('From Pinia: ', subjectObject.value); // Testing
+            console.log("This is the opened Subject: ", subject)
         },
         editSubjectClose() {
             editSubject_open.value = false;
@@ -82,7 +82,7 @@ export const usePopups = defineStore("popups", () => {
             return editSubject_open.value;
         },
         getSubjectObject() {
-            return subjectObject.value;
+            return subjectObject;
         },
         updateSubjectObject(subject) {
             subjectObject.value = subject;

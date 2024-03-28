@@ -19,6 +19,7 @@ import { useSubjectsColorTheme } from '../../../../../store/subjectsColorTheme';
 import Calendar from 'primevue/calendar'; // Calendar
 import quillEditor from 'primevue/editor'; // Editor
 import FormError from '../../../../../components/FormError.vue'; // Form Error
+import { useMainApp } from '../../../../../store/mainApp';
 
 /* Refs */
 const color_picker = ref(null); // Color - Color Picker
@@ -27,10 +28,15 @@ const editor_content = ref(""); // Editor - Subject Info
 const editor_content_delta = ref('{"ops":[]}'); // Editor - Subject Info delta
 const toast = usePopups().toastPopup;
 
+/* Pinia Stores */
+const main_app = useMainApp();
+const week = useWeek();
+const add_subject_popup = usePopups().addSubjectPopup;
+
 
 /* Node backend */
-const USER_ID = 2;
-const SCHEDULE_ID = 1;
+let user = main_app.getUser();
+let schedule = main_app.getActiveSchedule();
 // const PUT_USER_WEEK_URL_NODE = `http://localhost:3000/api/v1/${USER_ID}/${SCHEDULE_ID}`;
 
 /* Java backend */
@@ -43,10 +49,6 @@ const PUT_USER_WEEK_URL_JAVA = `http://192.168.1.31:8080/api/v1/subjects`;
 // const end_hour = ref(null); // Date - Hour
 // const day = ref(null); // Date - Hour
 // const color_picked = ref('#FF8C19'); // Color - Subject Color
-
-/* Pinia Stores */
-const week = useWeek();
-const add_subject_popup = usePopups().addSubjectPopup;
 
 /* Helpers */
 const colorPicker = () => {
@@ -171,7 +173,7 @@ const submitForm = handleSubmit((values) => {
     subjectObject['info'] = subjectInfoHTML;
     subjectObject['infoDelta'] = subjectInfoDelta;
 
-    console.log('Subject is: ', JSON.stringify(subjectObject)); // Testing
+    console.log('Subject day to add: ', subjectObject['day'].toLowerCase()); // Testing
 
     /* Push the subject object to the Pinia store */
     week.addSubject(subjectObject['day'].toLowerCase(), subjectObject);
@@ -192,10 +194,14 @@ const submitForm = handleSubmit((values) => {
     const { mutate: updateWeek } = useMutation(UPDATE_WEEK_MUTATION);
 
     updateWeek({
-        id: `${SCHEDULE_ID}`,
-        week: JSON.stringify(week.getWeek()),
-        userId: `${USER_ID}`
+        id: `${schedule.value}`,
+        week: JSON.stringify(week.getWeek().value),
+        userId: `${user.value.id}`
     });
+
+    let previousWeek = JSON.parse(localStorage.getItem('schedules'));
+    previousWeek[schedule.value] = week.getWeek().value;
+    localStorage.setItem('schedules', JSON.stringify(previousWeek));
     
     /*
        ===============
@@ -282,7 +288,7 @@ const handleEditorChange = (changeEvent) => {
             </div>
             <div class="date relative">
                 <div class="day hover:cursor-pointer relative">
-                    <div class="flex justify-center items-center gap-3">
+                    <div class="flex field justify-center items-center gap-3">
                         <p>Day</p>
                         <!-- <div class="day-badge">Wed</div> -->
                         <div class="day-badge w-full flex justify-center">
@@ -292,7 +298,7 @@ const handleEditorChange = (changeEvent) => {
                     <form-error v-if="errorBag.day" />
                 </div>
                 <div class="starts hover:cursor-pointer relative">
-                    <div class="flex justify-center items-center gap-3">
+                    <div class="flex field justify-center items-center gap-3">
                         <p>Starts</p>
                         <!-- <div class="start_hour-badge">7:00</div> -->
                         <div class="start_hour-badge w-full flex justify-center">
@@ -302,7 +308,7 @@ const handleEditorChange = (changeEvent) => {
                     <form-error v-if="errorBag.start_hour" />
                 </div>
                 <div class="ends hover:cursor-pointer relative">
-                    <div class="flex justify-center items-center gap-3">
+                    <div class="flex field justify-center items-center gap-3">
                         <p>Ends</p> 
                         <!-- <div class="end_hour-badge">8:00</div> -->
                         <div class="end_hour-badge w-full flex justify-center">

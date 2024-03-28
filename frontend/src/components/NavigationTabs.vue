@@ -25,12 +25,14 @@ const toggleTab = (tab) => {
 </script>
 <template>
     <div :class="classes">
-        <div class="schedule group/schedule flex justify-between items-center" :class="{ 'w-full': !props.is_mobile , 'active': tabs.getActiveTab() === 'schedule'}" @click="toggleTab('schedule')">
+        <div class="schedule group/schedule flex justify-between items-center"
+            :class="{ 'w-full': !props.is_mobile, 'active': tabs.getActiveTab() === 'schedule' }"
+            @click="toggleTab('schedule')">
             <div class="title-and-icon flex justify-start items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     class="w-8 h-8 group-hover/schedule:scale-105"
                     :class="tabs.getActiveTab() === 'schedule' ? 'text-general_green_3' : 'text-general_gray_2'">
-                    <path 
+                    <path
                         d="M11.7 2.805a.75.75 0 01.6 0A60.65 60.65 0 0122.83 8.72a.75.75 0 01-.231 1.337 49.949 49.949 0 00-9.902 3.912l-.003.002-.34.18a.75.75 0 01-.707 0A50.009 50.009 0 007.5 12.174v-.224c0-.131.067-.248.172-.311a54.614 54.614 0 014.653-2.52.75.75 0 00-.65-1.352 56.129 56.129 0 00-4.78 2.589 1.858 1.858 0 00-.859 1.228 49.803 49.803 0 00-4.634-1.527.75.75 0 01-.231-1.337A60.653 60.653 0 0111.7 2.805z" />
                     <path
                         d="M13.06 15.473a48.45 48.45 0 017.666-3.282c.134 1.414.22 2.843.255 4.285a.75.75 0 01-.46.71 47.878 47.878 0 00-8.105 4.342.75.75 0 01-.832 0 47.877 47.877 0 00-8.104-4.342.75.75 0 01-.461-.71c.035-1.442.121-2.87.255-4.286A48.4 48.4 0 016 13.18v1.27a1.5 1.5 0 00-.14 2.508c-.09.38-.222.753-.397 1.11.452.213.901.434 1.346.661a6.729 6.729 0 00.551-1.608 1.5 1.5 0 00.14-2.67v-.645a48.549 48.549 0 013.44 1.668 2.25 2.25 0 002.12 0z" />
@@ -39,7 +41,8 @@ const toggleTab = (tab) => {
                 </svg>
                 <div class="menu-item">
                     <p class="text-md lg:text-md"
-                        :class="tabs.getActiveTab() === 'schedule' ? 'text-general_gray_1' : 'text-general_gray_2'">Schedule
+                        :class="tabs.getActiveTab() === 'schedule' ? 'text-general_gray_1' : 'text-general_gray_2'">
+                        Schedule
                     </p>
                 </div>
             </div>
@@ -52,7 +55,8 @@ const toggleTab = (tab) => {
             </div>
         </div>
         <div class="calendar group/calendar flex justify-between items-center"
-            :class="[{ 'w-full': !props.is_mobile, 'disabled': is_disabled, 'active': tabs.getActiveTab() === 'calendar' }]" @click="toggleTab('calendar')">
+            :class="[{ 'w-full': !props.is_mobile, 'disabled': is_disabled, 'active': tabs.getActiveTab() === 'calendar' }]"
+            @click="toggleTab('calendar')">
             <div class="title-and-icon flex justify-start items-center gap-2">
                 <span class="p-1 text-[8px] rounded-md text-white" v-if="is_disabled"
                     :class="tabs.getActiveTab() === 'calendar' ? 'bg-general_green_3' : 'bg-general_gray_2'">Soon</span>
@@ -67,7 +71,8 @@ const toggleTab = (tab) => {
                 </svg>
                 <div class="menu-item flex justify-start items-center gap-2">
                     <p class="text-md lg:text-md"
-                        :class="tabs.getActiveTab() === 'calendar' ? 'text-general_gray_1' : 'text-general_gray_2'">Calendar
+                        :class="tabs.getActiveTab() === 'calendar' ? 'text-general_gray_1' : 'text-general_gray_2'">
+                        Calendar
                     </p>
                 </div>
             </div>
@@ -79,14 +84,5 @@ const toggleTab = (tab) => {
                 </svg>
             </div>
         </div>
-        <!-- <div class="sign-out">
-            <div class="signout-icon">
-                <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M10.2038 19.9312C8.34676 20.3568 6.99976 18.7321 6.99976 17.1257L6.99976 2.87426C6.99976 1.26791 8.34676 -0.356756 10.2038 0.0687523C14.6658 1.09079 17.9998 5.14839 17.9998 10C17.9998 14.8516 14.6658 18.9092 10.2038 19.9312V19.9312ZM4.70676 13.7736C4.51923 13.9644 4.26492 14.0716 3.99976 14.0716C3.73459 14.0716 3.48028 13.9644 3.29276 13.7736L0.292756 10.7197C0.105285 10.5288 -2.9682e-05 10.2699 -2.96588e-05 10C-2.96356e-05 9.73007 0.105285 9.4712 0.292756 9.2803L3.29276 6.22641C3.48136 6.04098 3.73396 5.93838 3.99616 5.94069C4.25835 5.94301 4.50917 6.05007 4.69458 6.23881C4.87998 6.42755 4.98515 6.68287 4.98743 6.94977C4.98971 7.21668 4.88892 7.47382 4.70676 7.66581L3.41376 8.98204L11.9998 8.98204C12.265 8.98204 12.5193 9.08929 12.7069 9.28019C12.8944 9.4711 12.9998 9.73002 12.9998 10C12.9998 10.27 12.8944 10.5289 12.7069 10.7198C12.5193 10.9107 12.265 11.018 11.9998 11.018L3.41376 11.018L4.70676 12.3342C4.89423 12.5251 4.99954 12.784 4.99954 13.0539C4.99954 13.3238 4.89423 13.5827 4.70676 13.7736V13.7736Z"
-                        fill="#C86A6A" />
-                </svg>
-                <p>Sign Out</p>
-            </div>
-        </div> -->
-</div></template>
+    </div>
+</template>

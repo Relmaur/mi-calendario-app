@@ -115,28 +115,26 @@
             // gap: 20px;
         }
 
-        & .main-panel-container .date .day .day-badge,
-        & .main-panel-container .date .starts .start_hour-badge,
-        & .main-panel-container .date .ends .end_hour-badge {
+        & .main-panel-container .date .day .field .day-badge,
+        & .main-panel-container .date .starts .field .start_hour-badge,
+        & .main-panel-container .date .ends .field .end_hour-badge {
             padding: 5px;
             border-radius: $border-radius;
             background-color: $general_green_2;
+            max-width: 80px;
         }
 
-        & .main-panel-container .date .p-datepicker .p-datepicker-buttonbar {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0 0 0;
-        }
-
-        & .main-panel-container .date .p-inputwrapper {
+        & .main-panel-container .date .day .field .day-badge span,
+        & .main-panel-container .date .starts .field .start_hour-badge span,
+        & .main-panel-container .date .ends .field .end_hour-badge span {
+            display: inline-block;
             width: 100%;
-            justify-content: center;
         }
 
-        & .main-panel-container .date .p-inputwrapper input {
-            // width: auto !important;
-            position: relative;
+        & .main-panel-container .date .day .field .day-badge span input,
+        & .main-panel-container .date .starts .field .start_hour-badge span input,
+        & .main-panel-container .date .ends .field .end_hour-badge span input {
+            width: 100%;
             background-color: transparent;
             text-align: center;
         }
@@ -204,7 +202,8 @@
                 justify-items: center;
                 gap: 10px;
             }
-            & .main-panel-container .date > div {
+
+            & .main-panel-container .date>div {
                 // justify-content: center;
                 width: auto;
             }

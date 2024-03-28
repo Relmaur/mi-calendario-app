@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 export const useWeek = defineStore("userWeek", () => {
     
-    const WEEK = ref(JSON.parse(localStorage.getItem('week')) ||
+    const WEEK = ref(
     {
         'sunday': [],
         'monday': [],
@@ -16,18 +16,14 @@ export const useWeek = defineStore("userWeek", () => {
     }
     );
 
-    // Watch for changes to the WEEK ref
-    watch(WEEK, (newVal) => {
-        // Store the changes in localStorage
-        // localStorage.setItem('week', JSON.stringify(newVal));
-        // console.log('Something changed!');
-
-    }, { deep: true });
-
     /* This gets called from the AddSubject form from ScheduleView.vue popup component */
     const addSubject = (day, subject) => {
+
+        console.log('incoming addSubject data: ', day, subject);
+        console.log('current Pinia object', WEEK.value);
+
         WEEK.value[day].push(subject);
-        localStorage.setItem('week', JSON.stringify(WEEK.value));
+
     }
     /* This gets called from the EditSubject form from the EdiItem.vue component */
     const updateSubject = (day, subject) => {
@@ -61,16 +57,25 @@ export const useWeek = defineStore("userWeek", () => {
 
         }
         // console.log('Sot the corresponding week day is: ', WEEK.value[day][foundIndex]);  
-
-        localStorage.setItem('week', JSON.stringify(WEEK.value));
     }
     const deleteSubject = (day, subject) => {
-        let foundIndex = _.findIndex(WEEK.value[day], { id: subject.id });
-        WEEK.value[day].splice(foundIndex, 1);
-        localStorage.setItem('week', JSON.stringify(WEEK.value));
+
+        console.log('(from Pinia) incoming deletion data: ', day, subject);
+        console.log('This is the week object day: ', WEEK.value[day]);
+
+        let foundIndex = _.findIndex(WEEK.value[day], { id: subject });
+
+        console.log('Found index: ', foundIndex);
+
+        if (foundIndex !== -1) {
+            WEEK.value[day].splice(foundIndex, 1);
+        } else {
+            console.log('Subject not found!');
+        }
     }
+
     const getWeek = () => {
-        return WEEK.value;
+        return WEEK;
     }
 
     /* Subjects */

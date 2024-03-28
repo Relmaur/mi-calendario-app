@@ -33,8 +33,3 @@ body .app-popup {
 //     display: none;
 // }
 
-@media(max-width: 480px) {
-    body .app-popup.opened {
-        @include _add_item_max_width_480;
-    }
-}

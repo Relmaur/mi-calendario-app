@@ -23,6 +23,9 @@ import NavigationTabs from '../components/NavigationTabs.vue';
 // console.log('Selected day subjects', userWeek[selected_day]) // Testing
 
 const capitalizeFirstletter = string => {
+    if (!string) {
+        return;
+    }
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
@@ -81,10 +84,12 @@ const capitalizeFirstletter = string => {
             <navigation-tabs :is_mobile="false" />
 
             <div class="day-subjects-wrapper" v-if="userWeek[main_app_store.selected_day]">
-                <p><span class="font-[500] py-1 px-2 rounded-md bg-general_green_2 text-general_green_3">{{ capitalizeFirstletter(main_app_store.selected_day) }}</span></p>
+                <p><span class="font-[500] py-1 px-2 rounded-md bg-general_green_2 text-general_green_3">{{
+            capitalizeFirstletter(main_app_store.selected_day) }}</span></p>
                 <div class="day-subjects">
 
-                    <p class="text-general_gray_2" v-if="userWeek[main_app_store.selected_day].length == 0">No subjects on this day...</p>
+                    <p class="text-general_gray_2" v-if="userWeek[main_app_store.selected_day].length == 0">No subjects
+                        on this day...</p>
                     <div class="subject flex items-center justify-between" :style="{ backgroundColor: subject.color }"
                         v-if="userWeek[main_app_store.selected_day]"
                         v-for="subject in userWeek[main_app_store.selected_day]"
@@ -93,13 +98,13 @@ const capitalizeFirstletter = string => {
                         <div
                             class="subject-time px-2 py-1 bg-[rgba(255,255,255,0.2)] rounded-md hidden md:inline-block">
                             <p class="text-white">{{ new Date(subject.raw.starts).getHours() }}: {{ new
-                                Date(subject.raw.starts).getMinutes() }}</p>
+            Date(subject.raw.starts).getMinutes() }}</p>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
-            <!-- <p class="p-5 border border-general_gray_2 text-center w-11/12 mx-auto mt-10" @click="toast.openToast()">Test button</p> -->
+
             <div class="app-content-header--mobile">
                 <search-bar-and-user />
             </div>

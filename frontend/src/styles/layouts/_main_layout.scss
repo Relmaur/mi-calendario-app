@@ -93,7 +93,7 @@
                 justify-content: flex-start;
                 gap: 5px;
                 padding: 5px;
-                overflow: scroll;
+                overflow: hidden;
                 border-radius: $border-radius;
             }
 
@@ -101,7 +101,7 @@
                 padding: 10px;
             }
 
-            & .day-subjects-wrapper > p {
+            & .day-subjects-wrapper>p {
                 margin: 0 0 10px 0;
             }
 
@@ -132,6 +132,10 @@
             }
 
             & .app-content-header--mobile {
+                display: none;
+            }
+
+            & .app-content-header--mobile .tabs--mobile {
                 display: none;
             }
         }
@@ -166,6 +170,14 @@
                 width: 100%;
             }
 
+            & .app-main-content .app-content-header .day-subjects--mobile {
+                display: none;
+            }
+
+            & .app-main-content .app-content-header>.schedule-tabs-wrapper {
+                display: none;
+            }
+
             & .app-main-content .app-content-header {
                 display: flex;
                 justify-content: flex-end;
@@ -186,6 +198,38 @@
                 right: 0;
                 gap: 10px;
                 // height: 100%;
+            }
+
+            & .app-main-content .app-content-header .search-bar-and-user .toggle-sidebar-and-schedule-tabs {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 10px;
+            }
+
+            & .app-main-content .app-content-header .search-bar-and-user .toggle-sidebar-and-schedule-tabs .schedule-tabs {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+            }
+
+            & .app-main-content .app-content-header .search-bar-and-user .toggle-sidebar-and-schedule-tabs .schedule-tabs .schedule-tab {
+                padding: 5px 10px;
+                border-radius: $border-radius;
+                border: 1px solid $general_gray_2;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 5px;
+            }
+
+            & .app-main-content .app-content-header .search-bar-and-user .toggle-sidebar-and-schedule-tabs .schedule-tabs .schedule-tab:not(.active) svg path {
+                fill: $general_gray_2;
+            }
+
+            & .app-main-content .app-content-header .search-bar-and-user .toggle-sidebar-and-schedule-tabs .schedule-tabs .schedule-tab:not(.active) p {
+                color: $general_gray_2;
             }
 
             & .app-main-content .app-content-header .search-bar-and-user .search-bar {
@@ -248,6 +292,7 @@
 
             & .app-main-content .view-body.view-schedule .app-content-table {
                 height: 100%;
+                gap: 10px;
             }
 
             & .app-main-content .view-body.view-schedule .app-content-footer {
@@ -293,6 +338,7 @@
                 border-top-right-radius: $border-radius;
                 display: flex;
                 align-items: center;
+                justify-content: space-between;
                 gap: 20px;
                 border: unset;
                 border-bottom: 1px solid #000000;
@@ -304,7 +350,7 @@
                 }
 
                 & .logo {
-                    width: auto;
+                    width: 50px;
                     padding: 0;
                     border-right: 1px solid #000000;
                     border-top-left-radius: $border-radius;
@@ -314,20 +360,70 @@
                     display: none;
                 }
 
+                & .day-subjects-wrapper {
+                    display: none;
+                }
+
                 & .app-content-header--mobile {
-                    display: block;
+                    display: flex;
+                    justify-content: flex-end;
                     width: 100%;
                     height: 100%;
                     max-height: 45px;
                 }
 
+                & .app-content-header--mobile .tabs--mobile {
+                    width: auto;
+                    height: 100%;
+                    display: flex;
+                    border-radius: unset;
+                    justify-content: flex-start;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 0 0 0 0;
+                }
+
+                & .app-content-header--mobile .tabs--mobile .schedule,
+                & .app-content-header--mobile .tabs--mobile .calendar {
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    gap: 5px;
+                }
+
+                & .app-content-header--mobile .tabs--mobile>div {
+                    padding: 5px;
+                    border: 1px solid $general_gray_2;
+                    border-radius: $border-radius;
+                }
+
+                & .app-content-header--mobile .tabs--mobile>div.active {
+                    border: 1px solid $general_green_3;
+                }
+
+                & .app-content-header--mobile .tabs--mobile>div div[class|="add"] {
+                    display: none;
+                }
+
+                & .app-content-header--mobile .tabs--mobile div:hover {
+                    cursor: pointer;
+                }
+
+                & .app-content-header--mobile .tabs--mobile div.sign-out {
+                    position: relative;
+                    top: unset;
+                    right: unset;
+                    width: auto;
+                }
+
                 & .app-content-header--mobile .search-bar-and-user {
                     display: flex;
                     justify-content: flex-end;
-                    // padding: 10px;
                     gap: 10px;
-                    width: 100%;
-                    height: 100%;
+                }
+
+                & .app-content-header--mobile .search-bar-and-user .toggle-sidebar-and-schedule-tabs {
+                    display: none;
                 }
 
                 & .app-content-header--mobile .search-bar-and-user .search-bar {
@@ -371,61 +467,70 @@
                     object-fit: cover;
                     // border-radius: $border-radius;
                 }
+
+                & .app-main-content .app-content-header .search-bar-and-user .toggle-sidebar-and-schedule-tabs {
+                    display: none;
+                }
+
             }
 
             & .right-side {
+
                 height: 100%;
                 border-bottom-right-radius: $border-radius;
                 border-bottom-left-radius: $border-radius;
+
+                & .app-main-content .app-main-content-wrapper .app-content-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 10px;
+                }
+
+                & .app-main-content .app-main-content-wrapper .app-content-header .schedule-tabs-wrapper,
+                & .app-main-content .app-main-content-wrapper .app-content-header .schedule-tabs-wrapper .schedule-tabs,
+                & .app-main-content .app-main-content-wrapper .app-content-header .schedule-tabs-wrapper .schedule-tabs .schedule-tab {
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    gap: 10px;
+                }
+
+                & .app-main-content .app-main-content-wrapper .app-content-header,
+                & .app-main-content .app-main-content-wrapper .app-content-header .schedule-tabs {
+                    gap: 10px;
+                }
+
+                & .app-main-content .app-main-content-wrapper .app-content-header .day-subjects--mobile {
+                    display: flex;
+                    padding: 0 0 0 10px;
+                    border-left: 1px solid $general_gray_2;
+                }
+
+                & .app-main-content .app-main-content-wrapper .app-content-header .day-subjects--mobile,
+                & .app-main-content .app-main-content-wrapper .app-content-header .schedule-tabs .schedule-tab {
+                    gap: 5px;
+                    padding: 5px 10px;
+                    border-radius: $border-radius;
+                    border: 1px solid $general_gray_2;
+                }
+
+                & .app-main-content .app-main-content-wrapper .app-content-header .schedule-tabs .schedule-tab:not(.active) svg path {
+                    fill: $general_gray_2;
+                }
+
+                & .app-main-content .app-main-content-wrapper .app-content-header .schedule-tabs .schedule-tab:not(.active) p {
+                    color: $general_gray_2;
+                }
+
+                & .app-content-header .close-sidebar {
+                    display: none;
+                }
 
                 & .app-main-content .app-content-header {
                     height: auto;
                     padding: 15px 10px;
                     max-height: unset;
-                }
-
-                & .app-main-content .app-content-header .tabs--mobile {
-                    width: 100%;
-                    height: 100%;
-                    display: flex;
-                    border-radius: unset;
-                    justify-content: flex-start;
-                    align-items: center;
-                    gap: 10px;
-                    padding: 0 0 0 0;
-                }
-
-                & .app-main-content .app-content-header .tabs--mobile .schedule,
-                & .app-main-content .app-content-header .tabs--mobile .calendar {
-                    display: flex;
-                    justify-content: flex-start;
-                    align-items: center;
-                    gap: 5px;
-                }
-
-                & .app-main-content .app-content-header .tabs--mobile>div {
-                    padding: 5px;
-                    border: 1px solid $general_gray_2;
-                    border-radius: $border-radius;
-                }
-
-                & .app-main-content .app-content-header .tabs--mobile>div.active {
-                    border: 1px solid $general_green_3;
-                }
-
-                & .app-main-content .app-content-header .tabs--mobile>div div[class|="add"] {
-                    display: none;
-                }
-
-                & .app-main-content .app-content-header .tabs--mobile div:hover {
-                    cursor: pointer;
-                }
-
-                & .app-main-content .app-content-header .tabs--mobile div.sign-out {
-                    position: relative;
-                    top: unset;
-                    right: unset;
-                    width: auto;
                 }
 
                 & .app-main-content .app-content-header .search-bar-and-user {
@@ -455,6 +560,32 @@
     #app {
         & .app-main-container {
 
+            & .left-side {
+                gap: 0;
+
+                & .app-content-header--mobile .tabs--mobile {
+                    padding: 10px 0;
+                    gap: 5px;
+                }
+
+                & .app-content-header--mobile .search-and-user {
+                    gap: 10px;
+                }
+
+                & .app-content-header--mobile .search-and-user .user {
+                    gap: 0;
+                }
+
+                & .app-content-header--mobile .search-bar-and-user .search-and-user .search {
+                    padding: 5px;
+                }
+
+                & .app-content-header--mobile .search-bar-and-user .tabs--mobile div .title-and-icon .menu-item,
+                & .app-content-header--mobile .search-bar-and-user .search-and-user p {
+                    display: none;
+                }
+            }
+
             & .right-side {
 
                 & .app-main-content {
@@ -463,6 +594,22 @@
 
                 & .app-main-content .view-body {
                     gap: 10px;
+                }
+
+                & .app-main-content .app-main-content-wrapper .app-content-header {
+                    padding: 10px;
+                }
+
+                & .app-main-content .app-main-content-wrapper .app-content-header .schedule-tabs-wrapper .schedule-tabs {
+                    gap: 5px;
+                }
+
+                & .app-main-content .app-main-content-wrapper .app-content-header .schedule-tabs-wrapper .schedule-tabs .schedule-tab {
+                    padding: 5px;
+                }
+
+                & .app-main-content .app-main-content-wrapper .app-content-header .schedule-tabs-wrapper .schedule-tabs .schedule-tab p {
+                    display: none;
                 }
             }
         }

@@ -16,7 +16,6 @@ import Settings from '../views/Settings.vue';
 
 function isAuthenticated() {
 
-    /*===== Without js-cookies =====*/
     // const token = getCookie('accessToken');
 
     // With js-cookies

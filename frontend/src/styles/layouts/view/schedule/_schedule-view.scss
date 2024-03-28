@@ -9,14 +9,14 @@
 
     & .week-header,
     & .week-table {
-        
+
         width: 100%;
         display: flex;
         gap: 20px;
 
         $left-column: 3%;
         $right-column: calc(100% - #{$left-column});
-        
+
         & .left-column {
             width: $left-column;
         }
@@ -96,7 +96,7 @@
             & div[class|="header-day"].active h6 {
                 color: $general_blue_2;
             }
-            
+
             & div[class|="header-day"] h6 {
                 color: $general_blue_1;
                 font-size: sass_clamp(1, 320, 1920, 1.5);
@@ -179,13 +179,14 @@
                 display: flex;
                 gap: 1.5%;
             }
-            
+
             & .table-container div[class|="day"] {
                 width: calc(100% / 7);
                 height: 100%;
                 background-color: $general_gray_3;
                 position: relative;
             }
+
             & .table-container div[class|="day"].selected {
                 // border-left: 1px solid black;
                 // border-right: 1px solid black;
@@ -209,14 +210,16 @@
             & .table-container div[class|="day"] .subject:hover {
                 cursor: pointer;
             }
+
             & .table-container div[class|="day"] .subject:hover .subject-container .subject-menu {
                 opacity: 1;
             }
+
             & .table-container div[class|="day"] .subject .subject-container .subject-menu {
                 opacity: 0;
                 transition: opacity 300ms ease;
             }
-            
+
             & .table-container div[class|="day"] .subject .subject-container {
                 height: 100%;
                 // display: flex;
@@ -242,12 +245,31 @@
                 width: 16px;
                 height: 16px;
             }
+
             & .table-container div[class|="day"] .subject .subject-container .subject-menu svg:hover {
                 cursor: pointer;
             }
         }
     }
 }
+
+@media(max-width: 1024px) {
+    .view-body.view-schedule .app-content-table {
+        // Width and height already set in _main_layout.scss
+
+        & .week-header,
+        & .week-table {
+
+            & .left-column,
+            & div[class|="week"] {}
+
+            & .left-column {}
+
+            & div[class|="week"] {}
+        }
+    }
+}
+
 
 @media(max-width: 768px) {
     .view-body.view-schedule .app-content-table {
@@ -265,43 +287,13 @@
                 width: 100%;
             }
         }
+
         & .week-header {
             padding: 0;
         }
+
         & .week-table {
-            padding: 0 0 20px 0;
+            padding: 0;
         }
     }
 }
-
-// @media(max-width: 1024px) {
-//     .view-body.view-schedule .app-content-table {
-//         // Width and height already set in _main_layout.scss
-
-//         & .week-header,
-//         & .week-table {
-
-//             & .left-column,
-//             & div[class|="week"] {}
-
-//             & .left-column {}
-
-//             & div[class|="week"] {}
-//         }
-
-//         & .week-header {}
-
-//         & .week-table {
-//             & .week-schedule-table {
-
-//                 & .horizontal-guides {}
-
-//                 & .horizontal-guides div[class|="2h"] {}
-
-//                 & .table-container {}
-
-//                 & .table-container div[class|="day"] {}
-//             }
-//         }
-//     }
-// }

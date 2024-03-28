@@ -75,3 +75,17 @@
 
     }
 }
+
+@media(max-width: 480px) {
+    body {
+        .settings-menu-container {
+            & .settings-menu.opened {
+                max-width: 100%;
+
+                & div[class|="section"] p {
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+}

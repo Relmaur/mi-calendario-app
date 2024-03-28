@@ -19,10 +19,12 @@ import FormError from '../../FormError.vue'; // Form Error
 import { usePopups } from '../../../store/popups';
 import { useWeek } from '../../../store/userWeek';
 import { useSubjectsColorTheme } from '../../../store/subjectsColorTheme';
+import { useMainApp } from '../../../store/mainApp';
 // import { useTabs } from '../../../store/tabs';
 
 /* Refs and Stores */
 const week = useWeek();
+const main_app = useMainApp();
 const edit_subject_popup = usePopups().editSubjectPopup;
 const edit_subject_object = edit_subject_popup.getSubjectObject();
 const toast = usePopups().toastPopup;
@@ -30,7 +32,7 @@ const toast = usePopups().toastPopup;
 const color_picker = ref(null); // Color - Colors Picker
 const color_theme = useSubjectsColorTheme().theme;
 const editor_content = ref(null); // Editor - Subject Info
-const editor_content_delta = ref(edit_subject_object.infoDelta); // Editor - Subject Info delta
+const editor_content_delta = ref(edit_subject_object.value.infoDelta); // Editor - Subject Info delta
 
 console.log('From Popup props: ', editor_content_delta.value); // Testing
 
@@ -38,8 +40,12 @@ console.log('From Popup props: ', editor_content_delta.value); // Testing
 const props = defineProps(['subjectObject']);
 
 /* Node backend */
-const USER_ID = 2;
-const SCHEDULE_ID = 1;
+// const USER_ID = 2;
+// const SCHEDULE_ID = 1;
+
+let user = main_app.getUser();
+let schedule = main_app.getActiveSchedule();
+
 // const PUT_USER_WEEK_URL_NODE = `http://localhost:3000/api/v1/${USER_ID}/${SCHEDULE_ID}`;
 
 /* Java Backend */
@@ -59,9 +65,9 @@ const schema = yup.object({
     day: yup.date().required('Required'),
 });
 
-let starts_date_object = new Date(edit_subject_object.raw.starts);
-let ends_date_object = new Date(edit_subject_object.raw.ends);
-let subject_day_object = new Date(edit_subject_object.raw.day);
+let starts_date_object = new Date(edit_subject_object.value.raw.starts);
+let ends_date_object = new Date(edit_subject_object.value.raw.ends);
+let subject_day_object = new Date(edit_subject_object.value.raw.day);
 
 /* Start and end Datetimes with Trailing zeros */
 // const s_hours = new Date(starts_date_object).getUTCHours() > 9 ? new Date(starts_date_object).getUTCHours() : `0${new Date(starts_date_object).getUTCHours()}`;
@@ -76,11 +82,11 @@ let subject_day_object = new Date(edit_subject_object.raw.day);
 const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
 /* These default values come from the Pinia Store */
-const { values, errorBag, defineInputBinds, defineComponentBinds, handleSubmit } = useForm({
+const { values, errorBag, defineField, defineInputBinds, defineComponentBinds, handleSubmit } = useForm({
     validationSchema: schema,
     initialValues: {
-        subject_name: edit_subject_object.name,
-        color_picked: edit_subject_object.color,
+        subject_name: edit_subject_object.value.name,
+        color_picked: edit_subject_object.value.color,
         start_hour: starts_date_object,
         end_hour: ends_date_object,
         day: subject_day_object,
@@ -115,7 +121,7 @@ const submitForm = handleSubmit((values) => {
     let subjectInfoHTML = editor_content.value;
     let subjectInfoDelta = editor_content_delta.value;
 
-    let subjectId = edit_subject_object.id;
+    let subjectId = edit_subject_object.value.id;
 
     let subjectObject = {};
 
@@ -138,8 +144,6 @@ const submitForm = handleSubmit((values) => {
 
     // // Update Subject in Pinia Store
     week.updateSubject(subjectObject['day'].toLowerCase(), subjectObject);
-    console.log('The new day is: ', subjectObject['day']);
-    console.log(week.getWeek());
 
     /*
        ===============
@@ -157,10 +161,15 @@ const submitForm = handleSubmit((values) => {
     const { mutate: updateWeek } = useMutation(UPDATE_WEEK_MUTATION);
 
     updateWeek({
-        id: `${SCHEDULE_ID}`,
-        week: JSON.stringify(week.getWeek()),
-        userId: `${USER_ID}`
+        id: `${schedule.value}`,
+        week: JSON.stringify(week.getWeek().value),
+        userId: `${user.value.id}`
     });
+
+    // Update Local Storage
+    let previousWeek = JSON.parse(localStorage.getItem('schedules'));
+    previousWeek[schedule.value] = week.getWeek().value;
+    localStorage.setItem('schedules', JSON.stringify(previousWeek));
 
     /*
        ===============
@@ -190,10 +199,12 @@ const submitForm = handleSubmit((values) => {
     edit_subject_popup.editSubjectClose();
 });
 
-const deleteSubject = (id) => {
+const onDeleteSubject = (id) => {
+    
+    console.log('Subject to delete: ', edit_subject_object.value.id); // Testing)
+    console.log('This is the id from the popup: ', id); // Testing)
 
-    // console.log(edit_subject_object.day)
-    week.deleteSubject(edit_subject_object.day.toLowerCase(), id);
+    week.deleteSubject(edit_subject_object.value.day.toLowerCase(), id);
 
     /*
        ===============
@@ -211,10 +222,15 @@ const deleteSubject = (id) => {
     const { mutate: updateWeek } = useMutation(UPDATE_WEEK_MUTATION);
 
     updateWeek({
-        id: `${SCHEDULE_ID}`,
-        week: JSON.stringify(week.getWeek()),
-        userId: `${USER_ID}`
+        id: `${schedule.value}`,
+        week: JSON.stringify(week.getWeek().value),
+        userId: `${user.value.id}}`
     });
+
+    // Update Local Storage
+    let previousWeek = JSON.parse(localStorage.getItem('schedules'));
+    previousWeek[schedule.value] = week.getWeek().value;
+    localStorage.setItem('schedules', JSON.stringify(previousWeek));
 
     /*
        ===============
@@ -238,14 +254,14 @@ const deleteSubject = (id) => {
 
     /* Open Toast */
     toast.openToast({
-        message: `The subject <strong style="color:${edit_subject_object['color']}">${edit_subject_object.name}</strong> has been deleted successfully!`,
+        message: `The subject <strong style="color:${edit_subject_object['color']}">${edit_subject_object.value.name}</strong> has been deleted successfully!`,
         type: 'success',
     });
 
 }
 
 onMounted(() => {
-    // console.log('Edit Item got mounted, and this is the store: ', edit_subject_object.id); // 
+    // console.log('Edit Item got mounted, and this is the store: ', edit_subject_object.value.id); // 
 
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
@@ -332,30 +348,30 @@ interact('.app-popup .draggable')
                 </div>
                 <div class="date relative">
                     <div class="day hover:cursor-pointer relative">
-                        <div class="flex justify-center items-center gap-3">
-                            <p>Day</p>
+                        <div class="field flex justify-center items-center gap-3">
+                            <p>Day</p>  
                             <!-- <div class="day-badge">Wed</div> -->
-                            <div class="day-badge w-full flex justify-center">
+                            <div class="day-badge">
                                 <calendar v-bind="day" dateFormat="D" appendTo=".date" showButtonBar />
                             </div>
                         </div>
                         <form-error v-if="errorBag.day" />
                     </div>
                     <div class="starts hover:cursor-pointer relative">
-                        <div class="flex justify-center items-center gap-3">
+                        <div class="field flex justify-center items-center gap-3">
                             <p>Starts</p>
                             <!-- <div class="start_hour-badge">7:00</div> -->
-                            <div class="start_hour-badge w-full flex justify-center">
+                            <div class="start_hour-badge">
                                 <calendar v-bind="start_hour" appendTo=".date .starts" timeOnly />
                             </div>
                         </div>
                         <form-error v-if="errorBag.start_hour" />
                     </div>
                     <div class="ends hover:cursor-pointer relative">
-                        <div class="flex justify-center items-center gap-3">
+                        <div class="field flex justify-center items-center gap-3">
                             <p>Ends</p>
                             <!-- <div class="end_hour-badge">8:00</div> -->
-                            <div class="end_hour-badge w-full flex justify-center">
+                            <div class="end_hour-badge">
                                 <calendar v-bind="end_hour" appendTo=".date .ends" timeOnly />
                             </div>
                         </div>
@@ -433,8 +449,8 @@ interact('.app-popup .draggable')
                         <!-- <p>{{ errorBag }}</p> -->
                     </div>
                     <div class="erase-cancel-apply flex justify-between gap-2 w-full">
-                        <div class="erase p-1 border border-general_gray_2 rounded-md flex justify-center items-center"
-                            @click="deleteSubject(edit_subject_object.id)">
+                        <div class="erase py-1 px-2 border border-general_gray_2 rounded-md flex justify-center items-center"
+                            @click="onDeleteSubject(edit_subject_object.id)">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                 class="w-6 h-6 text-red-400 hover:cursor-pointer hover:scale-105">
                                 <path fill-rule="evenodd"
