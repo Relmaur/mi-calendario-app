@@ -40,6 +40,14 @@ const resolvers = {
             }
 
             return schedule.week;
+        },
+    },
+    
+    User: {
+        schedules: async (parent) => {
+            return await prisma.schedule.findMany({
+                where: { userId: parent.id }
+            });
         }
     },
 

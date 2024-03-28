@@ -6,6 +6,7 @@ const typeDefs = gql`
         id: ID!
         userName: String!
         email: String!
+        subscription: String
         schedules: [Schedule!]!
     }
 
@@ -29,6 +30,7 @@ const typeDefs = gql`
     }
 
     type Query {
+
         user(id: ID!): User!
         users: [User!]!
         schedules: [Schedule!]!

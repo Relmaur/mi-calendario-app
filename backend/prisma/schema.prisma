@@ -18,6 +18,7 @@ model User {
   userName String @unique @default("")
   email String @unique
   password String
+  subscription String @default("free")
   schedules Schedule[]
 }
 
@@ -32,7 +33,7 @@ model User {
 //   infoDelta String?
 //   raw String?
 
-//   createdAt DateTime @default(now())
+//   createdAt DateTime @default(now() )
 //   updatedAt DateTime @updatedAt
 
 // }
