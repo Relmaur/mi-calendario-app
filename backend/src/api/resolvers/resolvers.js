@@ -15,6 +15,11 @@ const resolvers = {
         //     return "Sensitive data only for authenticated users"
         // },
 
+        /*
+           ===============
+              User Queries
+           ===============
+        */
         user: async (_, { id }) => await prisma.user.findUnique({
             where: { id: parseInt(id) },
             include: {
@@ -25,24 +30,41 @@ const resolvers = {
             include: {
                 schedules: true,
             }
-        }),
+        }), 
 
+        /*
+           ====================
+              Schedules Queries
+           ====================
+        */
         schedules: async () => await prisma.schedule.findMany(),
 
+        /*
+           ===============
+              Week Queries
+           ===============
+        */
         week: async (_, { id }) => {
             const schedule = await prisma.schedule.findUnique({
                 where: { id: parseInt(id) },
                 select: { week: true }
             });
 
-            if(!schedule) {
+            if (!schedule) {
                 throw new Error(`Schedule with id ${id} not found.`)
             }
 
             return schedule.week;
         },
     },
-    
+
+    /*
+       =======================
+          Query User Schedules
+       =======================
+    */
+   
+    // CRUD - Read User's Schedule week
     User: {
         schedules: async (parent) => {
             return await prisma.schedule.findMany({
@@ -51,8 +73,14 @@ const resolvers = {
         }
     },
 
+    /*
+       ============
+          Mutations
+       ============
+    */
     Mutation: {
 
+        // CRUD - Update User's Schedule week (Modifying data / erasing subjects)
         updateWeek: async (_, { id, week, userId }) => {
 
             const scheduleWeek = await prisma.schedule.update({
@@ -65,6 +93,9 @@ const resolvers = {
             }
         },
 
+        /*===== User Authentication Flow =====*/
+
+        // Register a new user
         register: async (_, { email, password }) => {
 
             const hashedPassword = await bcrypt.hash(password, 10);
@@ -80,6 +111,7 @@ const resolvers = {
             };
         },
 
+        // Authenticate a user
         login: async (_, { email, password }) => {
             const user = await prisma.user.findUnique({
                 where: { email }
@@ -95,6 +127,7 @@ const resolvers = {
             };
         },
 
+        // Refresh token
         refreshToken: async (_, { token }) => {
             try {
 
@@ -117,6 +150,7 @@ const resolvers = {
                 throw new Error('Invalid or expired refresh token')
             }
         },
+
     }
 };
 
