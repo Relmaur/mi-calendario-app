@@ -35,7 +35,7 @@ const menu_toggler = () => {
         <div class="toggle-sidebar-and-schedule-tabs">
             <div class="close-sidebar hidden lg:block p-1 border self-center rounded-md hover:cursor-pointer"
                 :class="menuOpened ? 'border-general_green_3' : 'border-general_gray_2'" @click="menu_toggler">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"  
                     stroke="currentColor" class="w-7 h-7 flex justify-center items-center"
                     :class="menuOpened ? 'text-general_blue_1' : 'text-black'">
                     <path stroke-linecap="round" stroke-linejoin="round"
