@@ -18,5 +18,8 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "overrides": {
+    "jwa": "^2.0.0"
   }
 }

@@ -30,13 +30,12 @@ let toast_popup = usePopups().toastPopup;
 let cookies = useCookies();
 
 cookies.setToken(Cookies.get('accessToken') ?? Cookies.get('refreshToken'));
-main_app.setUser(JSON.parse(decodeURIComponent(`${Cookies.get('userSession')}`)));
+
+const userSessionRaw = Cookies.get('userSession');
+const userSession = userSessionRaw ? JSON.parse(decodeURIComponent(userSessionRaw)) : null;
+main_app.setUser(userSession);
 
 let active_schedule = main_app.getActiveSchedule().value;
-
-console.log('This is the user: ', JSON.parse(decodeURIComponent(`${Cookies.get('userSession')}`))) // Testing
-console.log("This is the active schedule: ", active_schedule);
-
 
 /*
    ===========================
@@ -60,9 +59,8 @@ try {
           }
         }`;
 
-  const { result } = useQuery(GET_USER_QUERY, {
-    id: `${main_app.getUser().value.id}`
-  });
+  const userId = main_app.getUser().value?.id;
+  const { result } = useQuery(GET_USER_QUERY, { id: `${userId}` }, { enabled: !!userId });
 
 
   watch(result, value => {

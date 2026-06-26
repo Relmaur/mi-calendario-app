@@ -8,7 +8,7 @@ import { useCookies } from '../../../store/cookies';
 let cookies = useCookies();
 
 // TODO: get this from the database
-let active_subscription = JSON.parse(cookies.getCookie('userSession')).subscription;
+let active_subscription = cookies.getUserSession()?.subscription;
 let subscription_badge = ref('')
  
 console.log('User Subscription', active_subscription)
@@ -48,13 +48,13 @@ onMounted(() => {
                             <p>Account Settings</p>
                         </RouterLink>
                     </div>
-                    <div class="section__item flex items-center justify-start gap-2">
+                    <div class="flex items-center justify-start gap-2 section__item">
                         <p>Lorem Ipsum</p>
                     </div>
-                    <div class="section__item flex items-center justify-start gap-2">
+                    <div class="flex items-center justify-start gap-2 section__item">
                         <p>Lorem Ipsum</p>
                     </div>
-                    <div class="section__item logout flex items-center justify-start gap-2 hover:cursor-pointer group/logout"
+                    <div class="flex items-center justify-start gap-2 section__item logout hover:cursor-pointer group/logout"
                         @click="cookies.logout()">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                             <path fill-rule="evenodd"
@@ -65,7 +65,7 @@ onMounted(() => {
                     </div>
                 </div>
                 <div class="section-subscription">
-                    <div class="section__item flex items-center justify-start gap-2">
+                    <div class="flex items-center justify-start gap-2 section__item">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
                             <path fill-rule="evenodd"
                                 d="M14.615 1.595a.75.75 0 0 1 .359.852L12.982 9.75h7.268a.75.75 0 0 1 .548 1.262l-10.5 11.25a.75.75 0 0 1-1.272-.71l1.992-7.302H3.75a.75.75 0 0 1-.548-1.262l10.5-11.25a.75.75 0 0 1 .913-.143Z"
@@ -76,14 +76,14 @@ onMounted(() => {
                         <span class="p-1 text-[8px] rounded-md border border-general_gray_1"
                             v-text="subscription_badge"></span>
                     </div>
-                    <div class="section__item flex items-center justify-start gap-2"
+                    <div class="flex items-center justify-start gap-2 section__item"
                         :class="{ 'pointer-events-none text-general-gray-2': active_subscription == 'pro'}">
                         <p :class="{ 'text-general_gray_2': active_subscription == 'pro' }">Upgrade
                         </p>
                     </div>
                 </div>
                 <div class="section-schedule">
-                    <div class="section__item flex items-center justify-start gap-2">
+                    <div class="flex items-center justify-start gap-2 section__item">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
                             <path
                                 d="M11.7 2.805a.75.75 0 0 1 .6 0A60.65 60.65 0 0 1 22.83 8.72a.75.75 0 0 1-.231 1.337 49.948 49.948 0 0 0-9.902 3.912l-.003.002c-.114.06-.227.119-.34.18a.75.75 0 0 1-.707 0A50.88 50.88 0 0 0 7.5 12.173v-.224c0-.131.067-.248.172-.311a54.615 54.615 0 0 1 4.653-2.52.75.75 0 0 0-.65-1.352 56.123 56.123 0 0 0-4.78 2.589 1.858 1.858 0 0 0-.859 1.228 49.803 49.803 0 0 0-4.634-1.527.75.75 0 0 1-.231-1.337A60.653 60.653 0 0 1 11.7 2.805Z" />
@@ -94,12 +94,12 @@ onMounted(() => {
                         </svg>
                         <p>Schedule Settings</p>
                     </div>
-                    <div class="section__item flex items-center justify-start gap-2">
+                    <div class="flex items-center justify-start gap-2 section__item">
                         <p>Lorem Ipsum</p>
                     </div>
                 </div>
                 <div class="section-calendar">
-                    <div class="section__item flex items-center justify-start gap-2">
+                    <div class="flex items-center justify-start gap-2 section__item">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
                             <path
                                 d="M12.75 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM7.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM8.25 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM9.75 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM10.5 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM12.75 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM14.25 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 13.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" />
@@ -109,7 +109,7 @@ onMounted(() => {
                         </svg>
                         <p>Calendar Settings</p>
                     </div>
-                    <div class="section__item flex items-center justify-start gap-2">
+                    <div class="flex items-center justify-start gap-2 section__item">
                         <p>Lorem Ipsum</p>
                     </div>
                 </div>

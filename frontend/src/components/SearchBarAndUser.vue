@@ -13,7 +13,7 @@ const settings_menu = usePopups().settingsMenu;
 const schedules = main_app.getSchedules();
 
 const userSession = ref({})
-userSession.value = JSON.parse(cookies.getCookie('userSession'));
+userSession.value = cookies.getUserSession();
 
 const userName = userSession.value.userName;
 

@@ -100,9 +100,17 @@ const resolvers = {
 
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            const user = await prisma.user.create({
-                data: { email, password: hashedPassword },
-            });
+            let user;
+            try {
+                user = await prisma.user.create({
+                    data: { email, password: hashedPassword },
+                });
+            } catch (err) {
+                if (err.code === 'P2002') {
+                    throw new Error('An account with that email already exists');
+                }
+                throw err;
+            }
 
             return {
                 accessToken: generateAccessToken(user),
