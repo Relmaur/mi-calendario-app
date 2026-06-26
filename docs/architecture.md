@@ -49,18 +49,19 @@
 ## Auth flow detail
 
 ```
-External auth app (port 4321)       Vue SPA                    Backend
-       │                               │                           │
-       │  POST /graphql login mutation ─────────────────────────►  │
-       │  ◄────────── { accessToken, refreshToken, user } ─────────│
-       │  Set cookies: accessToken, refreshToken, userSession       │
-       │  Redirect to http://localhost:5173/ ──────────────────►   │
-       │                               │                           │
-       │                      Read cookies on load                 │
-       │                      Hydrate Pinia stores                 │
-       │                               │                           │
-       │                      Apollo → GET_USER query ────────────►│
-       │                               ◄──── user + schedules ─────│
+Vue SPA /login                                              Backend
+       │                                                        │
+       │  POST /graphql  login / register mutation ────────────►│
+       │  ◄──────────── { accessToken, refreshToken, user } ────│
+       │  Set cookies: accessToken, refreshToken, userSession   │
+       │  router.push('/')                                      │
+       │                                                        │
+Vue SPA /                                                       │
+       │  Read cookies on load                                  │
+       │  Hydrate Pinia stores (mainApp, cookies)               │
+       │                                                        │
+       │  Apollo → GET_USER query ─────────────────────────────►│
+       │  ◄──────────── user + schedules ───────────────────────│
 ```
 
 ## Data model detail
@@ -107,11 +108,7 @@ app.use(authenticateToken);  // ← runs AFTER Apollo; never intercepts /graphql
 
 Fix: move `app.use(authenticateToken)` before `server.applyMiddleware(...)`. Then update resolvers to check `context.user` where needed, and exempt the `login`/`register` mutations from the middleware.
 
-### 2. Missing login page
-
-The router and `cookies.logout()` redirect to `VITE_LOGIN_URL` (default: `http://localhost:4321/login`). That Astro app is not in this repository. Until a `/login` route is added to the Vue app and `VITE_LOGIN_URL` is set to `/login`, new sessions cannot be created via the containerized stack alone.
-
-### 3. Token expiry not validated client-side
+### 2. Token expiry not validated client-side
 
 `isAuthenticated()` in `router/index.js` returns truthy as long as the cookie exists, regardless of expiry. A 403 from the API is the only signal. Fix: decode the JWT on the client (without verifying signature) and check `exp` before routing.
 

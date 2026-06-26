@@ -38,10 +38,9 @@ SQLite (file: backend/src/database/app.db)
 
 ### Key known issues
 
-1. **Missing login/register page.** `VITE_LOGIN_URL` points to an external Astro app that is not in this repo. Adding `/login` and `/register` views to the Vue frontend is a priority before go-live.
-2. **Auth middleware ordering bug in `backend/src/app.js`.** `app.use(authenticateToken)` is registered *after* `server.applyMiddleware({ app, path: '/graphql' })`. Express processes middleware in registration order, so the auth check never runs before GraphQL resolvers. `context.user` is always `null`. Resolvers do not currently enforce auth (no resolver checks `context.user`), so the API is effectively public.
-3. **SQLite in production.** The Prisma schema uses `provider = "sqlite"`. Not suitable for concurrent writes or horizontal scaling. Migration to PostgreSQL is straightforward — update `prisma/schema.prisma` and `DATABASE_URL`.
-4. **Token expiration not validated on client.** The router guard in `frontend/src/router/index.js` checks only for cookie *presence*, not JWT expiry. A user with an expired token will pass the guard but their GraphQL requests will fail silently.
+1. **Auth middleware ordering bug in `backend/src/app.js`.** `app.use(authenticateToken)` is registered *after* `server.applyMiddleware({ app, path: '/graphql' })`. Express processes middleware in registration order, so the auth check never runs before GraphQL resolvers. `context.user` is always `null`. Resolvers do not currently enforce auth (no resolver checks `context.user`), so the API is effectively public.
+2. **SQLite in production.** The Prisma schema uses `provider = "sqlite"`. Not suitable for concurrent writes or horizontal scaling. Migration to PostgreSQL is straightforward — update `prisma/schema.prisma` and `DATABASE_URL`.
+3. **Token expiration not validated on client.** The router guard in `frontend/src/router/index.js` checks only for cookie *presence*, not JWT expiry. A user with an expired token will pass the guard but their GraphQL requests will fail silently.
 
 ## Data models
 

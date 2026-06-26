@@ -80,6 +80,6 @@ See [docs/dev-guide.md](docs/dev-guide.md) for details.
 
 ## Known limitations / open tasks
 
-- **Login page is missing.** Auth guard redirects unauthenticated users to `VITE_LOGIN_URL` (defaults to `http://localhost:4321/login`). That auth app currently lives outside this repo. A `/login` + `/register` view needs to be added to the Vue frontend and the env var updated to `/login`.
 - **No auth protection on GraphQL resolvers.** The `authenticateToken` Express middleware is registered after Apollo's middleware and does not intercept `/graphql` requests. Resolvers receive `context.user = null` for all requests. See [docs/architecture.md](docs/architecture.md#known-issues) for details.
 - **SQLite only.** Not suitable for production at any scale. Switching to PostgreSQL requires updating `prisma/schema.prisma` and the `DATABASE_URL`.
+- **Token expiry not checked client-side.** The router guard checks cookie presence only, not JWT `exp` claim.

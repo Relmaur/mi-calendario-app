@@ -2,58 +2,47 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Cookies from 'js-cookie';
 import Home from '../views/Home.vue';
 import Settings from '../views/Settings.vue';
-
-/*===== Without js-cookies =====*/
-// function getCookie(name) {
-
-//     const value = `; ${document.cookie}`;
-//     const parts = value.split(`; ${name}=`);
-
-//     if (parts.length === 2) return parts.pop().split(';').shift();
-
-//     return null;
-// }
+import Login from '../views/Login.vue';
 
 function isAuthenticated() {
-
-    // const token = getCookie('accessToken');
-
-    // With js-cookies
-    
-    // TODO: Not checking token expiration: need to check token expiration
-    const token = Cookies.get('accessToken') ?? Cookies.get('refreshToken');
-
-    // return false;
-    // return true;
-    return token;
-
+    // TODO: decode the JWT and check `exp` to also catch expired tokens
+    return !!(Cookies.get('accessToken') ?? Cookies.get('refreshToken'));
 }
 
+const requireAuth = (to, from, next) => {
+    if (isAuthenticated()) {
+        next();
+    } else {
+        next({ name: 'login' });
+    }
+};
+
 const routes = [
+    {
+        path: '/login',
+        name: 'login',
+        component: Login,
+        beforeEnter: (to, from, next) => {
+            // Already logged in — skip the login page
+            if (isAuthenticated()) {
+                next({ name: 'home' });
+            } else {
+                next();
+            }
+        }
+    },
     {
         path: '/',
         name: 'home',
         component: Home,
-        beforeEnter: (to, from, next) => {
-            if (isAuthenticated()) {
-                next();
-            } else {
-                window.location.href = import.meta.env.VITE_LOGIN_URL ?? 'http://localhost:4321/login';
-            }
-        }
+        beforeEnter: requireAuth,
     },
     {
         path: '/settings',
         name: 'settings',
         component: Settings,
-        beforeEnter: (to, from, next) => {
-            if (isAuthenticated()) {
-                next();
-            } else {
-                window.location.href = import.meta.env.VITE_LOGIN_URL ?? 'http://localhost:4321/login';
-            }
-        }
-    }
+        beforeEnter: requireAuth,
+    },
     // Other Routes...
 ];
 
