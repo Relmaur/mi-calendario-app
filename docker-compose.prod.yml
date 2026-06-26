@@ -1,0 +1,32 @@
+name: mi-calendario-prod
+
+services:
+
+  # ─── GraphQL / Express API ──────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      target: production
+    ports:
+      - "4001:4001"
+    volumes:
+      # Persist the SQLite database on the host
+      - ./data/database:/app/src/database
+    env_file:
+      - ./backend/.env
+    restart: always
+
+  # ─── Vue 3 SPA served by Nginx ──────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      target: production
+      args:
+        # These are baked into the JS bundle at build time — set them in .env
+        VITE_GRAPHQL_URL: ${VITE_GRAPHQL_URL:-http://localhost:4001/graphql}
+        VITE_LOGIN_URL: ${VITE_LOGIN_URL:-http://localhost:4321/login}
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always

@@ -1,0 +1,40 @@
+name: mi-calendario-dev
+
+services:
+
+  # ─── GraphQL / Express API ──────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      target: development
+    ports:
+      - "4001:4001"
+    volumes:
+      # Bind-mount source for hot-reload; node_modules stays in the image
+      - ./backend/src:/app/src
+      - ./backend/prisma:/app/prisma
+      # Persist the SQLite database across container restarts
+      - ./backend/src/database:/app/src/database
+    env_file:
+      - ./backend/.env
+    restart: unless-stopped
+
+  # ─── Vue 3 + Vite frontend ──────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      target: development
+    ports:
+      - "5173:5173"
+    volumes:
+      # Bind-mount source for HMR; node_modules stays in the image
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/index.html:/app/index.html
+    environment:
+      - VITE_GRAPHQL_URL=http://localhost:4001/graphql
+      # Login page lives in the separate auth app — update once a /login route is added here
+      - VITE_LOGIN_URL=http://localhost:4321/login
+    depends_on:
+      - backend
+    restart: unless-stopped

@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/app.js",
+    "dev": "nodemon --legacy-watch src/app.js",
+    "migrate": "prisma migrate deploy",
+    "db:push": "prisma db push",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -19,6 +22,7 @@
     "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
+    "nodemon": "^3.1.0",
     "prisma": "^5.10.2",
     "sqlite3": "^5.1.7"
   }

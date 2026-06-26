@@ -38,7 +38,7 @@ const routes = [
             if (isAuthenticated()) {
                 next();
             } else {
-                window.location.href = 'http://localhost:4321/login';
+                window.location.href = import.meta.env.VITE_LOGIN_URL ?? 'http://localhost:4321/login';
             }
         }
     },
@@ -50,7 +50,7 @@ const routes = [
             if (isAuthenticated()) {
                 next();
             } else {
-                window.location.href = 'http://localhost:4321/login';
+                window.location.href = import.meta.env.VITE_LOGIN_URL ?? 'http://localhost:4321/login';
             }
         }
     }

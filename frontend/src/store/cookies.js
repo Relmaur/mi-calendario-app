@@ -36,8 +36,7 @@ export const useCookies = defineStore('cookies', () => {
         Cookies.remove('userSession');
         token.value = '';
         userName.value = '';
-        // Redirect to login page
-        window.location.href = 'http://localhost:4321/login';
+        window.location.href = import.meta.env.VITE_LOGIN_URL ?? 'http://localhost:4321/login';
     }
 
     return { token, getToken, setToken, getCookie, logout }
