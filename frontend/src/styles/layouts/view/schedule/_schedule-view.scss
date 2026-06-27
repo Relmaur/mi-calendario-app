@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .view-body.view-schedule .app-content-table {
     // Width and height already set in _main_layout.scss
     display: flex;
@@ -183,7 +185,7 @@
             & .table-container div[class|="day"] {
                 width: calc(100% / 7);
                 height: 100%;
-                background-color: $general_gray_3;
+                background-color: color.adjust($general_gray_3, $alpha: -0.2);
                 position: relative;
             }
 

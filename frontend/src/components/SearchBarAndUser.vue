@@ -4,11 +4,13 @@ import { ref, watch } from 'vue';
 import { useMainApp } from '../store/mainApp.js';
 import { useCookies } from '../store/cookies.js';
 import { usePopups } from '../store/popups.js';
+import { useWeek } from '../store/userWeek.js';
 
 import NavigationTabs from './NavigationTabs.vue';
 
 const cookies = useCookies();
 const main_app = useMainApp();
+const userWeek = useWeek();
 const settings_menu = usePopups().settingsMenu;
 const schedules = main_app.getSchedules();
 
@@ -24,6 +26,12 @@ const menu_toggler = () => {
     main_app.toggleSidebar();
     menuOpened.value = !menuOpened.value;
 }
+
+const switchSchedule = (schedule) => {
+    main_app.setActiveSchedule(schedule.id);
+    userWeek.updateWeek(JSON.parse(schedule.week));
+    console.log('This is the schedule: ', schedule);
+};
 
 </script>
 
@@ -46,7 +54,7 @@ const menu_toggler = () => {
 
                 <div class="schedule-tab hover:cursor-pointer" v-for="schedule in schedules"
                     :class="{ 'active': main_app.getActiveSchedule().value === schedule.id }"
-                    @click="main_app.setActiveSchedule(schedule.id)">
+                    @click="switchSchedule(schedule)">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         class="w-8 h-8 text-general_green_1 borderborder-general_green_1 group-hover/schedule:scale-105">
                         <path

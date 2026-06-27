@@ -1,52 +1,33 @@
 <script setup>
 // Deps
-import { ref, onMounted, computed, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import _ from 'lodash';
-
-/* GraphQL */
-import { useQuery } from '@vue/apollo-composable';
-import gql from 'graphql-tag';
 
 // Components
 import Subject from '../../../components/subject/Subject.vue';
 
 // Stores
-import { useWeek } from '../../../store/userWeek.js'; // Pinia Store    
-import { useMainApp } from '../../../store/mainApp.js'; // Pinia Store    
-import { useCookies } from '../../../store/cookies.js'; // Pinia Store
-
-/* Java Backend */
-// const tkn = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtbGl6YXJkbyIsImlhdCI6MTcwMDc3NzY5MCwiZXhwIjoxNzAwODY0MDkwfQ.q7txz12Y2yjWKMAoESuXvLhi3iaOsfgT1Ft8z_bKQ38';
-const cookies = useCookies();
-const tkn = useCookies().getToken();
-const GET_USER_WEEK_URL_JAVA = `http://192.168.1.31:8080/api/v1/schedules/by-user`;
+import { useWeek } from '../../../store/userWeek.js'; // Pinia Store
+import { useMainApp } from '../../../store/mainApp.js'; // Pinia Store
 
 let week_store = useWeek();
-let userWeek = week_store.getWeek();
 let main_app = useMainApp();
 
-let active_schedule = main_app.getActiveSchedule();
-let active_week = ref(week_store.getWeek());
+const active_week = ref(week_store.getWeek().value);
 
-watch(active_schedule, (newVal) => {
-
-    console.log('(updated) This is the new value: ', newVal); // Testing
-    active_week.value = JSON.parse(main_app.getWeekbySchedule(newVal));
-    
-});
+watch(
+    () => week_store.getWeek().value,
+    (newWeek) => { active_week.value = newWeek; }
+);
 
 /* Lifecycle Hooks */
 onMounted(() => {
-    console.log('(on Mount) This is the previous value: ', active_schedule.value); // Testin
-    // console.log('This is the selected week: ', JSON.parse(main_app.getWeekbySchedule(active_schedule.value))); // Testing
-    
-
     /*
        ===============
           Node Backend
        ===============
     */
-   // Don' need to fetch anythin' just yet, all data is being pulled from App.vue
+    // Don' need to fetch anythin' just yet, all data is being pulled from App.vue
 
     /*
        ===============

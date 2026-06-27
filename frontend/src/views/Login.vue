@@ -6,8 +6,10 @@ import * as yup from 'yup';
 import Cookies from 'js-cookie';
 import { useMutation } from '@vue/apollo-composable';
 import gql from 'graphql-tag';
+import { useMainApp } from '../store/mainApp';
 
 const router = useRouter();
+const main_app = useMainApp();
 
 /* Which panel is visible */
 const mode = ref('login'); // 'login' | 'register'
@@ -76,6 +78,7 @@ const submitForm = handleSubmit(async (vals) => {
     const result = await mutate({ email: vals.email, password: vals.password });
     const { accessToken, refreshToken, user } = result.data[key];
     setAuthCookies(accessToken, refreshToken, user);
+    main_app.setUser(user);
     router.push('/');
   } catch (err) {
     serverError.value = err.graphQLErrors?.[0]?.message ?? err.message ?? 'Something went wrong';

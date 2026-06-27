@@ -32,7 +32,7 @@ const icons_classes = "w-7 h-7 text-general_blue_1 hover:text-general_blue_2";
         <h6>{{ props.day.substring(0, 3).toUpperCase() }}</h6>
         <div class="icons p-1 border border-general_green_3 rounded-md hidden md:flex justify-center items-center relative"
             v-show="main_app.selected_day === props.day">
-            <div class="icon edit">
+            <!-- <div class="icon edit">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                 :class="icons_classes">
                     <path
@@ -40,7 +40,7 @@ const icons_classes = "w-7 h-7 text-general_blue_1 hover:text-general_blue_2";
                     <path
                         d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
                 </svg>
-            </div>
+            </div> -->
             <div class="icon unselect" @click.stop="main_app.closeSelected()">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" :class="icons_classes">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

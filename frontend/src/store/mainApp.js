@@ -34,7 +34,8 @@ export const useMainApp = defineStore('mainApp', () => {
         return activeSchedule;
     }
     const getWeekbySchedule = (scheduleId) => {
-        return userSchedules.value.find(schedule => schedule.id === scheduleId).week;
+        const schedule = userSchedules.value.find(schedule => String(schedule.id) === String(scheduleId));
+        return schedule?.week ?? null;
     }
 
     const openSelected = (day) => {
@@ -45,7 +46,7 @@ export const useMainApp = defineStore('mainApp', () => {
         isDaySubjectsOpen.value = true;
     }
     const closeSelected = () => {
-        selected_day.value = '';
+        selected_day.value = null;
     }
     const getSelected = () => {
         return selected_day;
@@ -57,6 +58,6 @@ export const useMainApp = defineStore('mainApp', () => {
         return isSidebarOpen.value;
     }
 
-    return { setUser, getUser, user, userSchedules, isSidebarOpen, setSchedules, getSchedules, addSchedule, setActiveSchedule, getActiveSchedule, getWeekbySchedule, activeSchedule, toggleSidebar, isOpened, isDaySubjectsOpen, openSelected, closeSelected, selected_day, getSelected, openDaySubjects}
+    return { setUser, getUser, user, userSchedules, isSidebarOpen, setSchedules, getSchedules, addSchedule, setActiveSchedule, getActiveSchedule, getWeekbySchedule, activeSchedule, toggleSidebar, isOpened, isDaySubjectsOpen, openSelected, closeSelected, selected_day, getSelected, openDaySubjects }
 
 });

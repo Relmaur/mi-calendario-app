@@ -35,7 +35,7 @@ const userSessionRaw = Cookies.get('userSession');
 const userSession = userSessionRaw ? JSON.parse(decodeURIComponent(userSessionRaw)) : null;
 main_app.setUser(userSession);
 
-let active_schedule = main_app.getActiveSchedule().value;
+// let active_schedule = main_app.getActiveSchedule().value;
 
 /*
    ===========================
@@ -59,35 +59,33 @@ try {
           }
         }`;
 
-  const userId = main_app.getUser().value?.id;
-  const { result } = useQuery(GET_USER_QUERY, { id: `${userId}` }, { enabled: !!userId });
+  const { result } = useQuery(
+    GET_USER_QUERY,
+    () => ({ id: String(main_app.user?.id) }),
+    () => ({ enabled: !!main_app.user?.id })
+  );
 
 
   watch(result, value => {
-    
-    let schedules = {};
+    const schedules = value.user.schedules;
 
-    value.user.schedules.forEach(schedule => {
-      
+    // build localStorage cache
+    const cache = {};
+    schedules.forEach(s => { cache[s.id] = s.week; });
+    localStorage.setItem('schedules', JSON.stringify(cache));
 
-      // schedules.push(schedule.week);
-      schedules[schedule.id] = schedule.week;
+    main_app.setSchedules(schedules);
 
-      localStorage.setItem('schedules', JSON.stringify(schedules));
-      
-    })
+    // Resolve which schedule to activate — prefer stored ID, fall back to first
+    const storedId = localStorage.getItem('activeSchedule');
+    const match = schedules.find(s => String(s.id) === String(storedId));
+    const target = match ?? schedules[0];
 
-    // console.log('This is the result: ', value); // Testing
-    main_app.setSchedules(value.user.schedules);
-
-    // console.log('This is the week to update: ', JSON.parse(main_app.getWeekbySchedule(active_schedule)));
-    user_week.updateWeek(JSON.parse(main_app.getWeekbySchedule(active_schedule)));
-
-    // console.log('Updated, ', JSON.parse(main_app.getWeekbySchedule(active_schedule)))
-
-    localStorage.setItem('activeSchedule', active_schedule);
-
-  })
+    if (target) {
+      main_app.setActiveSchedule(target.id);
+      user_week.updateWeek(JSON.parse(target.week));
+    }
+  });
 
   // main_app.setSchedules(result.value.schedules);
 

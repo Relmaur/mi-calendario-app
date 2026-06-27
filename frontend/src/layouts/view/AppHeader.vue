@@ -11,6 +11,11 @@ const main_app = useMainApp();
 const userWeek = useWeek();
 const schedules = main_app.getSchedules();
 
+const switchSchedule = (schedule) => {
+    main_app.setActiveSchedule(schedule.id);
+    userWeek.updateWeek(JSON.parse(schedule.week));
+};
+
 const capitalizeFirstletter = string => {
 
     if (!string) {
@@ -30,12 +35,13 @@ onMounted(() => {
 <template>
     <div class="app-content-header">
 
+        <!-- This is the tabs picker for mobile view, it is hidden on desktop view -->
         <div class="schedule-tabs-wrapper">
             <div class="schedule-tabs">
 
                 <div class="schedule-tab hover:cursor-pointer" v-for="schedule in schedules"
                     :class="{ 'active': main_app.getActiveSchedule().value === schedule.id }"
-                    @click="main_app.setActiveSchedule(schedule.id)">
+                    @click="switchSchedule(schedule)">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         class="w-8 h-8 text-general_green_1 borderborder-general_green_1 group-hover/schedule:scale-105">
                         <path
