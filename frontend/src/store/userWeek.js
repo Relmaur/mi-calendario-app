@@ -3,17 +3,17 @@ import { ref, watch } from 'vue';
 import _ from 'lodash';
 
 export const useWeek = defineStore("userWeek", () => {
-    
+
     const WEEK = ref(
-    {
-        'sunday': [],
-        'monday': [],
-        'tuesday': [],
-        'wednesday': [],
-        'thursday': [],
-        'friday': [],
-        'saturday': [],
-    }
+        {
+            'sunday': [],
+            'monday': [],
+            'tuesday': [],
+            'wednesday': [],
+            'thursday': [],
+            'friday': [],
+            'saturday': [],
+        }
     );
 
     /* This gets called from the AddSubject form from ScheduleView.vue popup component */
@@ -52,7 +52,7 @@ export const useWeek = defineStore("userWeek", () => {
                 }
             }
 
-            /* Add the subject to the specified day */ 
+            /* Add the subject to the specified day */
             WEEK.value[day].push(subject);
 
         }
@@ -83,6 +83,14 @@ export const useWeek = defineStore("userWeek", () => {
         let foundIndex = _.findIndex(WEEK.value[day], { id: subject.id });
         return WEEK.value[day][foundIndex];
     }
+    const updateSubjectColor = (day, subject, newColor) => {
+        let foundIndex = _.findIndex(WEEK.value[day], { id: subject.id });
+        if (foundIndex !== -1) {
+            WEEK.value[day][foundIndex].color = newColor;
+        } else {
+            console.log('Subject not found!');
+        }
+    }
     const updateWeek = (new_week) => {
         WEEK.value = new_week;
     }
@@ -91,6 +99,6 @@ export const useWeek = defineStore("userWeek", () => {
         return WEEK.value[day];
     }
 
-    return { WEEK, addSubject, getWeek, updateWeek, updateSubject, getSubject, deleteSubject, getDaySubjects }
+    return { WEEK, addSubject, getWeek, updateWeek, updateSubject, updateSubjectColor, getSubject, deleteSubject, getDaySubjects }
 
 });

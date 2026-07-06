@@ -31,6 +31,8 @@ services:
       - ./frontend/src:/app/src
       - ./frontend/public:/app/public
       - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.js:/app/vite.config.js
+      - ./frontend/tailwind.config.js:/app/tailwind.config.js
     environment:
       - VITE_GRAPHQL_URL=http://localhost:4001/graphql
       - VITE_LOGIN_URL=/login

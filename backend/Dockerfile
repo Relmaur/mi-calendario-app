@@ -4,7 +4,7 @@ FROM node:20-alpine AS base
 WORKDIR /app
 
 # sqlite3 requires native compilation
-RUN apk add --no-cache python3 make g++
+RUN apk add --no-cache python3 make g++ openssl openssl-dev
 
 COPY package*.json ./
 COPY prisma ./prisma/

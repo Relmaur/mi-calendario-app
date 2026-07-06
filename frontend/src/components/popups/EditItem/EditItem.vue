@@ -103,6 +103,12 @@ const day = defineComponentBinds('day');
 /* To change the form's value externally, via a click event, in this case */
 const { value: color, setValue: setColor } = useField('color_picked');
 
+const changeColor = (newColor) => {
+    setColor(newColor);
+    // Change Store's Subject Color
+    week.updateSubjectColor(edit_subject_object.value.day.toLowerCase(), edit_subject_object.value, newColor);
+}
+
 /* Handle submission */
 const submitForm = handleSubmit((values) => {
 
@@ -142,7 +148,7 @@ const submitForm = handleSubmit((values) => {
 
     console.log('The data to be submitted: ', subjectObject); // Testing
 
-    // // Update Subject in Pinia Store
+    // Update Subject in Pinia Store
     week.updateSubject(subjectObject['day'].toLowerCase(), subjectObject);
 
     /*
@@ -170,25 +176,6 @@ const submitForm = handleSubmit((values) => {
     let previousWeek = JSON.parse(localStorage.getItem('schedules'));
     previousWeek[schedule.value] = week.getWeek().value;
     localStorage.setItem('schedules', JSON.stringify(previousWeek));
-
-    /*
-       ===============
-          Java Backend
-       ===============
-    */
-    /* Send Data over to the Backend... */
-    // try {
-    //     fetch(PUT_USER_WEEK_URL_JAVA, {
-    //         method: 'PUT',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': `Bearer ${tkn}`,
-    //         },
-    //         body: JSON.stringify(subjectObject),
-    //     })
-    // } catch (error) {
-    //     console.log(error)
-    // }
 
     /* Open Toast */
     toast.openToast({
@@ -231,24 +218,6 @@ const onDeleteSubject = (id) => {
     let previousWeek = JSON.parse(localStorage.getItem('schedules'));
     previousWeek[schedule.value] = week.getWeek().value;
     localStorage.setItem('schedules', JSON.stringify(previousWeek));
-
-    /*
-       ===============
-          Java Backend
-       ===============
-    */
-    /* Send Data over to the Backend... */
-    // try {
-    //     fetch(`http://192.168.1.31:8080/api/v1/subjects/${id}`, {
-    //         method: 'DELETE',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             // 'Authorization': `Bearer ${tkn}`,
-    //         },
-    //     })
-    // } catch (error) {
-    //     console.log(error)
-    // }
 
     edit_subject_popup.editSubjectClose();
 
@@ -328,22 +297,22 @@ interact('.app-popup .draggable')
                     <div class="color-picker flex justify-start items-center gap-2">
                         <p>Pick a color: </p>
                         <input type="color" class="opacity-0 absolute w-[1px] h-[1px] overflow-hidden -left-5 -z-[1]"
-                            ref="color_picker" v-bind="color_picked">
+                            ref="color_picker" v-bind="color_picked" @change="(e) => changeColor(e.target.value)">
                         <div class="picked-color w-7 h-7 rounded-md hover:cursor-pointer" @click="colorPicker"
                             :style="{ backgroundColor: `${values.color_picked}` }"></div>
                     </div>
                     <div
                         class="color-theme flex justify-end items-center gap-2 p-3 rounded-md bg-white hover:cursor-pointer">
                         <div class="color-theme_color-1 w-7 h-7 rounded-md hover:scale-105"
-                            :style="{ backgroundColor: `${color_theme[0]}` }" @click="setColor(color_theme[0])"></div>
+                            :style="{ backgroundColor: `${color_theme[0]}` }" @click="changeColor(color_theme[0])"></div>
                         <div class="color-theme_color-1 w-7 h-7 rounded-md hover:scale-105"
-                            :style="{ backgroundColor: `${color_theme[1]}` }" @click="setColor(color_theme[1])"></div>
+                            :style="{ backgroundColor: `${color_theme[1]}` }" @click="changeColor(color_theme[1])"></div>
                         <div class="color-theme_color-1 w-7 h-7 rounded-md hover:scale-105"
-                            :style="{ backgroundColor: `${color_theme[2]}` }" @click="setColor(color_theme[2])"></div>
+                            :style="{ backgroundColor: `${color_theme[2]}` }" @click="changeColor(color_theme[2])"></div>
                         <div class="color-theme_color-1 w-7 h-7 rounded-md hover:scale-105"
-                            :style="{ backgroundColor: `${color_theme[3]}` }" @click="setColor(color_theme[3])"></div>
+                            :style="{ backgroundColor: `${color_theme[3]}` }" @click="changeColor(color_theme[3])"></div>
                         <div class="color-theme_color-1 w-7 h-7 rounded-md hover:scale-105"
-                            :style="{ backgroundColor: `${color_theme[4]}` }" @click="setColor(color_theme[4])"></div>
+                            :style="{ backgroundColor: `${color_theme[4]}` }" @click="changeColor(color_theme[4])"></div>
                     </div>
                 </div>
                 <div class="date relative">
